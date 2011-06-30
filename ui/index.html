@@ -7,20 +7,38 @@
   <script type="text/javascript" src="js/developtoolbox.js"></script>
 </head>
 <body>
+<div id="right">
+	<div id="preview">
+  		<br/>
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+		<br/>
+  	</div>
+</div>
 <div id="main">
-    <div id="top">
-        <div id="namespace">
-       		 <label>选择目录: </label>
-                <select id="combobox">
-                    <option value="">Select one...</option>
-                    <option value="ActionScript">ActionScript</option>
-                    <option value="AppleScript">AppleScript</option>
-                    <option value="Asp">Asp</option>
-                    <option value="BASIC">BASIC</option>
-                    <option value="C">C</option>
-                </select>
-        </div>
-    </div>
+	<div id="namespace">
+		 <label>选择目录: </label>
+			<select id="combobox">
+				<option value="">Select one...</option>
+				<option value="ActionScript">ActionScript</option>
+				<option value="AppleScript">AppleScript</option>
+				<option value="Asp">Asp</option>
+				<option value="BASIC">BASIC</option>
+				<option value="C">C</option>
+			</select>
+	</div>
     <div id="leftBottom">
 		<div id="toolPanelButtons">
 			<a id="add_controller" class="addButtons" href='#' title='添加Controller对象'>+<span class='controller'></span></a>
@@ -28,22 +46,7 @@
 			<a id="add_widget" class="addButtons" href='#' title='添加Widget对象'>+<span class='widget'></span></a>
 			<a id="add_verifier" class="addButtons add_btn_disabled" href='#' title='添加Verifier对象'>+<span class='virifier'></span></a>
 			<a id="add_model" class="addButtons" href='#' title='添加Model对象'>+<span class='model'></span></a>
-			<!-- <a id="deleteBtn" class="addButtons" href='#' title='删除对象'>删</a> -->
-		</div>
-		   
-		<div id="toolpanel">
-			<table>
-				<thead> 
-				   <tr> 
-					  <th class="nameColumn">Name</th> 
-					  <th class="classColumn">Class</th> 
-					  <th class="propertyColumn">Property</th> 
-				   </tr> 
-				</thead> 
-				<tbody>
-					<!-- 对象列表 -->
-				</tbody>
-			</table>
+			<a id="deleteBtn" href='#' title='删除对象'>-<span class='delete'></span></a>
 		</div>
 		
 		<div id="property">
@@ -59,42 +62,103 @@
             </div>
             <div id='view_property' class="propertys">
             	<h1>view_property</h1>
-                <label for="view_name">name:</label><input id="view_name" type="text"  class="object_name" /><br/>
-                <label for="view_template">template:</label><input id="view_template" type="text" /><br/>
-                <label for="view_formview">formview:</label><input id="view_formview" type="checkbox" value="true"/><br/>
+                <label for="view_name">名称:</label><input id="view_name" type="text"  class="object_name" /><br/>
+                <label for="view_template">模版:</label><input id="view_template" type="text" /><br/>
+                <label for="view_formview">formview ? :</label><input id="view_formview" type="checkbox" value="true"/><br/>
                 <input id="view_submit" class="submitBtn" type="button" value ="保存"/>
             </div>
             <div id='widget_property' class="propertys">
             	<h1>widget_property</h1>
-                <label for="widget_name">name:</label><input id="widget_name" type="text"  class="object_name" /><br/>
-                <label for="widget_template">template:</label><input id="widget_template" type="text" /><br/>
-                <label for="widget_formwidget">formwidget:</label><input id="widget_formwidget" type="checkbox" /><br/>
-                <input id="widget_submit" class="submitBtn" type="button" value ="保存"/>
+				<label for="widget_classname">类名:</label>
+                <select id="widget_classname">
+                    <option value="0">请选择</option>
+                    <option value="text">Text</option>
+                    <option value="checkbtn">CheckBtn</option>
+					<option value="group">Group</option>
+                    <option value="radiogroup">RadioGroup</option>
+					<option value="select">Select</option>
+                    <option value="selectlist">SelectList</option>
+                </select><br/>
+                <label for="widget_id">ID:</label><input id="widget_id" type="text"  class="object_name" /><br/>
+                <label for="widget_title">标题:</label><input id="widget_title" type="text" /><br/>
+				<div id="other_property">
+					
+				</div>
+				<input id="widget_submit" class="submitBtn" type="button" value ="保存"/>
             </div>
             <div id='verifier_property' class="propertys">
             	<h1>verifier_property</h1>
-                <label for="view_name">name:</label><input id="view_name" type="text"  class="object_name" /><br/>
-                <label for="view_template">template:</label><input id="view_template" type="text" /><br/>
-                <label for="view_formview">formview:</label><input id="view_formview" type="checkbox" /><br/>
-                <input id="view_submit" class="submitBtn" type="button" value ="保存"/>
+                <label for="verifier_name">名称:</label><input id="verifier_name" type="text"  class="object_name" /><br/>
+                <label for="verifier_formverifier">formverifier ?:</label><input id="verifier_formverifier" type="checkbox" /><br/>
+                <input id="verifier_submit" class="submitBtn" type="button" value ="保存"/>
             </div>
             <div id='model_property' class="propertys">
             	<h1>model_property</h1>
-                <label for="view_name">name:</label><input id="view_name" type="text"  class="object_name" /><br/>
-                <label for="view_template">template:</label><input id="view_template" type="text" /><br/>
-                <label for="view_formview">formview:</label><input id="view_formview" type="checkbox" /><br/>
-                <input id="view_submit" class="submitBtn" type="button" value ="保存"/>
+                <label for="verifier_name">name:</label><input id="verifier_name" type="text"  class="object_name"/><br/>
+                <label for="verifier_formverifier">formverifier:</label><input id="verifier_formverifier" type="checkbox" /><br/>
+                <input id="verifier_submit" class="submitBtn" type="button" value ="保存"/>
             </div>
 		</div>
+		
+		
+		<div id="widget_property_store">
+			<!-- 各个widget的附加属性, 当需要显示的时候会复制到propertys中,这里这是临时仓库 -->
+			<div id="text_property" class="widget_propertys">
+				<label for="widget_value">值:</label><input id="widget_value" type="text" /><br/>
+				<label for="widget_type">类型:</label>
+				<select id="widget_type">
+					<option value="0">请选择</option>
+					<option value="single">单行</option>
+					<option value="password">密码</option>
+					<option value="multiple">多行</option>
+				</select><br/>
+			</div>
+			<div id="checkbtn_property" class="widget_propertys">
+				<label for="widget_type">类型:</label>
+				<select id="widget_type">
+					<option value="0">请选择</option>
+					<option value="radio">单选框</option>
+					<option value="checkbox">多选框</option>
+				</select><br/>
+			</div>
+			<div id="group_property" class="widget_propertys">
+				
+			</div>
+			<div id="radiogroup_property" class="widget_propertys">
+				 
+			</div>
+			<div id="select_property" class="widget_propertys">
+				<label for="widget_size">显示条目数量:</label><input id="widget_size" type="text"  value="1"/><br/>
+			</div>
+			<div id="selectlist_property" class="widget_propertys">
+				<label for="widget_size">显示条目数量:</label><input id="widget_size" type="text"  value="1"/><br/>
+			</div>
+			
+			<!-- end 各个widget的附加属性 -->
+		</div>
+		
+		
+		<div id="toolpanelDiv">
+			<table id="toolpanel">
+				<thead> 
+				   <tr> 
+					  <th class="nameColumn">Name</th> 
+					  <th class="classColumn">Class</th> 
+					  <th class="propertyColumn">Property</th> 
+				   </tr> 
+				</thead> 
+				<tbody>
+					<!-- 对象列表 -->
+				</tbody>
+			</table>
+		</div>
+		
+		
+		
     </div>
 
 </div>
 
-<div id="right">
-	<div id="preview">
-  		<br/>
-  	</div>
-</div>
 
-
-</body></html>
+</body>
+</html>

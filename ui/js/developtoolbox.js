@@ -5,15 +5,15 @@ jQuery(function () {
 	var childClassPre = "child_of_"; //用来标记子node的class的前缀,暂时不要修改,会影响getParent函数
 
 	var allowTypes = {
-		"noselected" : Array('controller' , 'view' , 'widget' , 'model')
-    ,"controller" : Array('controller' , 'view' , 'widget' , 'verifier' , 'model')
-		,"view" : Array( 'view' , 'widget'  , 'model')
-		,"widget" : Array( 'widget' , 'verifier' )
-		,"verifier" : Array('')
-		,"model" : Array('model')
+		"noselected" : ['controller' , 'view' , 'widget' , 'model']
+    	,"controller" : ['controller' , 'view' , 'widget' , 'verifier' , 'model']
+		,"view" : ['view' , 'widget'  , 'model']
+		,"widget" : [ 'widget' , 'verifier' ]
+		,"verifier" : ['']
+		,"model" : ['model']
 	}
 	
-	//数据对象,测试用
+	//数据对象,内容为测试用,正式版应该从namespache表单中获取数据
 	treeData ={"name":"testname","class":"testclass" , "children":[]};
 	
 	//获得node的层级,顶级为0,顶级的子node就是1,孙node就是2,依次类推
@@ -27,6 +27,7 @@ jQuery(function () {
 	  }
 	  return 0; // 前面的代码没有return,则代表node是顶级标签
 	}
+	
 	//调整node的缩进,注意:已经有缩进的会重复缩进,如果要修正,请从//1开始
 	function intendNode(aNode){
 		var nLevel = getLevel(aNode);
@@ -36,7 +37,6 @@ jQuery(function () {
 			aNode.find(".tr_indent").css("width" ,16*nLevel+"px" );
 		}	
 	}
-	
 	
 	//选中
 	function setSelected(aNode){
@@ -58,7 +58,7 @@ jQuery(function () {
 		var sNodeType = getNodeType(aNode);
 		//如果是widget的属性页,把属性附表先隐藏
 		if(sNodeType == "widget"){
-			jQuery(".widget_propertys").hide(0).appendTo($("#widget_property_store"));
+			widgetOtherPropertyGoBackToStore();
 		}
 		//处理属性通用页面
 		jQuery( ".propertys" ).hide(0);
@@ -117,8 +117,13 @@ jQuery(function () {
 			sWidgetClass = widgetClass;
 		}
 		var sWidgetPropertyPageId = "#"+ sWidgetClass +'_property';
-		jQuery(".widget_propertys").appendTo($("#widget_property_store")).hide(0);
+		widgetOtherPropertyGoBackToStore();
 		jQuery(sWidgetPropertyPageId).appendTo($("#other_property")).show(0);											   
+	}
+	
+	//widget的附属表单隐藏
+	function widgetOtherPropertyGoBackToStore(){
+		jQuery(".widget_propertys").appendTo($("#widget_property_store")).hide(0);
 	}
 	
 	//新建node(tr)

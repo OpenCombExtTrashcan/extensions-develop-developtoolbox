@@ -15,13 +15,19 @@ a:focus {
 outline: none;
 }
 
-
 body {
   background: #fff;
   color: #000;
   font-family: Helvetica, Arial, sans-serif;
   font-size: .8em;
   line-height: 1.5;
+}
+
+h1{
+	width:100%;
+	display:block;
+	font-size:18px;
+	text-align:center;
 }
 
 #main{
@@ -127,7 +133,7 @@ body {
 
 #toolpanel span.view {
   background-image: url(../images/view.png);
-}
+} 
 
 #toolpanel span.widget {
   background-image: url(../images/widget.png);

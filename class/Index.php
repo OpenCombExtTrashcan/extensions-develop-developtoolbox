@@ -1,6 +1,8 @@
 <?php
 namespace oc\ext\developtoolbox ;
 
+use jc\mvc\model\db\orm\ModelAssociationMap;
+
 use jc\fs\FSOIterator;
 
 use jc\system\ClassLoader;
@@ -28,7 +30,9 @@ class Index extends Controller
 		$this->view->variables()->set('sDefineNamespacesCode',json_encode($arrNamespacesInfo)) ;
 		$this->view->variables()->set('sDefineAllControllerClassesCode',json_encode($arrControllerClasses)) ;
 
-		//
+		// 反射系统中的orm
+		$arrModels = $this->scanOrm( ModelAssociationMap::singleton() ) ;
+		$this->view->variables()->set('sDefineModelsCode',json_encode($arrModels)) ;
 		 
 	}
 	
@@ -99,6 +103,34 @@ class Index extends Controller
 		}
 		
 		return array($arrNamespacesInfo,$arrControllerClasses) ;
+	}
+	
+	public function scanOrm(ModelAssociationMap $aMap)
+	{
+		$arrModels = array() ;
+		
+		foreach($aMap->modelNameIterator() as $sModelName)
+		{
+			$arrModels[$sModelName] = array() ; 
+			
+			$aPrototype = $aMap->modelPrototype($sModelName) ;
+			
+			foreach($aPrototype->associations()->valueIterator() as $aAssociation)
+			{
+				$sAssoType = $aAssociation->type() ;
+				
+				if( empty($arrModels[$sModelName][$sAssoType]) )
+				{
+					$arrModels[$sModelName][$sAssoType] = array() ;
+				}
+				
+				$arrModels[$sModelName][$sAssoType][] = array(
+					'prop' => $aAssociation->modelProperty()
+				) ;
+			}
+		}
+		
+		return $arrModels ;
 	}
 }
 

@@ -1,15 +1,11 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en"><head>
-<meta http-equiv="content-type" content="text/html; charset=utf-8"> 
-  <title>developtoolbox</title>
-  <link href="css/developtoolbox.css" rel="stylesheet" type="text/css">
+  <link href="/extensions/developtoolbox/ui/css/developtoolbox.css" rel="stylesheet" type="text/css"/>
   <script type="text/javascript">
   	var namespaceData = {= $sDefineNamespacesCode};
+	var controllerNames ={= $sDefineAllControllerClassesCode };
+	var ormData = {= $sDefineModelsCode };
   </script>
-  <script type="text/javascript" src="js/jquery.js"></script>
-  <script type="text/javascript" src="js/developtoolbox.js"></script>
-</head>
-<body>
+  <script type="text/javascript" src="/extensions/developtoolbox/ui/js/jquery.js"></script>
+  <script type="text/javascript" src="/extensions/developtoolbox/ui/js/developtoolbox.js"></script>
 <div id="right">
 	<div id="preview">
 		<br/>
@@ -17,16 +13,15 @@
 </div>
 <div id="main">
 	<div id="namespace">
-		 <label>选择目录: </label>
-			<select id="combobox">
-				<option value="">Select one...</option>
-				<option value="ActionScript">ActionScript</option>
-				<option value="AppleScript">AppleScript</option>
-				<option value="Asp">Asp</option>
-				<option value="BASIC">BASIC</option>
-				<option value="C">C</option>
-			</select>
+		<label for="namespaceSelect">编辑命名空间: </label>
+		<select id="namespaceSelect">
+			<option value="0">选择命名空间...</option>
+			<!-- 命名空间数据放在这里 -->
+		</select>
+		\
+		<input id="className" type="text" />
 	</div>
+	<div><b>命名空间:</b><span id="namespaceComplete">还没有确定命名空间...</span></div>
     <div id="leftBottom">
 		<div id="toolPanelButtons">
 			<a id="add_controller" class="addButtons" href='#' title='添加Controller对象'>+<span class='controller'></span></a>
@@ -42,9 +37,7 @@
             	<h1>控制器属性</h1>
                 <label for="controller_classname">类名:</label>
                 <select id="controller_classname" class="object_name">
-                    <option value="0">请选择</option>
-                    <option value="fsda.php">fsda.php</option>
-                    <option value="fdfsdfd.php">fdfsdfd.php</option>
+                    <option value="0">请选择对象名...</option>
                 </select><br/>
                 <input id="controller_submit" class="submitBtn" type="button" value ="保存"/>
             </div>
@@ -67,7 +60,7 @@
 					<option value="select">Select</option>
                     <option value="selectlist">SelectList</option>
                 </select><br/>
-                <label for="widget_id">ID:</label><input id="widget_id" type="text"  class="object_name" /><br/>
+                <label for="widget_id">ID:</label><input id="widget_id" type="text"  class="model" /><br/>
                 <label for="widget_title">标题:</label><input id="widget_title" type="text" /><br/>
 				<div id="other_property">
 					
@@ -82,9 +75,9 @@
             </div>
             <div id='model_property' class="propertys">
             	<h1>模型属性</h1>
-                <label for="verifier_name">name:</label><input id="verifier_name" type="text"  class="object_name"/><br/>
-                <label for="verifier_formverifier">formverifier:</label><input id="verifier_formverifier" type="checkbox" /><br/>
-                <input id="verifier_submit" class="submitBtn" type="button" value ="保存"/>
+                <label for="model_name">名称:</label><input id="model_name" type="text"  class="object_name"/><br/>
+                <label for="model_formmodel">formmodel:</label><input id="model_formmodel" type="checkbox" /><br/>
+                <input id="model_submit" class="submitBtn" type="button" value ="保存"/>
             </div>
 		</div>
 		
@@ -146,7 +139,3 @@
     </div>
 
 </div>
-
-
-</body>
-</html>

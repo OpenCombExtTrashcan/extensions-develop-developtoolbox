@@ -16,9 +16,8 @@ class Index extends Controller
 	protected function init()
 	{
 		$this->add(new FrontFrame()) ;
-
+		
 		$this->createView('view','developtoolbox_Index.template.html') ;
-
 		
 	}
 	

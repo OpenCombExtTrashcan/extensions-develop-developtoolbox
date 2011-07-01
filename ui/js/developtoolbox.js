@@ -3,18 +3,20 @@ jQuery(function () {
 	var treeTableId = "#toolpanel";
 	var treeTable = jQuery(treeTableId);
 	var childClassPre = "child_of_"; //用来标记子node的class的前缀,暂时不要修改,会影响getParent函数
+	var fileName = ""; //本页顶级controller的文件名
+	var extensionName = ""; //本页顶级controller所属扩展的名字
 
 	var allowTypes = {
 		"noselected" : ['controller' , 'view' , 'widget' , 'model']
-    	,"controller" : ['controller' , 'view' , 'widget' , 'verifier' , 'model']
+    	,"controller" : ['controller' , 'view' , 'model']
 		,"view" : ['view' , 'widget'  , 'model']
 		,"widget" : [ 'widget' , 'verifier' ]
 		,"verifier" : ['']
 		,"model" : ['model']
 	}
 	
-	//数据对象,内容为测试用,正式版应该从namespache表单中获取数据
-	treeData ={"name":"testname","class":"testclass" , "children":[]};
+	//数据对象
+	treeData ={"filename":"","children":[]};
 	
 	//获得node的层级,顶级为0,顶级的子node就是1,孙node就是2,依次类推
 	function getLevel(aNode){
@@ -43,6 +45,7 @@ jQuery(function () {
 		if(aNode.hasClass("selected")){
 			aNode.removeClass("selected");
 			changeBtnStateByTrType(null);
+			// getPropertyPage(null);
 			return;
 		}
 		treeTable.find("tr").removeClass("selected");
@@ -55,6 +58,11 @@ jQuery(function () {
 	
 	//属性页面切换
 	function getPropertyPage(aNode){
+		// if(aNode == null){
+			// widgetOtherPropertyGoBackToStore();
+			// jQuery( ".propertys" ).hide(0);
+			// return;
+		// }
 		var sNodeType = getNodeType(aNode);
 		//如果是widget的属性页,把属性附表先隐藏
 		if(sNodeType == "widget"){
@@ -67,10 +75,6 @@ jQuery(function () {
 		//得到数据
 		var aData = aNode.data("property");
 		getProperties(aPropertyPage,aData);
-		//if(sNodeType == "widget"){
-		//	var sWidgetPropertyPageId = "#"+$("#widget_property #widget_classname").val() +'_property';
-		//	jQuery(sWidgetPropertyPageId).appendTo($("#other_property")).show(0);
-		//}
 	}
 	
 	
@@ -208,6 +212,18 @@ jQuery(function () {
 		return jQuery("#"+sParentId);
 	}
 	
+	//获得子node , 返回子node对象数组,如果没有子node,返回false
+	function getChildren(aNode){
+		var arrChildren = [];
+		var sNodeId = aNode.attr("id");
+		var sChildrenClass = childClassPre+sNodeId;
+		arrChildren = $("."+sChildrenClass);
+		if(arrChildren.length <= 0){
+			arrChildren = false;
+		}
+		return arrChildren;
+	}
+	
 	//删除数组元素
 	function removeElementByIndex(dx,arr){
 	  if(isNaN(dx)||dx>arr.length){return false;}
@@ -222,9 +238,67 @@ jQuery(function () {
 	
 	//转义 . ,初期目的是为了防止用文件名做ID的时候 . 被误读成css选择器的. 
 	function escapeId(sOldId){
-		var sNewId = sOldId.replace(/\./,"-");
+		var sNewId = sOldId.replace(/\./ig,"-");
+		sNewId = sNewId.replace(/\\/ig,'-');
 		return sNewId;
 	}
+	
+	//删除node ,包括子node
+	function removeNode(aSelected){
+		var arrChildren = getChildren(aSelected);
+		if(arrChildren != false){
+			$.each(arrChildren,function(i,n){
+				removeNode($(n));			  
+			});
+		}
+		var aSelectedProperty = aSelected.data("property");
+		var aSelectedParentProperty ;
+		//删除父node的children中的记录
+		var aSelectedParent = getParent(aSelected);
+		if(aSelectedParent == false){//如果用户想删除的对象是顶级对象,则删除treedata中的children的数据,即吧treedata当做父对象
+			aSelectedParentProperty = treeData;
+		}else{
+			aSelectedParentProperty = aSelectedParent.data("property");
+		}
+		for(var key in aSelectedParentProperty["children"]){
+			if(aSelectedParentProperty["children"][key] == aSelectedProperty){
+				removeElementByIndex(key,aSelectedParentProperty["children"]);
+			}
+		}
+		aSelected.remove();
+		changeBtnStateByTrType(null);
+	}
+	
+	//当namespace区域被编辑时的行为
+	function nameSpaceEdit(){
+		var aClassName = $("#className");
+		var namespaceSelectValue = $("#namespaceSelect").val();
+		//首字母大写
+		aClassName.val(aClassName.val()[0].toUpperCase()+aClassName.val().substr(1));
+		if(namespaceSelectValue == 0 || aClassName.val().length == 0){
+			$("#namespaceComplete").addClass("noFileName").text("还没有确定命名空间...");
+			treeData["filename"] = "";
+			return;
+		}else{
+			var filepath = namespaceData[namespaceSelectValue]["folder"];
+			fileName = filepath+'/'+aClassName.val()+".php";
+			$("#namespaceComplete").removeClass("noFileName").text(fileName);
+			treeData["filename"] = fileName;
+			extensionName = namespaceData[namespaceSelectValue]["extension"];
+		}
+	}
+	
+	//命名空间部分被编辑时触发
+	jQuery("#className").change(nameSpaceEdit);
+	jQuery("#namespaceSelect").change(nameSpaceEdit);
+	
+	//视图名称变化时自动生成template
+	jQuery("#view_name").keyup(function(){
+		if(extensionName == ""){
+			return;
+		}
+		jQuery("#view_template").val(extensionName + "_" +$(this).val()+".template.html");
+	});
 	
 	//左侧按钮功能部分
 	jQuery(".addButtons").click(function(){
@@ -240,37 +314,21 @@ jQuery(function () {
 	});
 	
 	//表格点击后..
-	jQuery(treeTableId + " tr").live("click",function(){
+	jQuery(treeTableId + " tbody tr").live("click",function(){
 		//选中
 		setSelected(jQuery(this));
 	});
 	
-	//删除按钮
+	//相应删除按钮
 	$("#deleteBtn").click(function(){
 		if(!confirm('确实要删除这个对象吗? \n\n所有的子对象都会被删除!!')){
 			return ;	
 		}
 		var aSelected = $(".selected");
-		if(aSelected <= 0){
+		if(aSelected.length <= 0){
 			return;
 		}
-		var aSelectedProperty = aSelected.data("property");
-		var aSelectedParentProperty ;
-		//删除父node的children中的记录
-		var aSelectedParent = getParent(aSelected);
-		if(aSelectedParent == false){//如果用户想删除的对象是顶级对象,则删除treedata中的children的数据,即吧treedata当做父对象
-			aSelectedParentProperty = treeData;
-		}else{
-			aSelectedParentProperty = aSelectedParent.data("property");
-		}
-		for(var key in aSelectedParentProperty["children"]){
-			if(aSelectedParentProperty["children"][key] == aSelectedProperty){
-				//delete aSelectedParentProperty["children"][key];
-				removeElementByIndex(key,aSelectedParentProperty["children"]);
-			}
-		}
-		//删除对象,连同数据
-		aSelected.remove();
+		removeNode(aSelected);
 	});
 	
 	//属性提交
@@ -311,6 +369,9 @@ jQuery(function () {
 		//数据保存到tr对象
 		//aSelected.data("property",dataObject);
 		 fdsfsdtreeData = treeData;
+		 namespaceData = namespaceData;
+		 controllerNames= controllerNames;
+		 extensionName = extensionName;
 	});
 	//json  toJSON(objectData);  jQuery.evalJSON(
 												 
@@ -318,4 +379,21 @@ jQuery(function () {
 	jQuery("#widget_classname").live("change",function(){
 		widgetTypeChange(null);												   
 	});
+	
+	//初始化命名空间
+	function initNameSpaceSelect(){
+		for(var key in namespaceData){
+			$("#namespaceSelect").append("<option value='"+key+"'>"+key+"</option>");
+		}
+	}
+	initNameSpaceSelect();
+	//初始化controller选项
+	function initControllerSelect(){
+		for(var key in controllerNames){
+			$("#controller_classname").append("<option value='"+controllerNames[key]+"'>"+controllerNames[key]+"</option>");
+		}
+	}
+	initControllerSelect();
+	//初始化orm关系表
+	
 });

@@ -125,7 +125,8 @@ class Index extends Controller
 				}
 				
 				$arrModels[$sModelName][$sAssoType][] = array(
-					'prop' => $aAssociation->modelProperty()
+					'prop' => $aAssociation->modelProperty() ,
+					'name' => $aAssociation->toPrototype()->name() ,
 				) ;
 			}
 		}

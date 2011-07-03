@@ -9,7 +9,7 @@ use jc\system\ClassLoader;
 
 use oc\base\FrontFrame;
 use jc\db\sql\Select;
-use jc\mvc\controller\Controller;
+use oc\mvc\controller\Controller;
 
 class Index extends Controller
 {

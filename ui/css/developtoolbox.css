@@ -196,3 +196,10 @@ h1{
 #toolPanelButtons span.model {
   background-image: url(../images/model.png);
 }
+
+#widget_options{
+	width:100%;
+}
+#widget_options_table tr{
+	background:#EEE;
+}

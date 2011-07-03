@@ -84,6 +84,10 @@ jQuery(function () {
 		if( aData["objectClass"] == "widget" && aData["classname"] != undefined){  //处理select属性附属页面
 			widgetTypeChange(aData["classname"]);
 		}
+		//先看看是不是verifier类型,如果是verifier类型,那么先组合附表单
+		if(aData["objectClass"] == "verifier" && aData["class"] != undefined){
+			rebuildVerifierProperty(aData["class"]);
+		}
 		
 		//得到属性表单中的widget
 		var arrProperty = getPropertyWidget(aPropertyPage);
@@ -97,6 +101,8 @@ jQuery(function () {
 			var aArgWidget = aPropertyPage.find("#"+sArgId);
 			if(aArgWidget[0].type=="checkbox" || aArgWidget[0].type=="radio"){
 				aArgWidget[0].checked = sValue;
+			}else if( aArgWidget[0].type == "hidden" ){  //aArgWidget.attr("type" == "hidden")){
+				giveValueToHiddenWidget(aArgWidget,sValue);
 			}else if( sArgName!="submit"){
 				if(sValue != undefined){
 					jQuery(n).val(sValue);
@@ -109,25 +115,25 @@ jQuery(function () {
 	
 	//返回一个数组,包含propertypage的可提交控件的对象数组,比如input和select控件
 	function getPropertyWidget(aPropertyPage){
-		return aPropertyPage.find("input,select");
+		return aPropertyPage.find("input:not[class!='nosave'],select");
 	}
 	
 	//widget 的类型(比如;select,checkbox,text等)变化时触发
 	function widgetTypeChange(widgetClass){
 		var sWidgetClass = "";
 		if(widgetClass == null){
-			sWidgetClass = $("#widget_property #widget_classname").val();
+			sWidgetClass = jQuery("#widget_property #widget_classname").val();
 		}else{
 			sWidgetClass = widgetClass;
 		}
 		var sWidgetPropertyPageId = "#"+ sWidgetClass +'_property';
 		widgetOtherPropertyGoBackToStore();
-		jQuery(sWidgetPropertyPageId).appendTo($("#other_property")).show(0);											   
+		jQuery(sWidgetPropertyPageId).appendTo(jQuery("#other_property")).show(0);											   
 	}
 	
 	//widget的附属表单隐藏
 	function widgetOtherPropertyGoBackToStore(){
-		jQuery(".widget_propertys").appendTo($("#widget_property_store")).hide(0);
+		jQuery(".widget_propertys").appendTo(jQuery("#widget_property_store")).hide(0);
 	}
 	
 	//新建node(tr)
@@ -177,7 +183,6 @@ jQuery(function () {
 	
 	//获得node的type
 	function getNodeType(aNode){
-		//alert(aNode.find("span").attr("class"));
 		return aNode.find("span").attr("class");
 	}
 	
@@ -217,7 +222,7 @@ jQuery(function () {
 		var arrChildren = [];
 		var sNodeId = aNode.attr("id");
 		var sChildrenClass = childClassPre+sNodeId;
-		arrChildren = $("."+sChildrenClass);
+		arrChildren = jQuery("."+sChildrenClass);
 		if(arrChildren.length <= 0){
 			arrChildren = false;
 		}
@@ -247,8 +252,8 @@ jQuery(function () {
 	function removeNode(aSelected){
 		var arrChildren = getChildren(aSelected);
 		if(arrChildren != false){
-			$.each(arrChildren,function(i,n){
-				removeNode($(n));			  
+			jQuery.each(arrChildren,function(i,n){
+				removeNode(jQuery(n));			  
 			});
 		}
 		var aSelectedProperty = aSelected.data("property");
@@ -271,18 +276,18 @@ jQuery(function () {
 	
 	//当namespace区域被编辑时的行为
 	function nameSpaceEdit(){
-		var aClassName = $("#className");
-		var namespaceSelectValue = $("#namespaceSelect").val();
+		var aClassName = jQuery("#className");
+		var namespaceSelectValue = jQuery("#namespaceSelect").val();
 		//首字母大写
 		aClassName.val(aClassName.val()[0].toUpperCase()+aClassName.val().substr(1));
 		if(namespaceSelectValue == 0 || aClassName.val().length == 0){
-			$("#namespaceComplete").addClass("noFileName").text("还没有确定命名空间...");
+			jQuery("#namespaceComplete").addClass("noFileName").text("还没有确定命名空间...");
 			treeData["filename"] = "";
 			return;
 		}else{
 			var filepath = namespaceData[namespaceSelectValue]["folder"];
 			fileName = filepath+'/'+aClassName.val()+".php";
-			$("#namespaceComplete").removeClass("noFileName").text(fileName);
+			jQuery("#namespaceComplete").removeClass("noFileName").text(fileName);
 			treeData["filename"] = fileName;
 			extensionName = namespaceData[namespaceSelectValue]["extension"];
 		}
@@ -297,7 +302,7 @@ jQuery(function () {
 		if(extensionName == ""){
 			return;
 		}
-		jQuery("#view_template").val(extensionName + "_" +$(this).val()+".template.html");
+		jQuery("#view_template").val(extensionName + "_" +jQuery(this).val()+".template.html");
 	});
 	
 	//左侧按钮功能部分
@@ -320,11 +325,11 @@ jQuery(function () {
 	});
 	
 	//相应删除按钮
-	$("#deleteBtn").click(function(){
+	jQuery("#deleteBtn").click(function(){
 		if(!confirm('确实要删除这个对象吗? \n\n所有的子对象都会被删除!!')){
 			return ;	
 		}
-		var aSelected = $(".selected");
+		var aSelected = jQuery(".selected");
 		if(aSelected.length <= 0){
 			return;
 		}
@@ -333,7 +338,6 @@ jQuery(function () {
 	
 	//属性提交
 	jQuery(".submitBtn").live("click",function(){
-		 var fdsfsdtreeData = treeData;
 		var aSelected = jQuery(".selected");	
 		var sSubmitBtnId = jQuery(this).attr("id");	
 		var sSubmitType = sSubmitBtnId.split("_")[0];
@@ -356,6 +360,8 @@ jQuery(function () {
 				if(n.checked){
 					sArgValue = n.checked;
 				}
+			}else if(n.type == "hidden"){
+				sArgValue = jQuery(n).data("value");
 			}else{
 				sArgValue = jQuery(n).val();
 			}
@@ -370,7 +376,7 @@ jQuery(function () {
 		//aSelected.data("property",dataObject);
 		 fdsfsdtreeData = treeData;
 		 namespaceData = namespaceData;
-		 controllerNames= controllerNames;
+		 controllerNames = controllerNames;
 		 extensionName = extensionName;
 	});
 	//json  toJSON(objectData);  jQuery.evalJSON(
@@ -380,17 +386,112 @@ jQuery(function () {
 		widgetTypeChange(null);												   
 	});
 	
+	//添加optoions
+	jQuery("#add_option").click(function(){
+		jQuery(this).parents("tr").before('<tr><td class="options"></td><td class="options"></td><td><input type="checkbox" class="nosave"/></td><td><a class="del_option" title="点击删除选项" href="#">删</a></td></tr>');
+	});
+	
+	//可编辑表格
+	jQuery("#widget_options_table .options").live("click" , function(){
+		var aTd = jQuery(this);
+		var sTdText = aTd.text();
+		aTd.text("").append('<input type="text" value="'+sTdText+'"/>');
+		var aNewInput = aTd.find("input");
+		aNewInput.focus();
+		aNewInput.live("focusout",function(){
+			var sNewValue = jQuery(this).val();
+			aTd.text(sNewValue);
+			saveOptionsData();
+		});
+	});
+	//删除可编辑表格的行
+	jQuery("#widget_options_table .del_option").live("click",function(){
+		jQuery(this).parents("tr").remove();
+		saveOptionsData();
+	});
+	//select的options数据的保存行为通过3个行为触发,1.是编辑表格后触发,2.是点击"选中"checkbox后触发,3.是删除时触发 可以搜索函数名saveOptionsData找到所有的触发点 
+	//这里处理"选中"checkbox的触发情况
+	jQuery("#widget_options_table td input:checkbox").live("click",function(){
+		saveOptionsData();
+	});
+	//保存option数据到widget_options的data中
+	function saveOptionsData(){
+		var arrOptions = [];
+		$.each($("#widget_options_table tbody tr"),function(i,n){
+			var arrAOption = [];
+			if($(n).attr("id") == "modeify_options"){
+				return true;
+			}
+			$.each( $(n).find("td") , function(v,b){
+				// 前三个td记录有用的数据,最后一个没有用,前2个是text和value,第3个是是否选中
+				if(v < 2){ 
+					arrAOption.push($(b).text());
+				}else if(v == 2){
+					arrAOption.push($(b).find("input:checkbox").prop("checked"));
+				}
+			});
+			arrOptions.push(arrAOption);
+		});
+		$("#widget_options").data("value",arrOptions);
+	}
+	
+	//恢复widget_options的值还有widget_option_table的值
+	function rebuildOptionTable(aHiddenWidget,arrValue){
+		clearOptionsTable($("#widget_options_table"));
+		aHiddenWidget.data("value",arrValue);
+		jQuery.each(arrValue,function(i,n){
+			var sSelected = "";
+			if(n[2]){
+				sSelected = 'checked = "checked"';
+			}
+			jQuery("#widget_options_table #modeify_options").before('<tr><td class="options">'+n[0]+'</td><td class="options">'+n[1]+'</td><td><input type="checkbox" class="nosave" '+sSelected+'/></td><td><a class="del_option" title="点击删除选项" href="#">删</a></td></tr>');
+		});
+	}
+	//清空"#widget_options_table表
+	function clearOptionsTable(aOptionsTable){
+		aOptionsTable.find('tbody tr[id!="modeify_options"]').remove();
+	}
+	//处理特殊的widget值,比如input:hidden
+	function giveValueToHiddenWidget(aArgWidget,sValue){
+		if(aArgWidget[0].id == "widget_options" ){
+			rebuildOptionTable($(aArgWidget[0]),sValue);
+		}
+	}
+	
+	//
+	jQuery("#verifier_class").live("change",function(){
+		rebuildVerifierProperty($(this).val());
+	});
+	
+	//恢复verifier表单
+	function rebuildVerifierProperty(sType){
+		if(sType == "Length"){
+			clearVerifierProperty().append('<label for="verifier_min">从</label><input id="verifier_min" type="text" size="3"/><label for="verifier_max">到</label><input id="verifier_max" type="text"  size="3"/><br/>');
+		}else if(sType == "Number"){
+			clearVerifierProperty().append('<label for="verifier_bint">整数 ?</label><input id="verifier_bint" type="checkbox" /><br/>');
+		}else{
+			clearVerifierProperty();
+		}
+	}
+	
+	//清空verifier辅助表单
+	function clearVerifierProperty(){
+		var property = jQuery("#verifier_more_property");
+		property.html("");
+		return property;
+	}
+	
 	//初始化命名空间
 	function initNameSpaceSelect(){
 		for(var key in namespaceData){
-			$("#namespaceSelect").append("<option value='"+key+"'>"+key+"</option>");
+			jQuery("#namespaceSelect").append("<option value='"+key+"'>"+key+"</option>");
 		}
 	}
 	initNameSpaceSelect();
 	//初始化controller选项
 	function initControllerSelect(){
 		for(var key in controllerNames){
-			$("#controller_classname").append("<option value='"+controllerNames[key]+"'>"+controllerNames[key]+"</option>");
+			jQuery("#controller_classname").append("<option value='"+controllerNames[key]+"'>"+controllerNames[key]+"</option>");
 		}
 	}
 	initControllerSelect();

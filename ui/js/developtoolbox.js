@@ -18,6 +18,13 @@ jQuery(function () {
 	//数据对象
 	treeData ={"filename":"","children":[]};
 	
+	//orm 唯一id
+	idForOrm = 1;
+	function getIdForOrm(){
+		idForOrm = idForOrm + 1;
+		return idForOrm;
+	}
+	
 	//获得node的层级,顶级为0,顶级的子node就是1,孙node就是2,依次类推
 	function getLevel(aNode){
 		var classNames = aNode.attr("class").split(' ');
@@ -101,7 +108,7 @@ jQuery(function () {
 			var aArgWidget = aPropertyPage.find("#"+sArgId);
 			if(aArgWidget[0].type=="checkbox" || aArgWidget[0].type=="radio"){
 				aArgWidget[0].checked = sValue;
-			}else if( aArgWidget[0].type == "hidden" ){  //aArgWidget.attr("type" == "hidden")){
+			}else if( aArgWidget[0].type == "hidden" ){
 				giveValueToHiddenWidget(aArgWidget,sValue);
 			}else if( sArgName!="submit"){
 				if(sValue != undefined){
@@ -473,13 +480,80 @@ jQuery(function () {
 			clearVerifierProperty();
 		}
 	}
-	
+		
 	//清空verifier辅助表单
 	function clearVerifierProperty(){
 		var property = jQuery("#verifier_more_property");
 		property.html("");
 		return property;
 	}
+	
+	
+	
+	
+	//选择orm关系的起点
+	jQuery("#model_orm_top").live("change",function(){
+		rebuildOrmProperty($(this).val());
+	});
+	//恢复model的orm表单
+	function rebuildOrmProperty(sOrmTop){
+		$("#model_orm_div").html("");
+		addOrmTree($("#model_orm_div"),sOrmTop);
+	}
+	//添加一层orm关系
+	function addOrmTree(target,sOrmTop){
+		var sOrm = '<ul>';
+					// +'<li>'+sOrmTop+'</li>';
+		$.each(ormData[sOrmTop],function(i,v){
+			sOrm+='<li>'
+					+'<ul><li><b>'+i+'</b></li>';
+			$.each(v,function(c,b){
+				var id=getIdForOrm();
+				sOrm+='<li><input type="checkbox" class="nosave" id="'+b['name']+'|'+id+'" value="'+b['prop']+'"/><label for="'+b['name']+id+'">'+b['prop']+'('+b['name']+')'+'</label></li>';
+			});
+				sOrm+='</ul>'
+					+'</li>';
+		});
+		sOrm += '</ul>';
+		target.append(sOrm);
+	}
+	//用户请求添加一层orm关系
+	$("#model_orm_div input:checkbox").live("click",function(){
+		if($(this).prop("checked")){
+			//添加层次
+			addOrmTree($(this).parents("li").first(),$(this).attr("id").split("|")[0]);
+			$("#model_ormdata").data("value",getOrmTreeData($("#model_orm_div ul")));
+		}else{
+			//删除层次
+			$(this).nextAll("ul").remove();
+			//如果表单中有完整的树结构(至少有一个checkbox被选中)就建立数据给model_ormdata,如果没有,删除以前的数据
+			if($("#model_orm_div").find("input:checked").length > 0){
+				$("#model_ormdata").data("value",getOrmTreeData($("#model_orm_div ul")));
+			}else{
+				$("#model_ormdata").removeData("value");
+			}
+		}
+	});
+
+	
+	//重建一层orm关系树数据,迭代函数
+	function getOrmTreeData(aStart){
+		var aOrm = {};
+		var arrChecked = aStart.find("input:checked");
+		if(arrChecked.length > 0){
+			$.each(arrChecked,function(i,v){
+				aOrm[$(v).val()] = getOrmTreeData($(this));
+			});
+		}else{
+			aOrm = aStart.val();
+		}
+		return aOrm;
+	}
+	
+	
+	
+	
+	
 	
 	//初始化命名空间
 	function initNameSpaceSelect(){
@@ -488,6 +562,7 @@ jQuery(function () {
 		}
 	}
 	initNameSpaceSelect();
+	
 	//初始化controller选项
 	function initControllerSelect(){
 		for(var key in controllerNames){
@@ -496,5 +571,11 @@ jQuery(function () {
 	}
 	initControllerSelect();
 	//初始化orm关系表
+	function initOrmTopSelect(){
+		for(var key in ormData){
+			jQuery("#model_orm_top").append("<option value='"+key+"'>"+key+"</option>");
+		}
+	}
+	initOrmTopSelect();
 	
 });

@@ -61,9 +61,8 @@ return \$__uivar_sDefineModelsCode;") ;?>;
 					<option value="group">Group</option>
                     <option value="radiogroup">RadioGroup</option>
 					<option value="select">Select</option>
-                    <option value="selectlist">SelectList</option>
                 </select><br />
-                <label for="widget_id">ID:</label><input id="widget_id" type="text" class="model" /><br />
+                <label for="widget_id">ID:</label><input id="widget_id" type="text" class="object_name" /><br />
                 <label for="widget_title">标题:</label><input id="widget_title" type="text" /><br />
 				<div id="other_property">
 					
@@ -72,14 +71,33 @@ return \$__uivar_sDefineModelsCode;") ;?>;
             </div>
             <div id='verifier_property' class="propertys">
             	<h1>校验器属性</h1>
-                <label for="verifier_name">名称:</label><input id="verifier_name" type="text" class="object_name" /><br />
-                <label for="verifier_formverifier">formverifier ?:</label><input id="verifier_formverifier" type="checkbox" /><br />
+                <label for="verifier_class">类名:</label>
+                <select id="verifier_class" class="object_name">
+                    <option value="0">请选择...</option>
+                    <option value="Email">Email</option>
+                    <option value="NotEmpty">NotEmpty</option>
+					<option value="Length">Length</option>
+					<option value="Number">Number</option>
+					<option value="Same">Same</option>
+                </select><br />
+                <div id="verifier_more_property">
+                	
+                </div>
                 <input id="verifier_submit" class="submitBtn" type="button" value="保存" />
             </div>
             <div id='model_property' class="propertys">
             	<h1>模型属性</h1>
                 <label for="model_name">名称:</label><input id="model_name" type="text" class="object_name" /><br />
-                <label for="model_formmodel">formmodel:</label><input id="model_formmodel" type="checkbox" /><br />
+                <input id="model_orm" type="hidden" />
+                <label for="model_orm_top">orm起点:</label>
+                <select id="model_orm_top">
+                    <option value="0">请选择...</option>
+                </select><br />
+                <div id="model_orm_outer_div">
+                	<div id="model_orm_div">
+                		
+                	</div>
+                </div>
                 <input id="model_submit" class="submitBtn" type="button" value="保存" />
             </div>
 		</div>
@@ -113,9 +131,25 @@ return \$__uivar_sDefineModelsCode;") ;?>;
 			</div>
 			<div id="select_property" class="widget_propertys">
 				<label for="widget_size">显示条目数量:</label><input id="widget_size" type="text" value="1" /><br />
-			</div>
-			<div id="selectlist_property" class="widget_propertys">
-				<label for="widget_size">显示条目数量:</label><input id="widget_size" type="text" value="1" /><br />
+				<label for="widget_multiple">多选 ?:</label><input id="widget_multiple" type="checkbox" /><br />
+				<label>选项:</label><br />
+				<input id="widget_options" type="hidden" />
+				<table id="widget_options_table">
+					<thead>
+						<th title="选项显示的文本" width=100>文本</th>
+						<th title="选项显示的值" width=110>值</th>
+						<th title="选项是否选中" width=16>选</th>
+						<th title="点击删除选项" width=16>删</th>
+					</thead>
+					<tbody>
+						<tr id="modeify_options">
+							<td><a id="add_option" href="#">添加</a></td>
+							<td> </td>
+							<td> </td>
+							<td> </td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 			
 			<!-- end 各个widget的附加属性 -->

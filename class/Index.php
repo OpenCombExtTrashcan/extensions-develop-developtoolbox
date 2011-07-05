@@ -110,12 +110,14 @@ class Index extends Controller
 		
 		foreach($aMap->modelNameIterator() as $sModelName)
 		{
-			$arrModels[$sModelName] = array() ; 
+			$arrModels[$sModelName] = array(
+				'columns' => array() ;
+				'assoc' => array() ;
+			) ; 
 			
 			$aPrototype = $aMap->modelPrototype($sModelName) ;
 			
 			// 字段
-			$arrModels[$sModelName]['columns'] = array() ;
 			foreach($aPrototype->columnIterator() as $sClm)
 			{
 				$arrModels[$sModelName]['columns'][] = $sClm ;
@@ -126,12 +128,12 @@ class Index extends Controller
 			{
 				$sAssoType = $aAssociation->type() ;
 				
-				if( empty($arrModels[$sModelName][$sAssoType]) )
+				if( empty($arrModels[$sModelName]['assoc'][$sAssoType]) )
 				{
-					$arrModels[$sModelName][$sAssoType] = array() ;
+					$arrModels[$sModelName]['assoc'][$sAssoType] = array() ;
 				}
 				
-				$arrModels[$sModelName][$sAssoType][] = array(
+				$arrModels[$sModelName]['assoc'][$sAssoType][] = array(
 					'prop' => $aAssociation->modelProperty() ,
 					'name' => $aAssociation->toPrototype()->name() ,
 				) ;

@@ -111,8 +111,8 @@ class Index extends Controller
 		foreach($aMap->modelNameIterator() as $sModelName)
 		{
 			$arrModels[$sModelName] = array(
-				'columns' => array() ;
-				'assoc' => array() ;
+				'columns' => array() ,
+				'assoc' => array() ,
 			) ; 
 			
 			$aPrototype = $aMap->modelPrototype($sModelName) ;

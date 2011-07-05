@@ -114,6 +114,14 @@ class Index extends Controller
 			
 			$aPrototype = $aMap->modelPrototype($sModelName) ;
 			
+			// 字段
+			$arrModels[$sModelName]['columns'] = array() ;
+			foreach($aPrototype->columnIterator() as $sClm)
+			{
+				$arrModels[$sModelName]['columns'][] = $sClm ;
+			} 
+			
+			// 关联
 			foreach($aPrototype->associations()->valueIterator() as $aAssociation)
 			{
 				$sAssoType = $aAssociation->type() ;

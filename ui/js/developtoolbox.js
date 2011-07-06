@@ -7,16 +7,19 @@ jQuery(function () {
 	var extensionName = ""; //本页顶级controller所属扩展的名字
 
 	var allowTypes = {
-		"noselected" : ['controller' , 'view' , 'widget' , 'model']
+		"noselected" : ['controller' , 'view' , 'model']
     	,"controller" : ['controller' , 'view' , 'model']
 		,"view" : ['view' , 'widget']
-		,"widget" : [ 'widget' , 'verifier' ]
+		,"widget" : [ 'verifier' ]
 		,"verifier" : ['']
 		,"model" : ['model']
 	};
 	
 	//数据对象
 	treeData ={"filename":"","children":[]};
+	
+	//为view显示字段而准备的数据对象
+	ormTableColumn = {};
 	
 	//orm 唯一id
 	var idForOrm = 1;
@@ -74,15 +77,15 @@ jQuery(function () {
 		jQuery( ".propertys" ).hide(0);
 		var aPropertyPage = jQuery( "#" + getNodeType(aNode) + "_property" );
 		aPropertyPage.show(0);
-		//如果是model的属性页,把属性附表清空
-//		if(sNodeType == "model"){
-//			$("#model_orm_div").html('');
-//		}
+		if(sNodeType == "view"){
+			initViewDataExchangeSelect(aNode);
+		}
 		//得到数据
 		var aData = aNode.data("property");
-		getProperties(aPropertyPage,aData);
+		if(aData != undefined){
+			getProperties(aPropertyPage,aData);
+		}
 	}
-	
 	
 	//还原属性栏内容
 	function getProperties(aPropertyPage,aData){
@@ -121,7 +124,7 @@ jQuery(function () {
 	
 	//返回一个数组,包含propertypage的可提交控件的对象数组,比如input和select控件
 	function getPropertyWidget(aPropertyPage){
-		return aPropertyPage.find("input:not[class!='nosave'],select");
+		return aPropertyPage.find("input,select").not(".nosave");
 	}
 	
 	//widget 的类型(比如;select,checkbox,text等)变化时触发
@@ -168,7 +171,6 @@ jQuery(function () {
 		}else{
 			treeData["children"].push(aNewNodeProperty);
 		}
-		//setSelected( aNewNode );
 	}
 	
 	//获得btn的Type
@@ -223,6 +225,18 @@ jQuery(function () {
 		return jQuery("#"+sParentId);
 	}
 	
+	//获得指定类型的父node
+	function getParentByType(aNode,sType){
+		var aNodeTemp = aNode;
+		while( aNodeTemp != "topController" && getNodeType(aNodeTemp) != sType ){
+			aNodeTemp = getParent(aNodeTemp);
+			if(aNodeTemp == false){
+				aNodeTemp = "topController";
+			}
+		}
+		return aNodeTemp;
+	}
+		
 	//获得子node , 返回子node对象数组,如果没有子node,返回false
 	function getChildren(aNode){
 		var arrChildren = [];
@@ -233,6 +247,22 @@ jQuery(function () {
 			arrChildren = false;
 		}
 		return arrChildren;
+	}
+	//从node数组中查找指定类型的node,返回数组,如果没有指定的node,返回false
+	function findNodeFormChildren(arrNodes,sType){
+		if(arrNodes==false){
+			return false;
+		}
+		var arrSubNode = [];
+		$.each(arrNodes,function(i,v){
+			if(getNodeType($(v)) == sType){
+				arrSubNode.push($(v));
+			}
+		});
+		if(arrSubNode.length <= 0){
+			arrSubNode = false;
+		}
+		return arrSubNode;
 	}
 	
 	//删除数组元素
@@ -308,10 +338,10 @@ jQuery(function () {
 		if(extensionName == ""){
 			return;
 		}
-		jQuery("#view_template").val(extensionName + "_" +jQuery(this).val()+".template.html");
+		jQuery("#view_template").val(jQuery(this).val()+".template.html");//extensionName + "_" +jQuery(this).val()+".template.html");
 	});
 	
-	//左侧按钮功能部分
+	//左侧按钮功能
 	jQuery(".addButtons").click(function(){
 		var selectedTr = treeTable.find(".selected");
 		var sNewType = getBtnType(jQuery(this));
@@ -349,6 +379,7 @@ jQuery(function () {
 		var sSubmitType = sSubmitBtnId.split("_")[0];
 		var arrProperties = getPropertyWidget(jQuery("#"+sSubmitType+"_property"));
 		var dataObject = {};
+		
 		if(aSelected.data("property")!=undefined){
 			dataObject=aSelected.data("property");
 			//除了children意外,清除所有的数据
@@ -368,6 +399,13 @@ jQuery(function () {
 				}
 			}else if(n.type == "hidden"){
 				sArgValue = jQuery(n).data("value");
+			}else if(n.id == "model_name"){ //保存model的数据交换关系,之所以插在这里是为了在id确定好以后再处理,以防id混乱
+				sArgValue = jQuery(n).val();
+				var widgetcolumbmap = $("#model_widgetcolumbmap").data("widgetcolumbmap");
+				if(widgetcolumbmap == undefined){
+					delete ormTableColumn[sArgValue];
+				}
+				ormTableColumn[sArgValue] = widgetcolumbmap;
 			}else{
 				sArgValue = jQuery(n).val();
 			}
@@ -508,7 +546,7 @@ jQuery(function () {
 	//添加一层orm关系
 	function addOrmTree(target,sOrmTop){
 		var sOrm = '<ul>';
-		$.each(ormData[sOrmTop],function(i,v){
+		$.each(ormData[sOrmTop]['assoc'],function(i,v){
 			sOrm+='<li><b>'+i+'</b></li>';
 			$.each(v,function(c,b){
 				var id=getIdForOrm();
@@ -523,30 +561,55 @@ jQuery(function () {
 		if($(this).prop("checked")){
 			//添加层次
 			addOrmTree($(this).parents("li").first(),$(this).attr("id").split("|")[0]);
-			$("#model_orm-data").data("value",getOrmTreeData($("#model_orm_div > ul")));
+			var aOrmTreeData = getOrmTreeData($("#model_orm_div > ul"),'');
+			$("#model_orm-data").data("value",aOrmTreeData[0]);
+			$("#model_widgetcolumbmap").data("widgetcolumbmap",aOrmTreeData[1]) ;
 		}else{
 			//删除层次
 			$(this).nextAll("ul").remove();
 			//如果表单中有完整的树结构(至少有一个checkbox被选中)就建立数据给model_orm-data,如果没有,删除以前的数据
 			if($("#model_orm_div").find("input:checked").length > 0){
-				$("#model_orm-data").data("value",getOrmTreeData($("#model_orm_div > ul")));
+				var aOrmTreeData = getOrmTreeData($("#model_orm_div > ul"),'');
+				$("#model_orm-data").data("value",aOrmTreeData[0]);
+				$("#model_widgetcolumbmap").data("widgetcolumbmap",aOrmTreeData[1]) ;
 			}else{
 				$("#model_orm-data").removeData("value");
+				$("#model_widgetcolumbmap").removeData("widgetcolumbmap") ;
 			}
 		}
 	});
-	//重建一层orm关系树数据,迭代函数
-	function getOrmTreeData(aStart){
-		var aOrm = {};
+	//重建一层orm关系树数据,同时找出本次遍历的数据表的所有字段,组合成完整的带有orm关系的字段字符串
+	//本函数的返回值是由前两者组合而成的数组,组合的目的仅仅是为了返回2个值
+	//本函数是递归函数
+	function getOrmTreeData(aStart,sLastPre){
+		var aOrm = {}; //orm关系
 		var arrChecked = aStart.children("li").children("input:checked");
+		var aOrmTemp = {};
+		var sToColumn = '';
 		if(arrChecked.length > 0){
 			$.each(arrChecked,function(i,v){
-				aOrm[$(v).val()] = getOrmTreeData($(this).nextAll("ul"));
+				var sOrmName = getTableName($(v));
+				var sOrmProp = getTableProp($(v));
+				var sWholePre = sLastPre+sOrmProp+".";
+				var arrResult =  getOrmTreeData($(this).nextAll("ul"),sWholePre);
+				aOrmTemp[sOrmProp] = arrResult[0];
+				sToColumn = arrResult[1];
+				$.each( ormData[sOrmName].columns , function(c,b){
+					sToColumn = sToColumn+' '+sWholePre+b;
+				});
 			});
 		}else{
 			aOrm = aStart.prevAll("input:checked").val();
 		}
-		return aOrm;
+		return [aOrmTemp,sToColumn];
+	}
+	//获取orm关系中表的name
+	function getTableName(aOrm){
+		return aOrm.attr("id").split("|")[0];
+	}
+	//获取orm关系中表的prop
+	function getTableProp(aOrm){
+		return aOrm.val();
 	}
 	//重建用户上一次输入的数据
 	function getPropertyForOrm(aArgWidget,Value){
@@ -573,6 +636,101 @@ jQuery(function () {
 		});
 	}
 	
+	//view数据交换
+	$("#view_model").change(function(){
+		$("#view_model_table tbody > tr").remove();
+		getNewTrForDataExchange($(this).val());
+	});
+	//删除tr
+	$(".del_dbmap").live("click",function(){
+		$(this).parents("tr").first().remove();
+		saveDataExchangeData();
+	});
+	//数据保存
+	$(".view_dbmap_widget, .view_dbmap_column").live("change",function(){
+		saveDataExchangeData();
+	});
+	//数据保存
+	function saveDataExchangeData(){
+		var arrTr = $("#view_model_table tbody > tr");
+		var arrValues = [];
+		$.each( arrTr ,function(v,n){
+			var arrSelect = $(n).find("select");
+			var aValue = { "widget" : $(arrSelect[0]).val(), "column":$(arrSelect[1]).val() };
+			arrValues.push( aValue );
+		});
+		$("#view_dataexchange").data("value",arrValues);
+	}
+	//恢复数据
+	function rebuildDataExchangeData(){
+		
+	}
+	//根据用户操作新加一行tr
+	$("#add_view_model_tr").click(function(){
+		if($("#view_model").val()!=0){
+			getNewTrForDataExchange($("#view_model").val());
+		}
+	});
+	//新添加一行select
+	function getNewTrForDataExchange(sModelId){
+		var newTr = '<tr class="view_dbmap"><td>'
+						+'<select class="view_dbmap_widget nosave">'
+							+'<option value="0">选择控件...</option>'
+						+'</select>'
+					+'</td><td>'
+						+'<select class="view_dbmap_column nosave">'
+							+'<option value="0">选择字段...</option>'
+						+'</select>'
+					+'</td>'
+					+'<td><a href="#" class="del_dbmap">删</a></td>'
+				+'</tr>';
+		$("#view_model_table").append(newTr);
+		//初始化select
+		if(sModelId != 0){
+			initLastViewWidgetAndColumnSelect(sModelId);
+		}
+	}
+	//初始化数据关系widget和column选项
+	function initLastViewWidgetAndColumnSelect(sModelId){
+		//column
+		var arrColumnOptions = ormTableColumn[sModelId].split(" ");
+		$.each(arrColumnOptions,function(i,v){
+			if(v != ""){
+				$("#view_model_table .view_dbmap_column").last().append('<option value="'+v+'">'+v+'</option>');
+			}
+		});
+		//widget
+		var aView = $(".selected");
+		var arrSubNodes=[];
+		arrSubNodes = getChildren(aView);
+		var arrSubWidgets = [];
+		if(arrSubNodes.length > 0){
+			arrSubWidgets = findNodeFormChildren(arrSubNodes,"widget");
+		}
+		$.each(arrSubWidgets,function(c,b){
+			var sWidgetId = $(b).attr("id");
+			$("#view_model_table .view_dbmap_widget").last().append('<option value="'+sWidgetId+'">'+sWidgetId+'</option>');
+		});
+	}
+	
+	//初始化数据交换关系表
+	function initViewDataExchangeSelect(aNode){
+		var aController = getParentByType(aNode,"controller");
+		var arrChildren = [];
+		var arrSubModel = [];
+		if(aController =='topController'){
+			arrChildren = $("#toolpanel tbody > tr");
+		}else{
+			arrChildren = getChildren(aController);
+		}
+		arrSubModel = findNodeFormChildren(arrChildren,"model");
+		//初始化select
+		$("#view_model").find("option[value!='0']").remove();
+		$.each(arrSubModel,function(v,b){
+			var sModelId = $(b).attr("id");
+			$("#view_model").append('<option value="'+sModelId+'">'+sModelId+'</option>');
+		});
+	}
 	
 	//初始化命名空间
 	function initNameSpaceSelect(){
@@ -589,6 +747,7 @@ jQuery(function () {
 		}
 	}
 	initControllerSelect();
+	
 	//初始化orm关系表
 	function initOrmTopSelect(){
 		for(var key in ormData){
@@ -596,5 +755,4 @@ jQuery(function () {
 		}
 	}
 	initOrmTopSelect();
-	
 });

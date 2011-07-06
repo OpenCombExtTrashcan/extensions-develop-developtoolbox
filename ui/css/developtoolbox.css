@@ -188,3 +188,11 @@ h1 {
 	margin-bottom:0;
 	padding: 0  0 0 10px;
 }
+
+#view_model_table th{
+	background:#999;
+}
+
+#view_model_table tr{
+	background:#EEE;
+}

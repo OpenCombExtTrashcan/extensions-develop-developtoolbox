@@ -26,7 +26,7 @@
 		<div id="toolPanelButtons">
 			<a id="add_controller" class="addButtons" href='#' title='添加Controller对象'>+<span class='controller'></span></a>
 			<a id="add_view" class="addButtons" href='#' title='添加View对象'>+<span class='view'></span></a>
-			<a id="add_widget" class="addButtons" href='#' title='添加Widget对象'>+<span class='widget'></span></a>
+			<a id="add_widget" class="addButtons add_btn_disabled" href='#' title='添加Widget对象'>+<span class='widget'></span></a>
 			<a id="add_verifier" class="addButtons add_btn_disabled" href='#' title='添加Verifier对象'>+<span class='virifier'></span></a>
 			<a id="add_model" class="addButtons" href='#' title='添加Model对象'>+<span class='model'></span></a>
 			<a id="deleteBtn" href='#' title='删除对象'>-<span class='delete'></span></a>
@@ -34,7 +34,7 @@
 		
 		<div id="property">
             <div id='controller_property' class="propertys">
-            	<h1>控制器属性</h1>
+				<h1>控制器属性</h1>
                 <label for="controller_classname">类名:</label>
                 <select id="controller_classname" class="object_name">
                     <option value="0">请选择对象名...</option>
@@ -43,13 +43,29 @@
             </div>
             <div id='view_property' class="propertys">
             	<h1>视图属性</h1>
-                <label for="view_name">名称:</label><input id="view_name" type="text"  class="object_name" /><br/>
+                <label for="view_name">名称:</label><input id="view_name" type="text" class="object_name" /><br/>
                 <label for="view_template">模版:</label><input id="view_template" type="text" /><br/>
-                <label for="view_formview">formview ? :</label><input id="view_formview" type="checkbox" value="true"/><br/>
-                <input id="view_submit" class="submitBtn" type="button" value ="保存"/>
-            </div>
-            <div id='widget_property' class="propertys">
-            	<h1>控件属性</h1>
+                <label for="view_formview">表单视图 ? :</label><input id="view_formview" type="checkbox" value="true"/><br/>
+                <label for="view_model">数据交换对应的模型:</label>
+                <select id="view_model">
+                    <option value="0">请选择</option>
+                </select><br/>
+                <table id="view_model_table">
+					<thead>
+						<th title="视图包含的控件" width=150>控件</th>
+						<th title="控件对应的数据字段" width=350>字段</th>
+						<th title="点击删除关系" width=16>删</th>
+					</thead>
+					<tbody>
+						
+					</tbody>
+				</table>
+				<a href="#" id="add_view_model_tr">添加</a><br/>
+				<input id="view_dataexchange" type="hidden" />
+				<input id="view_submit" class="submitBtn" type="button" value ="保存"/>
+			</div>
+			<div id='widget_property' class="propertys">
+				<h1>控件属性</h1>
 				<label for="widget_classname">类名:</label>
                 <select id="widget_classname">
                     <option value="0">请选择</option>
@@ -65,7 +81,7 @@
 					
 				</div>
 				<input id="widget_submit" class="submitBtn" type="button" value ="保存"/>
-            </div>
+			</div>
             <div id='verifier_property' class="propertys">
             	<h1>校验器属性</h1>
                 <label for="verifier_class">类名:</label>
@@ -95,6 +111,7 @@
                 	</div>
                 </div>
                 <input id="model_orm-data" type="hidden"/>
+                <input id="model_widgetcolumbmap" type="hidden"/>
                 <input id="model_submit" class="submitBtn" type="button" value ="保存"/>
             </div>
 		</div>

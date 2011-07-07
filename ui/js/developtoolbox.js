@@ -16,7 +16,7 @@ jQuery(function () {
 	};
 	
 	//数据对象
-	treeData ={"filename":"","classname":"","namespace":"","children":[]};
+	treeData ={"coder":"controller","filename":"","classname":"","namespace":"","children":[]};
 	
 	//为view显示字段而准备的数据对象
 	ormTableColumn = {};
@@ -90,11 +90,11 @@ jQuery(function () {
 	//还原属性栏内容
 	function getProperties(aPropertyPage,aData){
 		//先看看是不是widget类型,如果是widget类型,那么先组合附表单
-		if( aData["objectClass"] == "widget" && aData["classname"] != undefined){  //处理select属性附属页面
+		if( aData["coder"] == "widget" && aData["classname"] != undefined){  //处理select属性附属页面
 			widgetTypeChange(aData["classname"]);
 		}
 		//先看看是不是verifier类型,如果是verifier类型,那么先组合附表单
-		if(aData["objectClass"] == "verifier" && aData["class"] != undefined){
+		if(aData["coder"] == "verifier" && aData["class"] != undefined){
 			rebuildVerifierProperty(aData["class"]);
 		}
 		
@@ -160,7 +160,7 @@ jQuery(function () {
 		}
 		
 		var aNewNode = jQuery("#"+newNodeId);
-		var aNewNodeProperty = {"objectClass":sNewType,"children":[]};
+		var aNewNodeProperty = {"coder":sNewType,"children":[]};
 		aNewNode.data("property",aNewNodeProperty);
 		if(aParent!=null){
 			var aParentProperty = aParent.data("property");
@@ -389,7 +389,7 @@ jQuery(function () {
 			dataObject=aSelected.data("property");
 			//除了children意外,清除所有的数据
 			for(var key in dataObject){
-				if(key != "children" && key!="objectClass"){
+				if(key != "children" && key!="coder"){
 					delete dataObject[key];
 				}
 			}

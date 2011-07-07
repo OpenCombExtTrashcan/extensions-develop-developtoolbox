@@ -29,7 +29,6 @@ h1 {
 }
 #main {
 	width:auto;
-	margin-right:400px;
 }
 #namespace {
 	width:100%;
@@ -42,7 +41,7 @@ h1 {
 	background:#CCF
 }
 #toolpanelDiv {
-	margin:0 500px 0 50px;
+	margin:0 700px 0 50px;
 }
 #toolpanel {
 	width:100%;
@@ -52,9 +51,10 @@ h1 {
 	color:#FFF;
 }
 #toolpanel tbody tr {
+	
 }
 #property {
-	width:500px;
+	width:700px;
 	float:right;
 }
 .propertys {

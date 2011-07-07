@@ -1,6 +1,8 @@
 <?php
 namespace oc\ext\developtoolbox ;
 
+use oc\ext\developtoolbox\coder\mvc\ForController;
+
 use jc\mvc\model\db\orm\ModelAssociationMap;
 use jc\fs\FSOIterator;
 use jc\system\ClassLoader;
@@ -25,9 +27,11 @@ class MVCCoder extends Controller
 			$this->aParams->set('noframe',true) ;
 			$this->view->disable() ;
 			
+			$arrData = json_decode($this->aParams->get('data'),true) ;
+			
 			// 这里需要一个 coder 管理器
 			// todo
-			$arrData = json_decode($this->aParams->get('data'),true) ;
+			ForController::singleton()->generate($arrData,$this->application()->response()->printer()) ;
 		}
 		
 		else

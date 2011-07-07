@@ -2,11 +2,8 @@
 namespace oc\ext\developtoolbox ;
 
 use jc\mvc\model\db\orm\ModelAssociationMap;
-
 use jc\fs\FSOIterator;
-
 use jc\system\ClassLoader;
-
 use oc\base\FrontFrame;
 use jc\db\sql\Select;
 use oc\mvc\controller\Controller;
@@ -18,23 +15,37 @@ class MVCCoder extends Controller
 		$this->add(new FrontFrame()) ;
 		
 		$this->createView('view','MVCCoder.template.html') ;
-		
 	}
-	
+
 	public function process()
 	{
-		// 反射 class namespace
-		list($arrNamespacesInfo,$arrControllerClasses) = $this->scanExtensions( $this->application()->classLoader() ) ;
+		// 生成代码
+		if( $this->aParams->get('act')=='generate' )
+		{
+			$this->aParams->set('noframe',true) ;
+			$this->view->disable() ;
+			
+			// 这里需要一个 coder 管理器
+			// todo
+			$arrData = json_decode($this->aParams->get('data'),true) ;
+		}
 		
-		$this->view->variables()->set('sDefineNamespacesCode',json_encode($arrNamespacesInfo)) ;
-		$this->view->variables()->set('sDefineAllControllerClassesCode',json_encode($arrControllerClasses)) ;
-
-		// 反射系统中的orm
-		$arrModels = $this->scanOrm( ModelAssociationMap::singleton() ) ;
-		$this->view->variables()->set('sDefineModelsCode',json_encode($arrModels)) ;
-		 
-	}
+		else
+		{
+			
+			// 反射 class namespace
+			list($arrNamespacesInfo,$arrControllerClasses) = $this->scanExtensions( $this->application()->classLoader() ) ;
+			
+			$this->view->variables()->set('sDefineNamespacesCode',json_encode($arrNamespacesInfo)) ;
+			$this->view->variables()->set('sDefineAllControllerClassesCode',json_encode($arrControllerClasses)) ;
 	
+			// 反射系统中的orm
+			$arrModels = $this->scanOrm( ModelAssociationMap::singleton() ) ;
+			$this->view->variables()->set('sDefineModelsCode',json_encode($arrModels)) ;
+		
+		}
+	}
+
 	public function scanExtensions(ClassLoader $aClassLoader)
 	{
 		$arrNamespacesInfo = array() ;
@@ -79,8 +90,10 @@ class MVCCoder extends Controller
 				// package
 				if( $aIter->isDir() )
 				{
-					$arrNamespacesInfo[$sNamespace.'\\'.str_replace('//','\\',$sSubFolder)] = array(
-						'folder' => $sFolderPath.'/'.$sSubFolder ,
+					$sSubFolder = preg_replace('|[\\/]$|', '', $sSubFolder) ;
+					
+					$arrNamespacesInfo[$sNamespace.'\\'.str_replace('/','\\',$sSubFolder)] = array(
+						'folder' => $sFolderPath.'\\'.$sSubFolder ,
 						'extension' => $sExtensionName ,
 					) ;
 				}

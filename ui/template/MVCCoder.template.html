@@ -1,25 +1,12 @@
-  <link href="/extensions/developtoolbox/ui/css/developtoolbox.css" rel="stylesheet" type="text/css"/>
+  <link href="developtoolbox.css" rel="stylesheet" type="text/css"/>
   <script type="text/javascript">
   	var namespaceData = {= $sDefineNamespacesCode};
 	var controllerNames ={= $sDefineAllControllerClassesCode };
 	var ormData = {= $sDefineModelsCode };
   </script>
-  <script type="text/javascript" src="/extensions/developtoolbox/ui/js/jquery.js"></script>
-  <script type="text/javascript" src="/extensions/developtoolbox/ui/js/jquery.json-2.2.min.js"></script>
-  <script type="text/javascript" src="/extensions/developtoolbox/ui/js/developtoolbox.js"></script>
-<div id="right">
-	<div id="preview">
-		<h1>代码预览</h1>
-		<div id="preview_btns">
-			<button id="generate_code">生成</button>
-			<button id="save_code">保存</button>
-		</div>
-		<div id="preview_div">
-			
-			
-		</div>
-  	</div>
-</div>
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="jquery.json-2.2.min.js"></script>
+  <script type="text/javascript" src="developtoolbox.js"></script>
 <div id="main">
 	<div id="namespace">
 		<label for="namespaceSelect">编辑命名空间: </label>
@@ -198,4 +185,17 @@
 		
     </div>
 
+</div>
+<div id="right">
+	<div id="preview">
+		<h1>代码预览</h1>
+		<div id="preview_btns">
+			<button id="generate_code">生成</button>
+			<button id="save_code">保存</button>
+		</div>
+		<div id="preview_div">
+			
+			
+		</div>
+  	</div>
 </div>

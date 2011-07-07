@@ -16,7 +16,7 @@ jQuery(function () {
 	};
 	
 	//数据对象
-	treeData ={"filename":"","children":[]};
+	treeData ={"filename":"","classname":"","namespace":"","children":[]};
 	
 	//为view显示字段而准备的数据对象
 	ormTableColumn = {};
@@ -319,12 +319,16 @@ jQuery(function () {
 		if(namespaceSelectValue == 0 || aClassName.val().length == 0){
 			jQuery("#namespaceComplete").addClass("noFileName").text("还没有确定命名空间...");
 			treeData["filename"] = "";
+			treeData["namespace"] = "";
+			treeData["classname"] = "";
 			return;
 		}else{
 			var filepath = namespaceData[namespaceSelectValue]["folder"];
 			fileName = filepath+'/'+aClassName.val()+".php";
 			jQuery("#namespaceComplete").removeClass("noFileName").text(fileName);
 			treeData["filename"] = fileName;
+			treeData["namespace"] = namespaceSelectValue;
+			treeData["classname"] = aClassName.val();
 			extensionName = namespaceData[namespaceSelectValue]["extension"];
 		}
 	}

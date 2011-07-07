@@ -67,9 +67,9 @@ h1 {
 	display:none;
 }
 #right {
-	width:400px;
-	float:right;
-}
+	width:100%;
+	clear:both;
+	}
 #preview {
 	width:100%;
 	background: #eee;

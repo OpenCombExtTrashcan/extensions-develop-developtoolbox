@@ -5,10 +5,19 @@
 	var ormData = {= $sDefineModelsCode };
   </script>
   <script type="text/javascript" src="/extensions/developtoolbox/ui/js/jquery.js"></script>
+  <script type="text/javascript" src="/extensions/developtoolbox/ui/js/jquery.json-2.2.min.js"></script>
   <script type="text/javascript" src="/extensions/developtoolbox/ui/js/developtoolbox.js"></script>
 <div id="right">
 	<div id="preview">
-		<br/>
+		<h1>代码预览</h1>
+		<div id="preview_btns">
+			<button id="generate_code">生成</button>
+			<button id="save_code">保存</button>
+		</div>
+		<div id="preview_div">
+			
+			
+		</div>
   	</div>
 </div>
 <div id="main">
@@ -184,8 +193,6 @@
 				</tbody>
 			</table>
 		</div>
-		
-		
 		
     </div>
 

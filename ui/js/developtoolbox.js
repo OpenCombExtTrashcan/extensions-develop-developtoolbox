@@ -8,7 +8,7 @@ jQuery(function () {
 
 	var allowTypes = {
 		"noselected" : ['controller' , 'view' , 'model']
-    	,"controller" : ['controller' , 'view' , 'model']
+    	,"controller" : ['']
 		,"view" : ['view' , 'widget']
 		,"widget" : [ 'verifier' ]
 		,"verifier" : ['']
@@ -348,10 +348,10 @@ jQuery(function () {
 		if(selectedTr.length <= 0){
 			//目前没有node,显示所有的btn
 			makeNewNode(null,"newNode",sNewType);
-			return;
+			return false;
 		}
 		makeNewNode(selectedTr,"newNode",sNewType);
-		
+		return false;
 	});
 	
 	//表格点击后..
@@ -363,13 +363,14 @@ jQuery(function () {
 	//相应删除按钮
 	jQuery("#deleteBtn").click(function(){
 		if(!confirm('确实要删除这个对象吗? \n\n所有的子对象都会被删除!!')){
-			return ;	
+			return false;	
 		}
 		var aSelected = jQuery(".selected");
 		if(aSelected.length <= 0){
-			return;
+			return false;
 		}
 		removeNode(aSelected);
+		return false;
 	});
 	
 	//属性提交
@@ -433,6 +434,7 @@ jQuery(function () {
 	//添加optoions
 	jQuery("#add_option").click(function(){
 		jQuery(this).parents("tr").before('<tr><td class="options"></td><td class="options"></td><td><input type="checkbox" class="nosave"/></td><td><a class="del_option" title="点击删除选项" href="#">删</a></td></tr>');
+		return false;
 	});
 	
 	//可编辑表格
@@ -503,6 +505,11 @@ jQuery(function () {
 		if(aArgWidget[0].id == "model_orm-data" ){
 			rebuildOrmProperty();
 			getPropertyForOrm($(aArgWidget[0]),sValue);
+		}
+		if(aArgWidget[0].id == "view_dataexchange" ){
+			var fdsfds = $("#view_dataexchange").data("value");
+			fdsfds = fdsfds;
+			rebuildDataExchangeData();
 		}
 	}
 	
@@ -670,6 +677,7 @@ jQuery(function () {
 		if($("#view_model").val()!=0){
 			getNewTrForDataExchange($("#view_model").val());
 		}
+		return false;
 	});
 	//新添加一行select
 	function getNewTrForDataExchange(sModelId){
@@ -755,4 +763,32 @@ jQuery(function () {
 		}
 	}
 	initOrmTopSelect();
+	
+	$("#generate_code").click(function(){
+		var encoded = $.toJSON(treeData);
+		var url = window.location;
+		var data = "&data="+encoded+"&act=generate";
+		$.ajax({
+			type: "POST",
+			url: url,
+			data: data,
+			success: function(msg){
+				$("#preview_div").html("").append(msg);
+			}
+		});
+	});
+	
+	$("#save_code").click(function(){
+		var encoded = $.toJSON(treeData);
+		var url = window.location;
+		var data = "&data="+encoded+"&act=generate&act.generate.save=1";
+		$.ajax({
+			type: "POST",
+			url: url,
+			data: data,
+			success: function(msg){
+				$("#preview_div").html("").append(msg);
+			}
+		});
+	});
 });

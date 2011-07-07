@@ -72,6 +72,7 @@ h1 {
 }
 #preview {
 	width:100%;
+	background: #eee;
 }
 .selected {
 	background:#CCC;

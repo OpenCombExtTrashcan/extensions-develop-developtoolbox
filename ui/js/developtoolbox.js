@@ -764,10 +764,14 @@ jQuery(function () {
 	}
 	initOrmTopSelect();
 	
-	$("#generate_code").click(function(){
+	//用ajax发送编译请求
+	function generateCode(bDoSave){
 		var encoded = $.toJSON(treeData);
 		var url = window.location;
 		var data = "&data="+encoded+"&act=generate";
+		if(bDoSave){
+			data += "&act.generate.save=1";
+		}
 		$.ajax({
 			type: "POST",
 			url: url,
@@ -776,19 +780,13 @@ jQuery(function () {
 				$("#preview_div").html("").append(msg);
 			}
 		});
+	}
+	//只生成代码
+	$("#generate_code").click(function(){
+		generateCode(false);
 	});
-	
+	//生成代码并保存
 	$("#save_code").click(function(){
-		var encoded = $.toJSON(treeData);
-		var url = window.location;
-		var data = "&data="+encoded+"&act=generate&act.generate.save=1";
-		$.ajax({
-			type: "POST",
-			url: url,
-			data: data,
-			success: function(msg){
-				$("#preview_div").html("").append(msg);
-			}
-		});
+		generateCode(true);
 	});
 });

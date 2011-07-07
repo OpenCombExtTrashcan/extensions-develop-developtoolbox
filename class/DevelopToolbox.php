@@ -9,7 +9,7 @@ class DevelopToolbox extends Extension
 	{
 		///////////////////////////////////////
 		// 向系统添加控制器
-		$this->application()->accessRouter()->addController("oc\\ext\\developtoolbox\\Index",'coder.controller') ;
+		$this->application()->accessRouter()->addController("oc\\ext\\developtoolbox\\MVCCoder",'coder.mvccoder') ;
 	}
 	
 }

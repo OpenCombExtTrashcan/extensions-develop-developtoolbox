@@ -11,13 +11,13 @@ use oc\base\FrontFrame;
 use jc\db\sql\Select;
 use oc\mvc\controller\Controller;
 
-class Index extends Controller
+class MVCCoder extends Controller
 {
 	protected function init()
 	{
 		$this->add(new FrontFrame()) ;
 		
-		$this->createView('view','developtoolbox_Index.template.html') ;
+		$this->createView('view','MVCCoder.template.html') ;
 		
 	}
 	

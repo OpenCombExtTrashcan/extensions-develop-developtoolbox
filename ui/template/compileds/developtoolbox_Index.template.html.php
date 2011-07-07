@@ -8,10 +8,19 @@ return \$__uivar_sDefineAllControllerClassesCode;") ;?>;
 return \$__uivar_sDefineModelsCode;") ;?>;
   </script>
   <script type="text/javascript" src="/extensions/developtoolbox/ui/js/jquery.js"></script>
+  <script type="text/javascript" src="/extensions/developtoolbox/ui/js/jquery.json-2.2.min.js"></script>
   <script type="text/javascript" src="/extensions/developtoolbox/ui/js/developtoolbox.js"></script>
 <div id="right">
 	<div id="preview">
-		<br />
+		<h1>代码预览</h1>
+		<div id="preview_btns">
+			<button id="generate_code">生成</button>
+			<button id="save_code">保存</button>
+		</div>
+		<div id="preview_div">
+			
+			
+		</div>
   	</div>
 </div>
 <div id="main">
@@ -38,8 +47,9 @@ return \$__uivar_sDefineModelsCode;") ;?>;
 		<div id="property">
             <div id='controller_property' class="propertys">
 				<h1>控制器属性</h1>
+				<label for="controller_name">名称:</label><input id="controller_name" type="text" class="object_name" /><br />
                 <label for="controller_classname">类名:</label>
-                <select id="controller_classname" class="object_name">
+                <select id="controller_classname">
                     <option value="0">请选择对象名...</option>
                 </select><br />
                 <input id="controller_submit" class="submitBtn" type="button" value="保存" />
@@ -187,8 +197,6 @@ return \$__uivar_sDefineModelsCode;") ;?>;
 				</tbody>
 			</table>
 		</div>
-		
-		
 		
     </div>
 

@@ -44,8 +44,9 @@
 		<div id="property">
             <div id='controller_property' class="propertys">
 				<h1>控制器属性</h1>
+				<label for="controller_name">名称:</label><input id="controller_name" type="text"  class="object_name"/><br />
                 <label for="controller_classname">类名:</label>
-                <select id="controller_classname" class="object_name">
+                <select id="controller_classname">
                     <option value="0">请选择对象名...</option>
                 </select><br/>
                 <input id="controller_submit" class="submitBtn" type="button" value ="保存"/>
@@ -136,6 +137,7 @@
 					<option value="single">单行</option>
 					<option value="password">密码</option>
 					<option value="multiple">多行</option>
+					<option value="hidden">隐藏</option>
 				</select><br/>
 			</div>
 			<div id="checkbtn_property" class="widget_propertys">

@@ -483,6 +483,9 @@ jQuery(function () {
 	
 	//恢复widget_options的值还有widget_option_table的值
 	function rebuildOptionTable(aHiddenWidget,arrValue){
+		if(arrValue == undefined){
+			return;
+		}
 		clearOptionsTable($("#widget_options_table"));
 		aHiddenWidget.data("value",arrValue);
 		jQuery.each(arrValue,function(i,n){
@@ -507,9 +510,10 @@ jQuery(function () {
 			getPropertyForOrm($(aArgWidget[0]),sValue);
 		}
 		if(aArgWidget[0].id == "view_dataexchange" ){
-			var fdsfds = $("#view_dataexchange").data("value");
-			fdsfds = fdsfds;
-			rebuildDataExchangeData();
+			// if(dataExchange == undefined){
+				// return false;
+			// }
+			rebuildDataExchangeData(sValue);
 		}
 	}
 	
@@ -646,7 +650,7 @@ jQuery(function () {
 	//view数据交换
 	$("#view_model").change(function(){
 		$("#view_model_table tbody > tr").remove();
-		getNewTrForDataExchange($(this).val());
+		addNewTrForDataExchange();
 	});
 	//删除tr
 	$(".del_dbmap").live("click",function(){
@@ -668,19 +672,33 @@ jQuery(function () {
 		});
 		$("#view_dataexchange").data("value",arrValues);
 	}
-	//恢复数据
-	function rebuildDataExchangeData(){
+	//恢复数据交换表单的数据
+	function rebuildDataExchangeData(dataExchange){
+		//清空tr
+		$("#view_model_table > tbody").html("");
 		
+		//重建
+		if(dataExchange == undefined){
+			return false;
+		} 
+		$.each(dataExchange,function(v,d){
+			addNewTrForDataExchange();
+			//找到最后2个select分别赋值
+			$("#view_model_table").find(".view_dbmap_column").last().val(d.column);
+			$("#view_model_table").find(".view_dbmap_widget").last().val(d.widget);
+		});
 	}
 	//根据用户操作新加一行tr
 	$("#add_view_model_tr").click(function(){
-		if($("#view_model").val()!=0){
-			getNewTrForDataExchange($("#view_model").val());
-		}
+		addNewTrForDataExchange();
 		return false;
 	});
 	//新添加一行select
-	function getNewTrForDataExchange(sModelId){
+	function addNewTrForDataExchange(){
+		var sModelId = $("#view_model").val();
+		if(sModelId == 0){
+			return;
+		}
 		var newTr = '<tr class="view_dbmap"><td>'
 						+'<select class="view_dbmap_widget nosave">'
 							+'<option value="0">选择控件...</option>'
@@ -694,9 +712,7 @@ jQuery(function () {
 				+'</tr>';
 		$("#view_model_table").append(newTr);
 		//初始化select
-		if(sModelId != 0){
-			initLastViewWidgetAndColumnSelect(sModelId);
-		}
+		initLastViewWidgetAndColumnSelect(sModelId);
 	}
 	//初始化数据关系widget和column选项
 	function initLastViewWidgetAndColumnSelect(sModelId){
@@ -704,7 +720,7 @@ jQuery(function () {
 		var arrColumnOptions = ormTableColumn[sModelId].split(" ");
 		$.each(arrColumnOptions,function(i,v){
 			if(v != ""){
-				$("#view_model_table .view_dbmap_column").last().append('<option value="'+v+'">'+v+'</option>');
+				$("#view_model_table").find(".view_dbmap_column").last().append('<option value="'+v+'">'+v+'</option>');
 			}
 		});
 		//widget
@@ -717,11 +733,11 @@ jQuery(function () {
 		}
 		$.each(arrSubWidgets,function(c,b){
 			var sWidgetId = $(b).attr("id");
-			$("#view_model_table .view_dbmap_widget").last().append('<option value="'+sWidgetId+'">'+sWidgetId+'</option>');
+			$("#view_model_table").find(".view_dbmap_widget").last().append('<option value="'+sWidgetId+'">'+sWidgetId+'</option>');
 		});
 	}
 	
-	//初始化数据交换关系表
+	//初始化数据交换关系表单中的model select
 	function initViewDataExchangeSelect(aNode){
 		var aController = getParentByType(aNode,"controller");
 		var arrChildren = [];

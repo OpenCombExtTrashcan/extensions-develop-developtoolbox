@@ -4,7 +4,6 @@
 	var controllerNames ={= $sDefineAllControllerClassesCode };
 	var ormData = {= $sDefineModelsCode };
   </script>
-  <script type="text/javascript" src="jquery.js"></script>
   <script type="text/javascript" src="jquery.json-2.2.min.js"></script>
   <script type="text/javascript" src="developtoolbox.js"></script>
 <div id="main">
@@ -84,11 +83,11 @@
                 <label for="verifier_class">类名:</label>
                 <select id="verifier_class" class="object_name">
                     <option value="0">请选择...</option>
-                    <option value="Email">Email</option>
-                    <option value="NotEmpty">NotEmpty</option>
-					<option value="Length">Length</option>
-					<option value="Number">Number</option>
-					<option value="Same">Same</option>
+                    <option value="Email">邮箱格式</option>
+                    <option value="Number">数字格式</option>
+                    <option value="Length">长度范围</option>
+					<option value="Same">相等</option>
+                    <option value="NotEmpty">不为空</option>
                 </select><br/>
                 <div id="verifier_more_property">
                 	

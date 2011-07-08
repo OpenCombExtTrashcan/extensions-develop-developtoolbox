@@ -135,6 +135,10 @@ jQuery(function () {
 				}
 			}
 		});
+		var aObjectName  =aPropertyPage.find("input.object_name") ;
+		if(aObjectName.length > 0 && aObjectName.val().length == 0){
+			aObjectName.val($("#toolpanel .selected").attr("id"));
+		}
 	}
 	
 	//返回一个数组,包含propertypage的可提交控件的对象数组,比如input和select控件

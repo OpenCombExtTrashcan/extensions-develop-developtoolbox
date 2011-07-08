@@ -8,11 +8,11 @@ jQuery(function () {
 
 	var allowTypes = {
 		"noselected" : ['controller' , 'view' , 'model']
-    	,"controller" : ['']
-		,"view" : ['view' , 'widget']
-		,"widget" : [ 'verifier' ]
-		,"verifier" : ['']
-		,"model" : ['model']
+    	,"controller" : ['delete']
+		,"view" : ['view' , 'widget' , 'delete']
+		,"widget" : [ 'verifier' ,'delete']
+		,"verifier" : ['delete']
+		,"model" : ['model','delete']
 	};
 	
 	var arrGirlLastNames = ["Abigail","Ada","Adela","Adelaide","Afra","Agatha","Agnes","Alberta","Alexia","Alice","Alma","Althea","Alva","Amanda","Amelia","Amy","Anastasia","Andrea","Angela","Ann","Anna","Annabelle","Antonia","April","Arabela","Arlene","Astrid","Atalanta","Athena","Audrey","Aurora","Barbara","Beatrice","Belinda","Bella","Belle","Bernice","Bertha","Beryl","Bess","Betsy","Betty","Beulah","Beverly","Blanche","Blythe","Bonnie","Breenda","Bridget","Brook","Camille","Candance","Candice","Cara","Carol","Caroline","Catherine","Cathy","Cecilia","Celeste","Charlotte","Cherry","Cheryl","Chloe","Christine","Claire","Clara","Clementine","Constance","Cora","Coral","Cornelia","Crystal","Cynthia","Daisy","Dale","Dana","Daphne","Darlene","Dawn","Debby","Deborah","Deirdre","Delia","Denise","Diana","Dinah","Dolores","Dominic","Donna","Dora","Doreen","Doris","Dorothy","Eartha","Eden","Edith","Edwina","Eileen","Elaine","Eleanore","Elizabeth","Ella","Ellen","Elma","Elsa","Elsie","Elva","Elvira","Emily","Emma","Enid","Erica","Erin","Esther","Ethel","Eudora","Eunice","Evangeline","Eve","Evelyn","Faithe","Fanny","Fay","Flora","Florence","Frances","Freda","Frederica","Gabrielle","Gail","Gemma","Genevieve","Georgia","Geraldine","Gill","Giselle","Gladys","Gloria","Grace","Griselda","Gustave","Gwendolyn","Hannah","Harriet","Hazel","Heather","Hedda","Hedy","Helen","Heloise","Hermosa","Hilda","Hilary","Honey","Hulda","Ida","Ina","Ingrid","Irene","Iris","Irma","Isabel","Ivy","Jacqueline","Jamie","Jane","Janet","Janice","Jean","Jennifer","Jenny","Jessie","Jessica","Jill","Jo","Joa","Joanna","Joanne","Jocelyn","Jodie","Josephine","Joy","Joyce","Judith","Judy","Julia","Julie","Juliet","June","Kama","Karen","Katherine","Kay","Kelly","Kimberley","Kitty","Kristin","Laura","Laurel","Lauren","Lee","Leila","Lena","Leona","Lesley","Letitia","Lilith","Lillian","Linda","Lindsay","Lisa","Liz","Lorraine","Louise","Lucy","Lydia","Lynn","Mabel","Madeline","Madge","Maggie","Mamie","Mandy","Marcia","Margaret","Marguerite","Maria","Marian","Marina","Marjorie","Martha","Martina","Mary","Maud","Maureen","Mavis","Maxine","Mag","May","Megan","Melissa","Meroy","Meredith","Merry","Michelle","Michaelia","Mignon","Mildred","Mirabelle","Miranda","Miriam","Modesty","Moira","Molly","Mona","Monica","Muriel","Murray","Myra","Myrna","Nancy","Naomi","Natalie","Natividad","Nelly","Nicola","Nicole","Nina","Nora","Norma","Novia","Nydia","Octavia","Odelette","Odelia","Olga","Olive","Olivia","Ophelia","Pag","Page","Pamela","Pandora","Patricia","Paula","Pearl","Penelope","Penny","Philipppa","Phoebe","Phoenix","Phyllis","Polly","Poppy","Prima","Priscilla","Prudence","Queena","Quintina","Rachel","Rae","Rebecca","Regina","Renata","Renee","Rita","Riva","Roberta","Rosalind","Rose","Rosemary","Roxanne","Ruby","Ruth","Sabina","Sally","Sabrina","Salome","Samantha","Sandra","Sandy","Sara","Sarah","Sebastiane","Selena","Sharon","Sheila","Sherry","Shirley","Sibyl","Sigrid","Simona","Sophia","Spring","Stacey","Setlla","Stephanie","Susan","Susanna","Susie","Suzanne","Sylvia","Tabitha","Tammy","Teresa","Tess","Thera","Theresa","Tiffany","Tina","Tobey","Tracy","Trista","Truda","Ula","Una","Ursula","Valentina","Valerie","Vanessa","Venus","Vera","Verna","Veromca","Veronica","Victoria","Vicky","Viola","Violet","Virginia","Vita","Vivien","Wallis","Wanda","Wendy","Winifred","Winni","Xanthe","Xaviera","Xenia","Yedda","Yetta","Yvette","Yvonne"];
@@ -69,14 +69,14 @@ jQuery(function () {
 	function setSelected(aNode){
 		if(aNode.hasClass("selected")){
 			aNode.removeClass("selected");
-			changeBtnStateByTrType(null);
+			// changeBtnStateByTrType(null);
 			// getPropertyPage(null);
 			return;
 		}
 		treeTable.find("tr").removeClass("selected");
 		aNode.addClass("selected");
 		//左侧添加按钮按权限显示
-		changeBtnStateByTrType(aNode);
+		// changeBtnStateByTrType(aNode);
 		//右侧属性栏
 		getPropertyPage(aNode);
 	}
@@ -135,9 +135,10 @@ jQuery(function () {
 				}
 			}
 		});
-		var aObjectName  =aPropertyPage.find("input.object_name") ;
+		//对象初始name
+		var aObjectName = aPropertyPage.find("input.object_name") ;
 		if(aObjectName.length > 0 && aObjectName.val().length == 0){
-			aObjectName.val($("#toolpanel .selected").attr("id"));
+			aObjectName.val(jQuery("#toolpanel .selected").attr("id"));
 		}
 	}
 	
@@ -196,38 +197,13 @@ jQuery(function () {
 	//获得btn的Type
 	function getBtnType(aBtn){
 		var btnId = aBtn.attr("id");
-		if(btnId == "add_controller"){
-			return "controller";
-		}else if(btnId == "add_view"){
-			return "view";
-		}else if(btnId == "add_widget"){
-			return "widget";
-		}else if(btnId == "add_verifier"){
-			return "verifier";
-		}else if(btnId == "add_model"){
-			return "model";
-		}
+		var btnType = btnId.split("_")[1];
+		return btnType;
 	}
 	
 	//获得node的type
 	function getNodeType(aNode){
 		return aNode.find("span").attr("class");
-	}
-	
-	//左侧按钮按照选中的tr的类型切换可用状态,如果没有aNode参数,typeclass=noselected,意为没有任何被选中标签
-	function changeBtnStateByTrType(aNode){
-		var typeClass = "";
-		if(aNode==null){
-			typeClass = "noselected";
-		}else{
-			typeClass = getNodeType(aNode);
-		}
-		if(typeClass in allowTypes){
-			jQuery(".addButtons").addClass("add_btn_disabled");
-			for(var key in allowTypes[typeClass]){
-				jQuery("#add_"+allowTypes[typeClass][key]).removeClass("add_btn_disabled");
-			}
-		}
 	}
 	
 	//获得父node
@@ -275,8 +251,8 @@ jQuery(function () {
 		}
 		var arrSubNode = [];
 		$.each(arrNodes,function(i,v){
-			if(getNodeType($(v)) == sType){
-				arrSubNode.push($(v));
+			if(getNodeType(jQuery(v)) == sType){
+				arrSubNode.push(jQuery(v));
 			}
 		});
 		if(arrSubNode.length <= 0){
@@ -327,7 +303,6 @@ jQuery(function () {
 			}
 		}
 		aSelected.remove();
-		changeBtnStateByTrType(null);
 	}
 	
 	//当namespace区域被编辑时的行为
@@ -365,10 +340,36 @@ jQuery(function () {
 		jQuery("#view_template").val(jQuery(this).val()+".template.html");//extensionName + "_" +jQuery(this).val()+".template.html");
 	});
 	
-	//左侧按钮功能
-	jQuery(".addButtons").click(function(){
-		var selectedTr = treeTable.find(".selected");
+	//添加按钮功能
+	jQuery(".topButtons").click(function(){
 		var sNewType = getBtnType(jQuery(this));
+		var newNodeName = getAName();
+		makeNewNode(null,newNodeName,sNewType);
+		return false;
+	});
+	
+	//鼠标浮动在对象tr上方的时候显示subbuttons
+	treeTable.find("tbody").find("tr").live("mouseover",function(){
+		subBtnsDisplay();
+		subBtnsPosition(jQuery(this));
+		accessOfBtns(jQuery(this));
+	});
+	treeTable.find("tbody").find("tr").live("mouseout",function(){
+		subBtnsDisplay();
+		accessOfBtns(null);
+	});
+	
+	//添加子对象按钮功能
+	jQuery(".subButtons").click(function(){
+		if($(this).hasClass('sub_btn_disabled')){
+			return false;
+		}
+		var sNewType = getBtnType(jQuery(this));
+		var selectedTr = jQuery(this).parents("tr").first();
+		if(sNewType == "delete"){
+			deleteTr(selectedTr);
+			return false;
+		}
 		var newNodeName = getAName();
 		if(selectedTr.length <= 0){
 			//目前没有node,显示所有的btn
@@ -378,24 +379,49 @@ jQuery(function () {
 		makeNewNode(selectedTr,newNodeName,sNewType);
 		return false;
 	});
+	function subBtnsDisplay(){
+		jQuery("#subToolPanel").toggle();
+	}
+	function subBtnsPosition(aWantedBy){
+		var aSubToolPanel = jQuery("#subToolPanel");
+		var nSubToolPanelWidth = aSubToolPanel.width();
+		var nNodeWidth  = aWantedBy.width();
+		jQuery("#subToolPanel").appendTo(aWantedBy.find("td").last()).css({
+			left: ""+(nNodeWidth-nSubToolPanelWidth)+"px"
+			, top: aWantedBy.offset().top
+			});
+	}
+	function accessOfBtns(aWantedBy){
+		var typeClass = "";
+		if(aWantedBy === null){
+			jQuery(".subButtons").addClass("sub_btn_disabled");
+		}else{
+			typeClass = getNodeType(aWantedBy);
+		}
+		if(typeClass in allowTypes){
+			// jQuery(".subButtons").addClass("sub_btn_disabled");
+			for(var key in allowTypes[typeClass]){
+				jQuery("#subBtn_"+allowTypes[typeClass][key]).removeClass("sub_btn_disabled");
+			}
+		}
+	}
+	//相应删除按钮
+	function deleteTr(aNodeWantToDel){
+		if(!confirm('确实要删除这个对象吗? \n所有的子对象都会被删除!!')){
+			return;
+		}
+		if(aNodeWantToDel.length <= 0){
+			return;
+		}
+		jQuery("#subToolPanel").appendTo(treeTable);
+		removeNode(aNodeWantToDel);
+		return;
+	}
 	
 	//表格点击后..
 	jQuery(treeTableId + " tbody tr").live("click",function(){
 		//选中
 		setSelected(jQuery(this));
-	});
-	
-	//相应删除按钮
-	jQuery("#deleteBtn").click(function(){
-		if(!confirm('确实要删除这个对象吗? \n\n所有的子对象都会被删除!!')){
-			return false;	
-		}
-		var aSelected = jQuery(".selected");
-		if(aSelected.length <= 0){
-			return false;
-		}
-		removeNode(aSelected);
-		return false;
 	});
 	
 	//属性提交
@@ -427,7 +453,7 @@ jQuery(function () {
 				sArgValue = jQuery(n).data("value");
 			}else if(n.id == "model_name"){ //保存model的数据交换关系,之所以插在这里是为了在id确定好以后再处理,以防id混乱
 				sArgValue = jQuery(n).val();
-				var widgetcolumbmap = $("#model_widgetcolumbmap").data("widgetcolumbmap");
+				var widgetcolumbmap = jQuery("#model_widgetcolumbmap").data("widgetcolumbmap");
 				if(widgetcolumbmap == undefined){
 					delete ormTableColumn[sArgValue];
 				}
@@ -444,10 +470,6 @@ jQuery(function () {
 		aSelected.attr("id",escapeId(name)).find("td b").text(name);
 		//数据保存到tr对象
 		//aSelected.data("property",dataObject);
-		 fdsfsdtreeData = treeData;
-		 namespaceData = namespaceData;
-		 controllerNames = controllerNames;
-		 extensionName = extensionName;
 	});
 	//json  toJSON(objectData);  jQuery.evalJSON(
 												 
@@ -488,22 +510,22 @@ jQuery(function () {
 	//保存option数据到widget_options的data中
 	function saveOptionsData(){
 		var arrOptions = [];
-		$.each($("#widget_options_table tbody tr"),function(i,n){
+		$.each(jQuery("#widget_options_table tbody tr"),function(i,n){
 			var arrAOption = [];
-			if($(n).attr("id") == "modeify_options"){
+			if(jQuery(n).attr("id") == "modeify_options"){
 				return true;
 			}
-			$.each( $(n).find("td") , function(v,b){
+			$.each( jQuery(n).find("td") , function(v,b){
 				// 前三个td记录有用的数据,最后一个没有用,前2个是text和value,第3个是是否选中
 				if(v < 2){ 
-					arrAOption.push($(b).text());
+					arrAOption.push(jQuery(b).text());
 				}else if(v == 2){
-					arrAOption.push($(b).find("input:checkbox").prop("checked"));
+					arrAOption.push(jQuery(b).find("input:checkbox").prop("checked"));
 				}
 			});
 			arrOptions.push(arrAOption);
 		});
-		$("#widget_options").data("value",arrOptions);
+		jQuery("#widget_options").data("value",arrOptions);
 	}
 	
 	//恢复widget_options的值还有widget_option_table的值
@@ -511,7 +533,7 @@ jQuery(function () {
 		if(arrValue == undefined){
 			return;
 		}
-		clearOptionsTable($("#widget_options_table"));
+		clearOptionsTable(jQuery("#widget_options_table"));
 		aHiddenWidget.data("value",arrValue);
 		jQuery.each(arrValue,function(i,n){
 			var sSelected = "";
@@ -528,11 +550,11 @@ jQuery(function () {
 	//处理特殊的widget值,比如input:hidden
 	function giveValueToHiddenWidget(aArgWidget,sValue){
 		if(aArgWidget[0].id == "widget_options" ){
-			rebuildOptionTable($(aArgWidget[0]),sValue);
+			rebuildOptionTable(jQuery(aArgWidget[0]),sValue);
 		}
 		if(aArgWidget[0].id == "model_orm-data" ){
 			rebuildOrmProperty();
-			getPropertyForOrm($(aArgWidget[0]),sValue);
+			getPropertyForOrm(jQuery(aArgWidget[0]),sValue);
 		}
 		if(aArgWidget[0].id == "view_dataexchange" ){
 			// if(dataExchange == undefined){
@@ -544,7 +566,7 @@ jQuery(function () {
 	
 	//
 	jQuery("#verifier_class").live("change",function(){
-		rebuildVerifierProperty($(this).val());
+		rebuildVerifierProperty(jQuery(this).val());
 	});
 	
 	//恢复verifier表单
@@ -574,9 +596,9 @@ jQuery(function () {
 	});
 	//恢复model的orm表单
 	function rebuildOrmProperty(){
-		$("#model_orm_div").html('');
+		jQuery("#model_orm_div").html('');
 		if(jQuery("#model_orm-start").val() != 0){
-			addOrmTree($("#model_orm_div"),jQuery("#model_orm-start").val());
+			addOrmTree(jQuery("#model_orm_div"),jQuery("#model_orm-start").val());
 		}
 	}
 	//添加一层orm关系
@@ -593,24 +615,24 @@ jQuery(function () {
 		target.append(sOrm);
 	}
 	//用户请求添加一层orm关系
-	$("#model_orm_div input:checkbox").live("click",function(){
-		if($(this).prop("checked")){
+	jQuery("#model_orm_div input:checkbox").live("click",function(){
+		if(jQuery(this).prop("checked")){
 			//添加层次
-			addOrmTree($(this).parents("li").first(),$(this).attr("id").split("|")[0]);
-			var aOrmTreeData = getOrmTreeData($("#model_orm_div > ul"),'');
-			$("#model_orm-data").data("value",aOrmTreeData[0]);
-			$("#model_widgetcolumbmap").data("widgetcolumbmap",aOrmTreeData[1]) ;
+			addOrmTree(jQuery(this).parents("li").first(),jQuery(this).attr("id").split("|")[0]);
+			var aOrmTreeData = getOrmTreeData(jQuery("#model_orm_div > ul"),'');
+			jQuery("#model_orm-data").data("value",aOrmTreeData[0]);
+			jQuery("#model_widgetcolumbmap").data("widgetcolumbmap",aOrmTreeData[1]) ;
 		}else{
 			//删除层次
-			$(this).nextAll("ul").remove();
+			jQuery(this).nextAll("ul").remove();
 			//如果表单中有完整的树结构(至少有一个checkbox被选中)就建立数据给model_orm-data,如果没有,删除以前的数据
-			if($("#model_orm_div").find("input:checked").length > 0){
-				var aOrmTreeData = getOrmTreeData($("#model_orm_div > ul"),'');
-				$("#model_orm-data").data("value",aOrmTreeData[0]);
-				$("#model_widgetcolumbmap").data("widgetcolumbmap",aOrmTreeData[1]) ;
+			if(jQuery("#model_orm_div").find("input:checked").length > 0){
+				var aOrmTreeData = getOrmTreeData(jQuery("#model_orm_div > ul"),'');
+				jQuery("#model_orm-data").data("value",aOrmTreeData[0]);
+				jQuery("#model_widgetcolumbmap").data("widgetcolumbmap",aOrmTreeData[1]) ;
 			}else{
-				$("#model_orm-data").removeData("value");
-				$("#model_widgetcolumbmap").removeData("widgetcolumbmap") ;
+				jQuery("#model_orm-data").removeData("value");
+				jQuery("#model_widgetcolumbmap").removeData("widgetcolumbmap") ;
 			}
 		}
 	});
@@ -624,10 +646,10 @@ jQuery(function () {
 		var sToColumn = '';
 		if(arrChecked.length > 0){
 			$.each(arrChecked,function(i,v){
-				var sOrmName = getTableName($(v));
-				var sOrmProp = getTableProp($(v));
+				var sOrmName = getTableName(jQuery(v));
+				var sOrmProp = getTableProp(jQuery(v));
 				var sWholePre = sLastPre+sOrmProp+".";
-				var arrResult =  getOrmTreeData($(this).nextAll("ul"),sWholePre);
+				var arrResult =  getOrmTreeData(jQuery(this).nextAll("ul"),sWholePre);
 				aOrmTemp[sOrmProp] = arrResult[0];
 				sToColumn = arrResult[1];
 				$.each( ormData[sOrmName].columns , function(c,b){
@@ -654,53 +676,53 @@ jQuery(function () {
 		}
 		var arrCheckboxs = [];
 		if(aArgWidget.attr("id") == "model_orm-data"){
-			aArgWidget = $("#model_orm_div > ul");
+			aArgWidget = jQuery("#model_orm_div > ul");
 		}else{
 			aArgWidget = aArgWidget.nextAll("ul");
 		}
 		arrCheckboxs = aArgWidget.children("li").children("input:checkbox");
 		$.each(Value,function(i,v){
 			$.each(arrCheckboxs,function(c,d){
-				if($(d).val() == i){
-					$(d).attr("checked","checked");
+				if(jQuery(d).val() == i){
+					jQuery(d).attr("checked","checked");
 					//恢复表单
-					addOrmTree($(d).parents("li").first(),$(d).attr("id").split("|")[0]);
+					addOrmTree(jQuery(d).parents("li").first(),jQuery(d).attr("id").split("|")[0]);
 					//递归
-					getPropertyForOrm($(d),v);
+					getPropertyForOrm(jQuery(d),v);
 				}
 			});
 		});
 	}
 	
 	//view数据交换
-	$("#view_model").change(function(){
-		$("#view_model_table tbody > tr").remove();
+	jQuery("#view_model").change(function(){
+		jQuery("#view_model_table tbody > tr").remove();
 		addNewTrForDataExchange();
 	});
 	//删除tr
-	$(".del_dbmap").live("click",function(){
-		$(this).parents("tr").first().remove();
+	jQuery(".del_dbmap").live("click",function(){
+		jQuery(this).parents("tr").first().remove();
 		saveDataExchangeData();
 	});
 	//数据保存
-	$(".view_dbmap_widget, .view_dbmap_column").live("change",function(){
+	jQuery(".view_dbmap_widget, .view_dbmap_column").live("change",function(){
 		saveDataExchangeData();
 	});
 	//数据保存
 	function saveDataExchangeData(){
-		var arrTr = $("#view_model_table tbody > tr");
+		var arrTr = jQuery("#view_model_table tbody > tr");
 		var arrValues = [];
 		$.each( arrTr ,function(v,n){
-			var arrSelect = $(n).find("select");
-			var aValue = { "widget" : $(arrSelect[0]).val(), "column":$(arrSelect[1]).val() };
+			var arrSelect = jQuery(n).find("select");
+			var aValue = { "widget" : jQuery(arrSelect[0]).val(), "column":jQuery(arrSelect[1]).val() };
 			arrValues.push( aValue );
 		});
-		$("#view_dataexchange").data("value",arrValues);
+		jQuery("#view_dataexchange").data("value",arrValues);
 	}
 	//恢复数据交换表单的数据
 	function rebuildDataExchangeData(dataExchange){
 		//清空tr
-		$("#view_model_table > tbody").html("");
+		jQuery("#view_model_table > tbody").html("");
 		
 		//重建
 		if(dataExchange == undefined){
@@ -709,18 +731,18 @@ jQuery(function () {
 		$.each(dataExchange,function(v,d){
 			addNewTrForDataExchange();
 			//找到最后2个select分别赋值
-			$("#view_model_table").find(".view_dbmap_column").last().val(d.column);
-			$("#view_model_table").find(".view_dbmap_widget").last().val(d.widget);
+			jQuery("#view_model_table").find(".view_dbmap_column").last().val(d.column);
+			jQuery("#view_model_table").find(".view_dbmap_widget").last().val(d.widget);
 		});
 	}
 	//根据用户操作新加一行tr
-	$("#add_view_model_tr").click(function(){
+	jQuery("#add_view_model_tr").click(function(){
 		addNewTrForDataExchange();
 		return false;
 	});
 	//新添加一行select
 	function addNewTrForDataExchange(){
-		var sModelId = $("#view_model").val();
+		var sModelId = jQuery("#view_model").val();
 		if(sModelId == 0){
 			return;
 		}
@@ -735,7 +757,7 @@ jQuery(function () {
 					+'</td>'
 					+'<td><a href="#" class="del_dbmap">删</a></td>'
 				+'</tr>';
-		$("#view_model_table").append(newTr);
+		jQuery("#view_model_table").append(newTr);
 		//初始化select
 		initLastViewWidgetAndColumnSelect(sModelId);
 	}
@@ -745,11 +767,11 @@ jQuery(function () {
 		var arrColumnOptions = ormTableColumn[sModelId].split(" ");
 		$.each(arrColumnOptions,function(i,v){
 			if(v != ""){
-				$("#view_model_table").find(".view_dbmap_column").last().append('<option value="'+v+'">'+v+'</option>');
+				jQuery("#view_model_table").find(".view_dbmap_column").last().append('<option value="'+v+'">'+v+'</option>');
 			}
 		});
 		//widget
-		var aView = $(".selected");
+		var aView = jQuery(".selected");
 		var arrSubNodes=[];
 		arrSubNodes = getChildren(aView);
 		var arrSubWidgets = [];
@@ -757,8 +779,8 @@ jQuery(function () {
 			arrSubWidgets = findNodeFormChildren(arrSubNodes,"widget");
 		}
 		$.each(arrSubWidgets,function(c,b){
-			var sWidgetId = $(b).attr("id");
-			$("#view_model_table").find(".view_dbmap_widget").last().append('<option value="'+sWidgetId+'">'+sWidgetId+'</option>');
+			var sWidgetId = jQuery(b).attr("id");
+			jQuery("#view_model_table").find(".view_dbmap_widget").last().append('<option value="'+sWidgetId+'">'+sWidgetId+'</option>');
 		});
 	}
 	
@@ -768,16 +790,16 @@ jQuery(function () {
 		var arrChildren = [];
 		var arrSubModel = [];
 		if(aController =='topController'){
-			arrChildren = $("#toolpanel tbody > tr");
+			arrChildren = jQuery("#toolpanel tbody > tr");
 		}else{
 			arrChildren = getChildren(aController);
 		}
 		arrSubModel = findNodeFormChildren(arrChildren,"model");
 		//初始化select
-		$("#view_model").find("option[value!='0']").remove();
+		jQuery("#view_model").find("option[value!='0']").remove();
 		$.each(arrSubModel,function(v,b){
-			var sModelId = $(b).attr("id");
-			$("#view_model").append('<option value="'+sModelId+'">'+sModelId+'</option>');
+			var sModelId = jQuery(b).attr("id");
+			jQuery("#view_model").append('<option value="'+sModelId+'">'+sModelId+'</option>');
 		});
 	}
 	
@@ -818,16 +840,16 @@ jQuery(function () {
 			url: url,
 			data: data,
 			success: function(msg){
-				$("#preview_div").html("").append(msg);
+				jQuery("#preview_div").html("").append(msg);
 			}
 		});
 	}
 	//只生成代码
-	$("#generate_code").click(function(){
+	jQuery("#generate_code").click(function(){
 		generateCode(false);
 	});
 	//生成代码并保存
-	$("#save_code").click(function(){
+	jQuery("#save_code").click(function(){
 		generateCode(true);
 	});
 });

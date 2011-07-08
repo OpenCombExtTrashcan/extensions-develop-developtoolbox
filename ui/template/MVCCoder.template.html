@@ -17,16 +17,7 @@
 		<input id="className" type="text" />
 	</div>
 	<div><b>命名空间:</b><span id="namespaceComplete">还没有确定命名空间...</span></div>
-    <div id="leftBottom">
-		<div id="toolPanelButtons">
-			<a id="add_controller" class="addButtons" href='#' title='添加Controller对象'>+<span class='controller'></span></a>
-			<a id="add_view" class="addButtons" href='#' title='添加View对象'>+<span class='view'></span></a>
-			<a id="add_widget" class="addButtons add_btn_disabled" href='#' title='添加Widget对象'>+<span class='widget'></span></a>
-			<a id="add_verifier" class="addButtons add_btn_disabled" href='#' title='添加Verifier对象'>+<span class='virifier'></span></a>
-			<a id="add_model" class="addButtons" href='#' title='添加Model对象'>+<span class='model'></span></a>
-			<a id="deleteBtn" href='#' title='删除对象'>-<span class='delete'></span></a>
-		</div>
-		
+	<div id="right">
 		<div id="property">
             <div id='controller_property' class="propertys">
 				<h1>控制器属性</h1>
@@ -166,36 +157,47 @@
 			
 			<!-- end 各个widget的附加属性 -->
 		</div>
-		
-		
+    </div>
+	<div id="left">
+		<div id="topToolPanel">
+			<label>添加顶级对象:</label>
+			<button id="addTop_controller" class="topButtons" title='添加顶级Controller对象'>+<span class='controller'></span></button>
+			<button id="addTop_view" class="topButtons" title='添加顶级View对象'>+<span class='view'></span></button>
+			<button id="addTop_model" class="topButtons" title='添加顶级Model对象'>+<span class='model'></span></button>
+		</div>
 		<div id="toolpanelDiv">
 			<table id="toolpanel">
 				<thead> 
 				   <tr> 
 					  <th class="nameColumn">名称</th> 
 					  <th class="classColumn">类型</th> 
-					  <th class="propertyColumn">属性</th> 
-				   </tr> 
-				</thead> 
+					  <th class="propertyColumn">属性</th>
+				   </tr>
+				</thead>
 				<tbody>
 					<!-- 对象列表 -->
 				</tbody>
 			</table>
+			<div id="subToolPanel">
+				<!--<a id="subBtn_controller" class="subButtons sub_btn_disabled" href="#" title='添加子Controller对象'>+<span class='controller'></span></a>-->
+				<a id="subBtn_view" href="#" class="subButtons sub_btn_disabled" title='添加子View对象'>+<span class='view'></span></a>
+				<a id="subBtn_widget" href="#" class="subButtons sub_btn_disabled" title='添加子Widget对象'>+<span class='widget'></span></a>
+				<a id="subBtn_verifier" href="#" class="subButtons sub_btn_disabled" title='添加子Verifier对象'>+<span class='virifier'></span></a>
+				<a id="subBtn_model" href="#" class="subButtons sub_btn_disabled" title='添加子Model对象'>+<span class='model'></span></a>
+				<a id="subBtn_delete" href="#" class="subButtons sub_btn_disabled" title='删除对象'>-<span class='delete'></span></a>
+			</div>
 		</div>
-		
-    </div>
+	</div>
 
 </div>
-<div id="right">
-	<div id="preview">
-		<h1>代码预览</h1>
-		<div id="preview_btns">
-			<button id="generate_code">生成</button>
-			<button id="save_code">保存</button>
-		</div>
-		<div id="preview_div">
-			
-			
-		</div>
-  	</div>
+<div id="preview">
+	<h1>代码预览</h1>
+	<div id="preview_btns">
+		<button id="generate_code">生成</button>
+		<button id="save_code">保存</button>
+	</div>
+	<div id="preview_div">
+		
+		
+	</div>
 </div>

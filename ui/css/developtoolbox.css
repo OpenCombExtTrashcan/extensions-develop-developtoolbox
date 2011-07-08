@@ -34,14 +34,110 @@ h1 {
 	width:100%;
 	height:30px;
 }
-#toolPanelButtons {
-	width:50px;
-	float:left;
-	padding: 25px 0 0 0;
-	background:#CCF
+#right{
+	width:700px;
+	float: right;
 }
+#left{
+	width:auto;
+	margin-right:700px;
+}
+
+/* 顶级对象操作 start*/
+
+#topToolPanel {
+	background:#CCF;
+}
+#topToolPanel button {
+	color:#000;
+}
+#topToolPanel span {
+	background-position: center right;
+	background-repeat: no-repeat;
+	padding: .2em 0 .2em 1.5em;
+}
+#topToolPanel span.file {
+	background-image: url(../images/page_white_text.png);
+}
+#topToolPanel span.folder {
+	background-image: url(../images/folder.png);
+}
+#topToolPanel span.controller {
+	background-image: url(../images/controller.png);
+}
+#topToolPanel span.view {
+	background-image: url(../images/view.png);
+}
+#topToolPanel span.widget {
+	background-image: url(../images/widget.png);
+}
+#topToolPanel span.virifier {
+	background-image: url(../images/verifier.png);
+}
+#topToolPanel span.model {
+	background-image: url(../images/model.png);
+}
+#topToolPanel span.delete {
+	background:url(../images/delete.png) no-repeat;
+}
+
+/*end*/
+/* 顶级对象操作 start*/
+#subToolPanel{
+	display:none;
+	position: absolute;
+	z-index: 5;
+}
+#subToolPanel .subButtons{
+	display:block;
+	height:16px;
+	width:30px;
+	float:left;
+	line-height: 16px;
+}
+#subToolPanel a {
+	color:#000;
+	text-decoration :none;
+}
+.sub_btn_disabled {
+	filter:gray;
+	 -moz-opacity:.1;
+	 opacity:0.5;
+}
+#subToolPanel span {
+	background-position: center right;
+	background-repeat: no-repeat;
+	padding: .2em 0 .2em 1.5em;
+}
+#subToolPanel span.file {
+	background-image: url(../images/page_white_text.png);
+}
+#subToolPanel span.folder {
+	background-image: url(../images/folder.png);
+}
+#subToolPanel span.controller {
+	background-image: url(../images/controller.png);
+}
+#subToolPanel span.view {
+	background-image: url(../images/view.png);
+}
+#subToolPanel span.widget {
+	background-image: url(../images/widget.png);
+}
+#subToolPanel span.virifier {
+	background-image: url(../images/verifier.png);
+}
+#subToolPanel span.model {
+	background-image: url(../images/model.png);
+}
+#subToolPanel span.delete {
+	background-image:url(../images/delete.png);
+}
+
+/*end*/
+
 #toolpanelDiv {
-	margin:0 700px 0 50px;
+	
 }
 #toolpanel {
 	width:100%;
@@ -51,7 +147,11 @@ h1 {
 	color:#FFF;
 }
 #toolpanel tbody tr {
-	
+	position: relative;
+	cursor:pointer;
+}
+#toolpanel tbody tr:hover {
+	background: #C0D9D9;
 }
 #property {
 	width:700px;
@@ -66,14 +166,11 @@ h1 {
 	width:100%;
 	display:none;
 }
-#right {
-	width:100%;
-	clear:both;
-	}
 #preview {
 	width:100%;
+	clear:both;
 	background: #eee;
-}
+	}
 .selected {
 	background:#CCC;
 }
@@ -81,9 +178,6 @@ h1 {
 	background-position: center left;
 	background-repeat: no-repeat;
 	padding: .2em 0 .2em 1.5em;
-}
-#toolpanel tr {
-	cursor:pointer;
 }
 #toolpanel .nameColumn {
 	width:30%;
@@ -121,52 +215,7 @@ h1 {
 #toolpanel span.model {
 	background-image: url(../images/model.png);
 }
-#deleteBtn {
-	color:#000;
-	text-decoration:none;
-	text-align:left;
-	display:block;
-}
-#deleteBtn .delete {
-	background:url(../images/delete.png) no-repeat;
-	background-position: center right;
-	background-repeat: no-repeat;
-	padding: .2em 0 .2em 1.5em;
-}
-#toolPanelButtons a {
-	color:#000;
-	text-decoration:none;
-	text-align:left;
-}
-#toolPanelButtons span {
-	background-position: center right;
-	background-repeat: no-repeat;
-	padding: .2em 0 .2em 1.5em;
-}
-.add_btn_disabled {
-	display:none;
-}
-#toolPanelButtons span.file {
-	background-image: url(../images/page_white_text.png);
-}
-#toolPanelButtons span.folder {
-	background-image: url(../images/folder.png);
-}
-#toolPanelButtons span.controller {
-	background-image: url(../images/controller.png);
-}
-#toolPanelButtons span.view {
-	background-image: url(../images/view.png);
-}
-#toolPanelButtons span.widget {
-	background-image: url(../images/widget.png);
-}
-#toolPanelButtons span.virifier {
-	background-image: url(../images/verifier.png);
-}
-#toolPanelButtons span.model {
-	background-image: url(../images/model.png);
-}
+
 #widget_options {
 	width:100%;
 }

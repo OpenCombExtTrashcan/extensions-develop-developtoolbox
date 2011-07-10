@@ -3,7 +3,7 @@ namespace oc\ext\developtoolbox ;
 
 use oc\ext\developtoolbox\coder\mvc\ForController;
 
-use jc\mvc\model\db\orm\ModelAssociationMap;
+use jc\mvc\model\db\orm\PrototypeAssociationMap;
 use jc\fs\FSOIterator;
 use jc\system\ClassLoader;
 use oc\base\FrontFrame;
@@ -44,7 +44,7 @@ class MVCCoder extends Controller
 			$this->view->variables()->set('sDefineAllControllerClassesCode',json_encode($arrControllerClasses)) ;
 	
 			// 反射系统中的orm
-			$arrModels = $this->scanOrm( ModelAssociationMap::singleton() ) ;
+			$arrModels = $this->scanOrm( PrototypeAssociationMap::singleton() ) ;
 			$this->view->variables()->set('sDefineModelsCode',json_encode($arrModels)) ;
 		
 		}
@@ -121,7 +121,7 @@ class MVCCoder extends Controller
 		return array($arrNamespacesInfo,$arrControllerClasses) ;
 	}
 	
-	public function scanOrm(ModelAssociationMap $aMap)
+	public function scanOrm(PrototypeAssociationMap $aMap)
 	{
 		$arrModels = array() ;
 		

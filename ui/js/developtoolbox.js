@@ -858,13 +858,19 @@ jQuery(function () {
 			$("#view_namespaceSelect ,#view_className").prop("disabled",true);
 		}
 	});
+	$("#view_namespaceSelect ,#view_className").live('change',saveViewExtendClass);
 	function saveViewExtendClass(){
 		var namespaceSelectValue = $("#view_namespaceSelect").val();
-		var classNameValue = $("#view_className").val();
-		if(namespaceSelectValue == 0 || classNameValue.length < 1){
+		var className = $("#view_className");
+		if(className.val().length > 0){
+			$("#view_className").val(className.val()[0].toUpperCase()+className.val().substr(1));
+		}
+		if(namespaceSelectValue == 0 || className.val().length < 1){
+			$("#view_extendClass").val('');
 			return;
 		}
-		$("#view_extendClass").val(namespaceSelectValue+'\\'+classNameValue);
+		var filepath = namespaceData[namespaceSelectValue]["folder"];
+		$("#view_extendClass").val(filepath+'/'+className.val()+'.php');
 	}
 	
 	//用ajax发送编译请求
@@ -893,12 +899,11 @@ jQuery(function () {
 		generateCode(true);
 	});
 	
-		//属性提交property
-	// jQuery(".submitBtn").live("click",function(){
+	//属性提交property
 	jQuery("#controller_property input,#controller_property select").live("focusout",saveForm);
 	jQuery("#view_property input,#view_property select").live("focusout",saveForm);
 	jQuery("#widget_property input,#widget_property select").live("focusout",saveForm);
 	jQuery("#verifier_property input,#verifier_property select").live("focusout",saveForm);
-	jQuery("#model_property input,#model_property select").live("change",saveForm);
+	jQuery("#model_property input,#model_property select").live("change focusout",saveForm);
 	
 });

@@ -2,7 +2,7 @@
 namespace oc\ext\developtoolbox ;
 
 use oc\ext\developtoolbox\coder\mvc\ForController;
-
+use jc\io\OutputStreamBuffer;
 use jc\mvc\model\db\orm\PrototypeAssociationMap;
 use jc\fs\FSOIterator;
 use jc\system\ClassLoader;
@@ -31,17 +31,24 @@ class MVCCoder extends Controller
 			
 			// 这里需要一个 coder 管理器
 			// todo
-			ForController::singleton()->generate($arrData,$this->application()->response()->printer()) ;
+			
+			$aCoder = new ForController($arrData) ;
+			
+			$aBuff = new OutputStreamBuffer() ;
+			$aCoder->generate($aBuff) ;
+		
+			echo highlight_string($aBuff->bufferBytes()) ;
 		}
 		
 		else
 		{
 			
 			// 反射 class namespace
-			list($arrNamespacesInfo,$arrControllerClasses) = $this->scanExtensions( $this->application()->classLoader() ) ;
+			list($arrNamespacesInfo,$arrControllerClasses,$arrViewClasses) = $this->scanExtensions( $this->application()->classLoader() ) ;
 			
 			$this->view->variables()->set('sDefineNamespacesCode',json_encode($arrNamespacesInfo)) ;
 			$this->view->variables()->set('sDefineAllControllerClassesCode',json_encode($arrControllerClasses)) ;
+			$this->view->variables()->set('sDefineAllViewClassesCode',json_encode($arrViewClasses)) ;
 	
 			// 反射系统中的orm
 			$arrModels = $this->scanOrm( PrototypeAssociationMap::singleton() ) ;
@@ -54,6 +61,9 @@ class MVCCoder extends Controller
 	{
 		$arrNamespacesInfo = array() ;
 		$arrControllerClasses = array() ;
+		$arrViewClasses = array(
+				'oc\\mvc\\view'
+		) ;
 		
 		foreach( $aClassLoader->namespaceIterator() as $sNamespace)
 		{
@@ -109,16 +119,21 @@ class MVCCoder extends Controller
 					$sClass = substr( $sFilename,0,strpos($sFilename,'.') ) ;
 					
 					$sFullClass = $sNamespace . '\\' . (dirname($sSubFolder)=='.'? '': (dirname($sSubFolder).'\\')) . $sClass ;
-					
+				
 					if( class_exists($sFullClass) and is_subclass_of($sFullClass,'jc\\mvc\\controller\\IController') )
 					{
 						$arrControllerClasses[] = $sFullClass ;
+					}
+					
+					if( class_exists($sFullClass) and is_subclass_of($sFullClass,'jc\\mvc\\view\\IView') )
+					{
+						$arrViewClasses[] = $sFullClass ;
 					}
 				}
 			}
 		}
 		
-		return array($arrNamespacesInfo,$arrControllerClasses) ;
+		return array($arrNamespacesInfo,$arrControllerClasses,$arrViewClasses) ;
 	}
 	
 	public function scanOrm(PrototypeAssociationMap $aMap)

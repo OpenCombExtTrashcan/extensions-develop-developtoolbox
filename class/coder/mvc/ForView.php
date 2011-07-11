@@ -2,14 +2,15 @@
 namespace oc\ext\developtoolbox\coder\mvc ;
 
 use jc\io\IOutputStream;
+use jc\ui\xhtml\UIFactory;
 use jc\lang\Exception;
 use oc\ext\developtoolbox\coder\CoderBase;
 
-class ForController extends CoderBase
+class ForView extends CoderBase
 {
 	public function generate(IOutputStream $aDev)
 	{
-		foreach( array('filename','classname','namespace') as $sKey )
+		foreach( array('name') as $sKey )
 		{
 			if( empty($this->arrData[$sKey]) )
 			{
@@ -17,9 +18,9 @@ class ForController extends CoderBase
 			}
 		}
 		
-		$this->generateByUINgin('code_controller.template.php') ;
+		$this->generateByUINgin('code_view.template.php') ;
 	}
-	
+
 }
 
 ?>

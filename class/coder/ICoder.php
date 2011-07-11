@@ -5,7 +5,7 @@ use jc\io\IOutputStream;
 
 interface ICoder 
 {
-	public function generate(array $arrData,IOutputStream $aDev) ;
+	public function generate(IOutputStream $aDev) ;
 }
 
 ?>

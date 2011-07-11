@@ -1,7 +1,6 @@
 <?php
 namespace oc\ext\developtoolbox\coder\mvc ;
 
-use jc\io\OutputStreamBuffer;
 use jc\io\IOutputStream;
 use jc\ui\xhtml\UIFactory;
 use jc\lang\Exception;
@@ -9,51 +8,85 @@ use oc\ext\developtoolbox\coder\CoderBase;
 
 class ForModel extends CoderBase
 {
-	public function generate(array $arrData,IOutputStream $aDev)
-	{	
-		$fnGenerateOrmFragmentCode = function($arrOrmData,$fnGenerateOrmFragmentCode)
+	public function generate(IOutputStream $aDev)
+	{
+		foreach( array('name') as $sKey )
 		{
-			$sCode = 'array(' ;
-			
-			$arrItems = array() ;
-			foreach($arrOrmData as $name=>$property)
+			if( empty($this->arrData[$sKey]) )
 			{
-				if( is_string($property) )
-				{
-					$arrItems[]= "'{$property}'" ;
-				}
-				else if( is_array($property) )
-				{
-					if(empty($property))
-					{
-						$arrItems[]= "'{$name}'" ;
-					}
-					else 
-					{
-						$arrItems[]= "'{$name}'=>" . $fnGenerateOrmFragmentCode($property,$fnGenerateOrmFragmentCode) ;
-					}
-				}
+				throw new Exception("缺少必要的数据：%s",$sKey) ;
 			}
-			
-			$sCode.= implode(',',$arrItems) ;
-			$sCode.= ')' ;
-			
-			return $sCode ;
-		} ;
-	
-		// -- --
-		if( empty($arrData['orm-data']) )
-		{
-			$arrData['orm-data'] = '' ;
 		}
 		
+		$sCode = '$this->'.$this->arrData['name'] ;
+			
+		// 创建一个空模型
+		if( empty($this->arrData['orm-start']) )
+		{
+			$sCode.= " = new Model(null" ;
+			
+			if(!empty($this->arrData['aggregation']))
+			{
+				$sCode.= ',true' ;
+			}
+			$sCode.= ") ;" ;
+		}
+		
+		// 通过 orm 片段创建模型
 		else 
 		{
-			$arrData['orm-data'] = ','.$fnGenerateOrmFragmentCode($arrData['orm-data'],$fnGenerateOrmFragmentCode) ;
-		}
+			$fnGenerateOrmFragmentCode = function($arrOrmData,$fnGenerateOrmFragmentCode)
+			{
+				$sCode = 'array(' ;
+				
+				$arrItems = array() ;
+				foreach($arrOrmData as $name=>$property)
+				{
+					if( is_string($property) )
+					{
+						$arrItems[]= "'{$property}'" ;
+					}
+					else if( is_array($property) )
+					{
+						if(empty($property))
+						{
+							$arrItems[]= "'{$name}'" ;
+						}
+						else 
+						{
+							$arrItems[]= "'{$name}'=>" . $fnGenerateOrmFragmentCode($property,$fnGenerateOrmFragmentCode) ;
+						}
+					}
+				}
+				
+				$sCode.= implode(',',$arrItems) ;
+				$sCode.= ')' ;
+				
+				return $sCode ;
+			} ;
 		
-		$sCode = '$this->'.$arrData['name'] ;
-		$sCode.= " = Model::fromFragment('{$arrData['orm-start']}'{$arrData['orm-data']}) ;" ;
+			// -- --
+			if( empty($this->arrData['orm-data']) )
+			{
+				$this->arrData['orm-data'] = '' ;
+			}
+			
+			else 
+			{
+				$this->arrData['orm-data'] = ','.$fnGenerateOrmFragmentCode($this->arrData['orm-data'],$fnGenerateOrmFragmentCode) ;
+			}
+			
+			$sCode.= " = Model::fromFragment('{$this->arrData['orm-start']}'{$this->arrData['orm-data']}" ;
+			if(!empty($this->arrData['aggregation']))
+			{
+				if( empty($this->arrData['orm-data']) )
+				{
+					$sCode.= ',null' ;
+				}
+				$sCode.= ',true' ;
+			}
+			$sCode.= ") ;" ;
+		}
 		
 		$aDev->write($sCode) ;
 	}

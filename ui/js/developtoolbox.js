@@ -310,7 +310,9 @@ jQuery(function () {
 		var aClassName = jQuery("#className");
 		var namespaceSelectValue = jQuery("#namespaceSelect").val();
 		//首字母大写
-		aClassName.val(aClassName.val()[0].toUpperCase()+aClassName.val().substr(1));
+		if(aClassName.val().length > 0){
+			aClassName.val(aClassName.val()[0].toUpperCase()+aClassName.val().substr(1));
+		}
 		if(namespaceSelectValue == 0 || aClassName.val().length == 0){
 			jQuery("#namespaceComplete").addClass("noFileName").text("还没有确定命名空间...");
 			treeData["filename"] = "";
@@ -424,11 +426,17 @@ jQuery(function () {
 		setSelected(jQuery(this));
 	});
 	
-	//属性提交
-	jQuery(".submitBtn").live("click",function(){
+	//属性提交property
+	// jQuery(".submitBtn").live("click",function(){
+	jQuery("#property input,#property select").live("focusout",saveForm);
+
+	//保存表单
+	function saveForm(){
 		var aSelected = jQuery(".selected");	
-		var sSubmitBtnId = jQuery(this).attr("id");	
-		var sSubmitType = sSubmitBtnId.split("_")[0];
+		// var sSubmitBtnId = jQuery(this).attr("id");	
+		// var sSubmitType = sSubmitBtnId.split("_")[0];
+		var aForm = jQuery(this).parents('.propertys').first();
+		var sSubmitType = aForm.attr('id').split('_')[0];
 		var arrProperties = getPropertyWidget(jQuery("#"+sSubmitType+"_property"));
 		var dataObject = {};
 		
@@ -466,13 +474,16 @@ jQuery(function () {
 			}
 		});
 		//修正对象列表中的ID和text
-		var name = jQuery("#"+sSubmitType+"_property .object_name").val();
+		// var name = jQuery("#"+sSubmitType+"_property .object_name").val();
+		var name = aForm.find('.object_name').val();
 		aSelected.attr("id",escapeId(name)).find("td b").text(name);
 		//数据保存到tr对象
 		//aSelected.data("property",dataObject);
-	});
-	//json  toJSON(objectData);  jQuery.evalJSON(
-												 
+	}
+	
+	
+	
+	
 	//widget 类型选择
 	jQuery("#widget_classname").live("change",function(){
 		widgetTypeChange(null);												   
@@ -807,6 +818,7 @@ jQuery(function () {
 	function initNameSpaceSelect(){
 		for(var key in namespaceData){
 			jQuery("#namespaceSelect").append("<option value='"+key+"'>"+key+"</option>");
+			jQuery("#view_namespaceSelect").append("<option value='"+key+"'>"+key+"</option>");
 		}
 	}
 	initNameSpaceSelect();
@@ -826,6 +838,29 @@ jQuery(function () {
 		}
 	}
 	initOrmTopSelect();
+	
+	//初始化 视图类型 选择
+	function initView_classSelect(){
+		for(var key in viewNames){
+			jQuery("#view_class").append("<option value='"+viewNames[key]+"'>"+viewNames[key]+"</option>");
+		}
+	}
+	initView_classSelect();
+	$("#view_hasExtendClass").live("change",function(){
+		if($(this).prop("checked")){
+			$("#view_namespaceSelect ,#view_className").prop("disabled",false);
+		}else{
+			$("#view_namespaceSelect ,#view_className").prop("disabled",true);
+		}
+	});
+	function saveViewExtendClass(){
+		var namespaceSelectValue = $("#view_namespaceSelect").val();
+		var classNameValue = $("#view_className").val();
+		if(namespaceSelectValue == 0 || classNameValue.length < 1){
+			return;
+		}
+		$("#view_extendClass").val(namespaceSelectValue+'\\'+classNameValue);
+	}
 	
 	//用ajax发送编译请求
 	function generateCode(bDoSave){

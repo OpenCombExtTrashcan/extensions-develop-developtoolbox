@@ -3,6 +3,7 @@
   	var namespaceData = {= $sDefineNamespacesCode};
 	var controllerNames ={= $sDefineAllControllerClassesCode };
 	var ormData = {= $sDefineModelsCode };
+	var viewNames = {= $sDefineAllViewClassesCode };
   </script>
   <script type="text/javascript" src="jquery.json-2.2.min.js"></script>
   <script type="text/javascript" src="developtoolbox.js"></script>
@@ -26,13 +27,26 @@
                 <select id="controller_classname">
                     <option value="0">请选择对象名...</option>
                 </select><br/>
-                <input id="controller_submit" class="submitBtn" type="button" value ="保存"/>
+                <!--<input id="controller_submit" class="submitBtn" type="button" value ="保存"/>-->
             </div>
             <div id='view_property' class="propertys">
             	<h1>视图属性</h1>
                 <label for="view_name">名称:</label><input id="view_name" type="text" class="object_name" /><br/>
                 <label for="view_template">模版:</label><input id="view_template" type="text" /><br/>
-                <label for="view_formview">表单视图 ? :</label><input id="view_formview" type="checkbox" value="true"/><br/>
+                <label for="view_class">视图类型:</label>
+                <select id="view_class">
+                	
+                </select><br/>
+                <label for="view_hasExtendClass">定义派生类 ? :</label><input id="view_hasExtendClass" type="checkbox" value="true"/><br/>
+                <label for="view_namespaceSelect">编辑命名空间: </label>
+				<select id="view_namespaceSelect" disabled="disabled">
+					<option value="0">选择命名空间...</option>
+					<!-- 命名空间数据放在这里 -->
+				</select>
+				\
+				<input id="view_className" type="text" disabled="disabled"/><br />
+				<label for="view_extendClass">派生类: </label><input id="view_extendClass" type="text" style="width:400px" disabled="disabled" /><br />
+				
                 <label for="view_model">数据交换对应的模型:</label>
                 <select id="view_model">
                     <option value="0">请选择</option>
@@ -49,7 +63,7 @@
 				</table>
 				<a href="#" id="add_view_model_tr">添加</a><br/>
 				<input id="view_dataexchange" type="hidden" />
-				<input id="view_submit" class="submitBtn" type="button" value ="保存"/>
+				<!--<input id="view_submit" class="submitBtn" type="button" value ="保存"/>-->
 			</div>
 			<div id='widget_property' class="propertys">
 				<h1>控件属性</h1>
@@ -67,7 +81,7 @@
 				<div id="other_property">
 					
 				</div>
-				<input id="widget_submit" class="submitBtn" type="button" value ="保存"/>
+				<!--<input id="widget_submit" class="submitBtn" type="button" value ="保存"/>-->
 			</div>
             <div id='verifier_property' class="propertys">
             	<h1>校验器属性</h1>
@@ -83,7 +97,7 @@
                 <div id="verifier_more_property">
                 	
                 </div>
-                <input id="verifier_submit" class="submitBtn" type="button" value ="保存"/>
+                <!--<input id="verifier_submit" class="submitBtn" type="button" value ="保存"/>-->
             </div>
             <div id='model_property' class="propertys">
             	<h1>模型属性</h1>
@@ -100,7 +114,7 @@
                 </div>
                 <input id="model_orm-data" type="hidden"/>
                 <input id="model_widgetcolumbmap" type="hidden"/>
-                <input id="model_submit" class="submitBtn" type="button" value ="保存"/>
+                <!--<input id="model_submit" class="submitBtn" type="button" value ="保存"/>-->
             </div>
 		</div>
 		

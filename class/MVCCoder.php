@@ -105,7 +105,7 @@ class MVCCoder extends Controller
 					$sSubFolder = preg_replace('|[\\/]$|', '', $sSubFolder) ;
 					
 					$arrNamespacesInfo[$sNamespace.'\\'.str_replace('/','\\',$sSubFolder)] = array(
-						'folder' => $sFolderPath.'\\'.$sSubFolder ,
+						'folder' => $sFolderPath.'/'.$sSubFolder ,
 						'extension' => $sExtensionName ,
 					) ;
 				}

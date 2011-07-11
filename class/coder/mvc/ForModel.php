@@ -8,17 +8,15 @@ use oc\ext\developtoolbox\coder\CoderBase;
 
 class ForModel extends CoderBase
 {
+	public function __construct($arrData,$arrNotEmptys=array())
+	{
+		parent::__construct($arrData,array('name')) ;			
+	}
+	
 	public function generate(IOutputStream $aDev)
 	{
-		foreach( array('name') as $sKey )
-		{
-			if( empty($this->arrData[$sKey]) )
-			{
-				throw new Exception("缺少必要的数据：%s",$sKey) ;
-			}
-		}
-		
-		$sCode = '$this->'.$this->arrData['name'] ;
+		$sCode = "// create models -------------\r\n" ;
+		$sCode.= '$this->'.$this->arrData['name'] ;
 			
 		// 创建一个空模型
 		if( empty($this->arrData['orm-start']) )

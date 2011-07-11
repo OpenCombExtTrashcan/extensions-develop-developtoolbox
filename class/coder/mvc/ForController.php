@@ -7,17 +7,14 @@ use oc\ext\developtoolbox\coder\CoderBase;
 
 class ForController extends CoderBase
 {
+	public function __construct($arrData,$arrNotEmptys=array())
+	{
+		parent::__construct($arrData,array('filename','classname','namespace')) ;			
+	}
+	
 	public function generate(IOutputStream $aDev)
 	{
-		foreach( array('filename','classname','namespace') as $sKey )
-		{
-			if( empty($this->arrData[$sKey]) )
-			{
-				throw new Exception("缺少必要的数据：%s",$sKey) ;
-			}
-		}
-		
-		$this->generateByUINgin('code_controller.template.php') ;
+		$this->generateByUINgin('code_controller.template.php',$aDev) ;
 	}
 	
 }

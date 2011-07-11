@@ -351,15 +351,17 @@ jQuery(function () {
 	});
 	
 	//鼠标浮动在对象tr上方的时候显示subbuttons
-	treeTable.find("tbody").find("tr").live("mouseover",function(){
-		subBtnsDisplay();
+	treeTable.find("tbody").find("tr").live("mouseover",trMouseOver);
+	function trMouseOver(){
+		subBtnsDisplay(true);
 		subBtnsPosition(jQuery(this));
 		accessOfBtns(jQuery(this));
-	});
-	treeTable.find("tbody").find("tr").live("mouseout",function(){
-		subBtnsDisplay();
+	}
+	treeTable.find("tbody").find("tr").live("mouseout",trMouseOut);
+	function trMouseOut(){
+		subBtnsDisplay(false);
 		accessOfBtns(null);
-	});
+	}
 	
 	//添加子对象按钮功能
 	jQuery(".subButtons").click(function(){
@@ -381,8 +383,14 @@ jQuery(function () {
 		makeNewNode(selectedTr,newNodeName,sNewType);
 		return false;
 	});
-	function subBtnsDisplay(){
-		jQuery("#subToolPanel").toggle();
+	//控制按钮显示或者消失,以前的版本没有参数,但是那样ubuntu下会显示错乱
+	function subBtnsDisplay(bDisplay){
+		if(bDisplay){
+			jQuery("#subToolPanel").css('display','block');
+		}else{
+			jQuery("#subToolPanel").css('display','none');
+		}
+		
 	}
 	function subBtnsPosition(aWantedBy){
 		var aSubToolPanel = jQuery("#subToolPanel");
@@ -417,6 +425,7 @@ jQuery(function () {
 		}
 		jQuery("#subToolPanel").appendTo(treeTable);
 		removeNode(aNodeWantToDel);
+		trMouseOut();
 		return;
 	}
 	

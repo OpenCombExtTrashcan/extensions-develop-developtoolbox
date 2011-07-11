@@ -435,10 +435,6 @@ jQuery(function () {
 		setSelected(jQuery(this));
 	});
 	
-	//属性提交property
-	// jQuery(".submitBtn").live("click",function(){
-	jQuery("#property input,#property select").live("focusout",saveForm);
-
 	//保存表单
 	function saveForm(){
 		var aSelected = jQuery(".selected");	
@@ -512,7 +508,7 @@ jQuery(function () {
 		var aNewInput = aTd.find("input");
 		aNewInput.focus();
 		aNewInput.live("focusout",function(){
-			var sNewValue = jQuery(this).val();
+			var sNewValue = aNewInput.val();
 			aTd.text(sNewValue);
 			saveOptionsData();
 		});
@@ -530,7 +526,7 @@ jQuery(function () {
 	//保存option数据到widget_options的data中
 	function saveOptionsData(){
 		var arrOptions = [];
-		$.each(jQuery("#widget_options_table tbody tr"),function(i,n){
+		jQuery("#widget_options_table tbody tr").each(function(i,n){
 			var arrAOption = [];
 			if(jQuery(n).attr("id") == "modeify_options"){
 				return true;
@@ -635,7 +631,7 @@ jQuery(function () {
 		target.append(sOrm);
 	}
 	//用户请求添加一层orm关系
-	jQuery("#model_orm_div input:checkbox").live("click",function(){
+	jQuery("#model_orm_div").find("input").live("change",function(){
 		if(jQuery(this).prop("checked")){
 			//添加层次
 			addOrmTree(jQuery(this).parents("li").first(),jQuery(this).attr("id").split("|")[0]);
@@ -896,4 +892,13 @@ jQuery(function () {
 	jQuery("#save_code").click(function(){
 		generateCode(true);
 	});
+	
+		//属性提交property
+	// jQuery(".submitBtn").live("click",function(){
+	jQuery("#controller_property input,#controller_property select").live("focusout",saveForm);
+	jQuery("#view_property input,#view_property select").live("focusout",saveForm);
+	jQuery("#widget_property input,#widget_property select").live("focusout",saveForm);
+	jQuery("#verifier_property input,#verifier_property select").live("focusout",saveForm);
+	jQuery("#model_property input,#model_property select").live("change",saveForm);
+	
 });

@@ -61,9 +61,7 @@ class MVCCoder extends Controller
 	{
 		$arrNamespacesInfo = array() ;
 		$arrControllerClasses = array() ;
-		$arrViewClasses = array(
-				'oc\\mvc\\view'
-		) ;
+		$arrViewClasses = array( 'oc\\mvc\\view' ) ;
 		
 		foreach( $aClassLoader->namespaceIterator() as $sNamespace)
 		{
@@ -120,12 +118,16 @@ class MVCCoder extends Controller
 					
 					$sFullClass = $sNamespace . '\\' . (dirname($sSubFolder)=='.'? '': (dirname($sSubFolder).'\\')) . $sClass ;
 				
-					if( class_exists($sFullClass) and is_subclass_of($sFullClass,'jc\\mvc\\controller\\IController') )
+					if(!class_exists($sFullClass))
+					{
+						continue ;
+					}
+					if(  is_subclass_of($sFullClass,'jc\\mvc\\controller\\IController') )
 					{
 						$arrControllerClasses[] = $sFullClass ;
 					}
 					
-					if( class_exists($sFullClass) and is_subclass_of($sFullClass,'jc\\mvc\\view\\IView') )
+					if( is_subclass_of($sFullClass,'jc\\mvc\\view\\IView') )
 					{
 						$arrViewClasses[] = $sFullClass ;
 					}

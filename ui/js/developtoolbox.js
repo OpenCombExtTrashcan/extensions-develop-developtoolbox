@@ -785,6 +785,9 @@ jQuery(function () {
 	//初始化数据关系widget和column选项
 	function initLastViewWidgetAndColumnSelect(sModelId){
 		//column
+		
+		//检验model是否已经建立好orm关系
+		if(!ormTableColumn[sModelId]) return; 
 		var arrColumnOptions = ormTableColumn[sModelId].split(" ");
 		$.each(arrColumnOptions,function(i,v){
 			if(v != ""){

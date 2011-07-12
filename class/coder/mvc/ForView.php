@@ -21,11 +21,6 @@ class ForView extends CoderBase
 	{
 		return !empty($this->arrData['belongsController']) ;
 	}
-
-	public function createWidgetCoder()
-	{
-		
-	}
 }
 
 ?>

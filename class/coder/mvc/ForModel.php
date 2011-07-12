@@ -16,7 +16,7 @@ class ForModel extends CoderBase
 	public function generate(IOutputStream $aDev)
 	{
 		$sCode = "// create models -------------\r\n" ;
-		$sCode.= '$this->'.$this->arrData['name'] ;
+		$sCode.= '		$this->'.$this->arrData['name'] ;
 			
 		// 创建一个空模型
 		if( empty($this->arrData['orm-start']) )

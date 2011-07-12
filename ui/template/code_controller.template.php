@@ -8,7 +8,7 @@ class {=$arrData['classname']} extends Controller
 	protected function init()
 	{
 		<foreach for="$theCoder->childrenIterator('model')" item='arrChild'><nl />
-		{? ob_flush() }{? \oc\ext\developtoolbox\coder\mvc\ForModel::createInstance($arrChild)->generate($theDevice)}<clear />
+		{? ob_flush() }{? \oc\ext\developtoolbox\coder\mvc\ForModel::createInstance(array($arrChild))->generate($theDevice)}<clear />
 		</foreach><nl /><clear />
 
 		<foreach for="$theCoder->childrenIterator('view')" item='arrView'><clear />

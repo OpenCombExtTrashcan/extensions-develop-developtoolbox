@@ -105,7 +105,7 @@ jQuery(function () {
 	//还原属性栏内容
 	function getProperties(aPropertyPage,aData){
 		//先看看是不是widget类型,如果是widget类型,那么先组合附表单
-		if( aData["coder"] == "widget" && aData["classname"] != undefined){  //处理select属性附属页面
+		if( aData["coder"] == "widget" && aData["widgetType"] != undefined){  //处理select属性附属页面
 			widgetTypeChange(aData["classname"]);
 		}
 		//先看看是不是verifier类型,如果是verifier类型,那么先组合附表单

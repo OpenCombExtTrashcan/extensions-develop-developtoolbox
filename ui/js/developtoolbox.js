@@ -234,6 +234,10 @@ jQuery(function () {
 	
 	//获得父node
 	function getParent(aNode){
+		if(!aNode){
+			throw 'getParent() 接受了非法的aNode 参数';
+			return;
+		}
 		var arrClasses = aNode.attr("class").split(" ");
 		var sParentId = "";
 		for(var key in arrClasses){
@@ -512,7 +516,8 @@ jQuery(function () {
 		//修正对象列表中的ID和text
 		// var name = jQuery("#"+sSubmitType+"_property .object_name").val();
 		var name = aForm.find('.object_name').val();
-		aSelected.attr("id",escapeId(name)).find("td b").text(name);
+		aSelected.find("td b").text(name);
+		//aSelected.attr("id",escapeId(name)).find("td b").text(name);
 		//数据保存到tr对象
 		//aSelected.data("property",dataObject);
 	}

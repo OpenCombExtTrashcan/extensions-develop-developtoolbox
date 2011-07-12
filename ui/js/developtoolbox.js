@@ -151,7 +151,7 @@ jQuery(function () {
 	function widgetTypeChange(widgetClass){
 		var sWidgetClass = "";
 		if(widgetClass == null){
-			sWidgetClass = jQuery("#widget_property #widget_classname").val();
+			sWidgetClass = jQuery("#widget_property #widget_widgetType").val();
 		}else{
 			sWidgetClass = widgetClass;
 		}
@@ -490,7 +490,7 @@ jQuery(function () {
 	
 	
 	//widget 类型选择
-	jQuery("#widget_classname").live("change",function(){
+	jQuery("#widget_widgetType").live("change",function(){
 		widgetTypeChange(null);												   
 	});
 	
@@ -581,7 +581,7 @@ jQuery(function () {
 	}
 	
 	//
-	jQuery("#verifier_class").live("change",function(){
+	jQuery("#verifier_verifierType").live("change",function(){
 		rebuildVerifierProperty(jQuery(this).val());
 	});
 	
@@ -854,6 +854,10 @@ jQuery(function () {
 	$("#view_hasExtendClass").live("change",function(){
 		if($(this).prop("checked")){
 			$("#view_namespaceSelect ,#view_className").prop("disabled",false);
+			if($('#view_className').val().length == 0 && $('#view_name').val().length > 0){
+				$('#view_className').val( $('#view_name').val() );
+				$("#view_className").val($('#view_name').val()[0].toUpperCase()+$('#view_name').val().substr(1));
+			}
 		}else{
 			$("#view_namespaceSelect ,#view_className").prop("disabled",true);
 		}

@@ -593,9 +593,9 @@ jQuery(function () {
 	//恢复verifier表单
 	function rebuildVerifierProperty(sType){
 		if(sType == "Length"){
-			clearVerifierProperty().append('<label for="verifier_min">从</label><input id="verifier_min" type="text" size="3"/><label for="verifier_max">到</label><input id="verifier_max" type="text"  size="3"/><br/>');
+			clearVerifierProperty().append('<label for="verifier_min">从</label><input id="verifier_min" type="text" size="3" value="-1"/><label for="verifier_max">到</label><input id="verifier_max" type="text" size="3" value="-1"/><br/>');
 		}else if(sType == "Number"){
-			clearVerifierProperty().append('<label for="verifier_bint">整数 ?</label><input id="verifier_bint" type="checkbox" /><br/>');
+			clearVerifierProperty().append('<label for="verifier_bint">整数 ?</label><input id="verifier_bint" type="checkbox" checked="checked"/><br/>');
 		}else{
 			clearVerifierProperty();
 		}
@@ -786,8 +786,9 @@ jQuery(function () {
 	function initLastViewWidgetAndColumnSelect(sModelId){
 		//column
 		
-		//检验model是否已经建立好orm关系
-		if(!ormTableColumn[sModelId]) return; 
+		//有的model没有建立好orm关系
+		if(!ormTableColumn[sModelId]) return;
+		
 		var arrColumnOptions = ormTableColumn[sModelId].split(" ");
 		$.each(arrColumnOptions,function(i,v){
 			if(v != ""){

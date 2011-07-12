@@ -336,10 +336,15 @@ jQuery(function () {
 	
 	//视图名称变化时自动生成template
 	jQuery("#view_name").keyup(function(){
-		if(extensionName == ""){
-			return;
+		// if(extensionName == ""){
+			// return;
+		// }
+		var name = jQuery(this).val();
+		if(name.length > 0){
+			name = name[0].toUpperCase()+name.substr(1);
 		}
-		jQuery("#view_template").val(jQuery(this).val()+".template.html");//extensionName + "_" +jQuery(this).val()+".template.html");
+		
+		jQuery("#view_template").val('view'+name+".template.html");//extensionName + "_" +jQuery(this).val()+".template.html");
 	});
 	
 	//添加按钮功能

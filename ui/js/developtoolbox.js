@@ -32,6 +32,13 @@ jQuery(function () {
 		return idForOrm;
 	}
 	
+	//树形列表中的checkbox 唯一id
+	var idTrCheckbox = 1;
+	function getIdTrCheckbox(){
+		idTrCheckbox = idTrCheckbox + 1;
+		return idTrCheckbox;
+	}
+	
 	//取得一个随机的名字
 	function getAName(){
 		var nLastNameIndex = Math.floor(Math.random()*arrGirlLastNames.length);
@@ -171,12 +178,31 @@ jQuery(function () {
 			alert("你有一个对象没有命名");
 			return false;
 		}
+		//需要对象额外执行代码时
+		var sCheckBoxsForProgram = '';
+		if(sNewType == 'view'){
+			var nCheckBoxsForProgramId1 = "trCheckbox_1_"+getIdTrCheckbox();
+			var nCheckBoxsForProgramId2 = "trCheckbox_2_"+getIdTrCheckbox();
+			sCheckBoxsForProgram = '<label for="'+nCheckBoxsForProgramId1+'">执行前加载数据</label><input id="'+nCheckBoxsForProgramId1+'" class="viewLoadData" type="checkbox"/>'
+									+'<label for="'+nCheckBoxsForProgramId2+'">处理表单提交</label><input id="'+nCheckBoxsForProgramId2+'" class="viewProSubmit" type="checkbox"/>';
+		}else if(sNewType == 'model'){
+			var nCheckBoxsForProgramId1 = "trCheckbox_1_"+getIdTrCheckbox();
+			var nCheckBoxsForProgramId2 = "trCheckbox_2_"+getIdTrCheckbox();
+			sCheckBoxsForProgram = '<label for="'+nCheckBoxsForProgramId1+'">执行前加载模型</label><input id="'+nCheckBoxsForProgramId1+'" class="modelLoadOrm" type="checkbox"/>'
+									+'<label for="'+nCheckBoxsForProgramId2+'">执行后保存模型</label><input id="'+nCheckBoxsForProgramId2+'" class="modelSaveOrm" type="checkbox"/>';
+		}
+		var sNewNodeHtml = '<tr id="'+ newNodeId +'"><td><span class="'+sNewType+'"></span><b>'+newNodeId+'</b></td><td></td><td>'+sCheckBoxsForProgram+'</td><td></td></tr>';
 		if(aParent==null){
 			//如果没有父对象,就建立一个顶级的对象
-			treeTable.append('<tr id="'+ newNodeId +'"><td><span class="'+sNewType+'"></span><b>'+newNodeId+'</b></td><td></td><td></td></tr>');
+			treeTable.append(sNewNodeHtml);
 		}else{
 			//如果有父对象,就建立一个子对象
-			aParent.after('<tr id="'+ newNodeId +'"><td><span class="'+sNewType+'"></span><b>'+newNodeId+'</b></td><td></td><td></td></tr>');	
+			var arrChildren = getChildren(aParent);
+			if(arrChildren.length > 0){
+				$(arrChildren[arrChildren.length - 1]).after(sNewNodeHtml);
+			}else{
+				aParent.after(sNewNodeHtml);
+			}
 		}
 		
 		var aNewNode = jQuery("#"+newNodeId);
@@ -912,6 +938,13 @@ jQuery(function () {
 		generateCode(true);
 	});
 	
+	// treeTable.find('tr').find('input:checkbox').live('click',function(){
+		// //模拟改变checked
+		// this.checked = true;
+		// //防止点到tr上去
+		// return false;
+	// });
+// 	
 	//属性提交property
 	jQuery("#controller_property input,#controller_property select").live("focusout",saveForm);
 	jQuery("#view_property input,#view_property select").live("focusout",saveForm);

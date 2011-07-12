@@ -180,13 +180,16 @@ h1 {
 	padding: .2em 0 .2em 1.5em;
 }
 #toolpanel .nameColumn {
-	width:30%;
+	width:20%;
 }
 #toolpanel .classColumn {
+	width:20%;
+}
+#toolpanel .programColumn {
 	width:30%;
 }
 #toolpanel .propertyColumn {
-	width:40%;
+	width:30%;
 }
 #toolpanel .tr_indent {
 	padding:0;

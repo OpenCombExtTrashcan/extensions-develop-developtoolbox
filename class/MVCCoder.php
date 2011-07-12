@@ -117,10 +117,11 @@ class MVCCoder extends Controller
 					$sClass = substr( $sFilename,0,strpos($sFilename,'.') ) ;
 					
 					$sFullClass = $sNamespace . '\\' . (dirname($sSubFolder)=='.'? '': (dirname($sSubFolder).'\\')) . $sClass ;
+					$sFullClass = str_replace('/', '\\', $sFullClass) ;
 				
-					if(!class_exists($sFullClass))
+					if(!class_exists($sFullClass,false))
 					{
-						continue ;
+						include_once $aIter->path() ;
 					}
 					if(  is_subclass_of($sFullClass,'jc\\mvc\\controller\\IController') )
 					{

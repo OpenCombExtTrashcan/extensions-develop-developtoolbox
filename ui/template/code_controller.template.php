@@ -7,15 +7,25 @@ class {=$arrData['classname']} extends Controller
 {
 	protected function init()
 	{
-		<foreach for="$theCoder->childrenIterator('model')" item='arrChild'><nl />
-		{? ob_flush() }{? \oc\ext\developtoolbox\coder\mvc\ForModel::createInstance(array($arrChild))->generate($theDevice)}<clear />
+		{? $aIter=$theCoder->childrenIterator('model'); }<clear />
+		<if "$aIter->valid()"><clear />
+		// ---------------------------------------------
+		// 创建模型<clear />
+		<foreach for="$aIter" item='arrChild'><nl />
+		{? ob_flush() }{? \oc\ext\developtoolbox\coder\mvc\Model::createInstance(array($arrChild))->generate($theDevice)}<clear />
 		</foreach><nl /><clear />
 
-		<foreach for="$theCoder->childrenIterator('view')" item='arrView'><clear />
-		{? $arrView['belongsController']='controller' }<clear />
-		{? ob_flush() }<clear />
-		{? \oc\ext\developtoolbox\coder\mvc\ForView::createInstance(array($arrView))->generate($theDevice)}<clear />
+		</if><nl />
+		{? $aIter=$theCoder->childrenIterator('view'); }<clear />
+		<if "$aIter->valid()"><clear />
+		// ---------------------------------------------
+		// 创建视图<clear />
+		<foreach for="$aIter" item='arrView'><nl /><clear />
+		{? $arrView['belongsController']='1' }<clear />
+		{? ob_flush() }{? \oc\ext\developtoolbox\coder\mvc\View::createInstance(array($arrView))->generate($theDevice)}<clear />
 		</foreach><nl />
+
+		</if><nl />
 		
 		{? $aIter=$theCoder->childrenIterator('controller'); }<clear />
 		<if "$aIter->valid()"><clear />

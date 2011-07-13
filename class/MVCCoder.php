@@ -1,7 +1,7 @@
 <?php
 namespace oc\ext\developtoolbox ;
 
-use oc\ext\developtoolbox\coder\mvc\ForController;
+use oc\ext\developtoolbox\coder\mvc\Controller as ControllerCoder;
 use jc\io\OutputStreamBuffer;
 use jc\mvc\model\db\orm\PrototypeAssociationMap;
 use jc\fs\FSOIterator;
@@ -32,17 +32,20 @@ class MVCCoder extends Controller
 			// 这里需要一个 coder 管理器
 			// todo
 			
-			$aCoder = new ForController($arrData) ;
+			$aCoder = new ControllerCoder($arrData) ;
 			
 			$aBuff = new OutputStreamBuffer() ;
 			$aCoder->generate($aBuff) ;
 		
 			echo highlight_string($aBuff->bufferBytes()) ;
+			
+			echo "<pre>" ;
+			print_r($arrData) ;
+			echo "</pre>" ;
 		}
 		
 		else
 		{
-			
 			// 反射 class namespace
 			list($arrNamespacesInfo,$arrControllerClasses,$arrViewClasses) = $this->scanExtensions( $this->application()->classLoader() ) ;
 			

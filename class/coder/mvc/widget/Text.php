@@ -3,9 +3,9 @@ namespace oc\ext\developtoolbox\coder\mvc\widget ;
 
 use jc\io\IOutputStream;
 use jc\lang\Exception;
-use oc\ext\developtoolbox\coder\CoderBase;
+use oc\ext\developtoolbox\coder\AbstractCoder;
 
-abstract class ForWidgetText extends ForWidget
+class Text extends Widget
 {	
 	public function generate(IOutputStream $aDev)
 	{

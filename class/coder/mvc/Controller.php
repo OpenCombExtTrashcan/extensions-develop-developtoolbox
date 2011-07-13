@@ -3,9 +3,9 @@ namespace oc\ext\developtoolbox\coder\mvc ;
 
 use jc\io\IOutputStream;
 use jc\lang\Exception;
-use oc\ext\developtoolbox\coder\CoderBase;
+use oc\ext\developtoolbox\coder\AbstractCoder;
 
-class ForController extends CoderBase
+class Controller extends AbstractCoder
 {
 	public function __construct($arrData,$arrNotEmptys=array())
 	{

@@ -4,9 +4,9 @@ namespace oc\ext\developtoolbox\coder\mvc ;
 use jc\io\IOutputStream;
 use jc\ui\xhtml\UIFactory;
 use jc\lang\Exception;
-use oc\ext\developtoolbox\coder\CoderBase;
+use oc\ext\developtoolbox\coder\AbstractCoder;
 
-class ForModel extends CoderBase
+class Model extends AbstractCoder
 {
 	public function __construct($arrData,$arrNotEmptys=array())
 	{
@@ -15,7 +15,7 @@ class ForModel extends CoderBase
 	
 	public function generate(IOutputStream $aDev)
 	{
-		$sCode = "// create models -------------\r\n" ;
+		$sCode = "// -- 模型:{$this->arrData['name']}\r\n" ;
 		$sCode.= '		$this->'.$this->arrData['name'] ;
 			
 		// 创建一个空模型

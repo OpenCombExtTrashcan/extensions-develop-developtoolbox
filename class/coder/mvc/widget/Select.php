@@ -1,0 +1,34 @@
+<?php
+namespace oc\ext\developtoolbox\coder\mvc\widget ;
+
+use jc\io\IOutputStream;
+use jc\lang\Exception;
+use oc\ext\developtoolbox\coder\CoderBase;
+
+class Select extends Widget
+{
+	public function generate(IOutputStream $aDev)
+	{
+		$this->generateByUINgin('code_widget_select.template.php',$aDev) ;
+	}
+	public function generateOptions(IOutputStream $aDev)
+	{
+		if( empty($this->arrData['options']) )
+		{
+			return ;
+		}
+			
+		$aDev->write("\r\n				// 为表单控件添加校验器") ;
+		
+		foreach($this->arrData['options'] as $arrOption)
+		{
+			$arrOption[0] = addslashes($arrOption[0]) ;
+			$arrOption[1] = addslashes($arrOption[1]) ;
+			$arrOption[2] = $arrOption[2]? ',true': '' ;
+
+			$aDev->write("\r\n				->addOption('{$arrOption[0]}','{$arrOption[1]}'{$arrOption[2]})") ;
+		}
+	}
+}
+
+?>

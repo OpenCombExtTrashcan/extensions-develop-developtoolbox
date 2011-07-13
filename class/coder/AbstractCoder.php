@@ -6,7 +6,7 @@ use jc\lang\Object;
 use jc\ui\xhtml\UIFactory;
 use jc\lang\Exception;
 
-abstract class CoderBase extends Object implements ICoder
+abstract class AbstractCoder extends Object implements ICoder
 {
 	public function __construct($arrData,$arrNotEmptys=array())
 	{

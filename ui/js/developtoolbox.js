@@ -20,7 +20,7 @@ jQuery(function () {
 	var sGirlNamesUsed = [];
 	
 	//数据对象
-	treeData ={"coder":"controller","filepath":"","classname":"","namespace":"","children":[]};
+	treeData ={"coder":"controller","filepath":"","classname":"","namespace":"","children":[],'coverExistFile':false};
 	
 	//为view显示字段而准备的数据对象
 	ormTableColumn = {};
@@ -202,20 +202,21 @@ jQuery(function () {
 			treeTable.append(sNewNodeHtml);
 		}else{
 			//如果有父对象,就建立一个子对象
-			var arrChildren = getChildren(aParent);
-			if(arrChildren.length > 0){
-				var aLastChildNode = $(arrChildren[arrChildren.length - 1]);
-				// var aLastChildNodeLevel = getLevel(aLastChildNode);
-				// var aNextTrs = aLastChildNode.nextAll('tr');
-				// if(aNextTrs.length > 0){
-					// aNextTrs.each(function(i,v){
-						// if(getLevel($(v)) < aLastChildNodeLevel){
-							// $(v).before(sNewNodeHtml);
-						// }
-					// });
-				// }else{
-					aLastChildNode.after(sNewNodeHtml);
-				// }
+			var arrBrothers = getChildren(aParent);
+			if(arrBrothers.length > 0){
+				var aLastBrotherNode = $(arrBrothers[arrBrothers.length - 1]);
+				var aLastBrotherNodeLevel = getLevel(aLastBrotherNode);
+				var aNextTrs = aLastBrotherNode.nextAll('tr');
+				if(aNextTrs.length > 0){
+					aNextTrs.each(function(i,v){
+						if(getLevel($(v)) <= aLastBrotherNodeLevel){
+							$(v).before(sNewNodeHtml);
+							return false;
+						}
+					});
+				}else{
+					aLastBrotherNode.after(sNewNodeHtml);
+				}
 			}else{
 				aParent.after(sNewNodeHtml);
 			}
@@ -997,6 +998,11 @@ jQuery(function () {
 			}
 		}
 		e.stopPropagation();//停止冒泡
+	});
+	
+	//覆盖同名文件?
+	$('#coverExistFile').change(function(){
+		treeData['coverExistFile'] = this.checked;
 	});
 	
 	//属性提交property

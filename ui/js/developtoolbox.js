@@ -986,17 +986,18 @@ jQuery(function () {
 			
 			var data = aParentTr.data('property');
 			if(data['model'] != 0){
-				if($(this).attr('class') == generationLoadWidgets){
-					aParentTr.data('property')[generationLoadWidgets] = this.checked;
-					$('#'+data['model']).find('.'+generationLoadModel).prop('checked' , this.checked );
-					$('#'+data['model']).data('property')[generationLoadModel] = this.checked;
-				}else if($(this).attr('class') == generationProcessForm){
-					aParentTr.data('property')[generationProcessForm] = this.checked;
+				if( this.checked && $(this).attr('class') == generationLoadWidgets){
+					if(this.checked){
+						$('#'+data['model']).find('.'+generationLoadModel).prop('checked' , true );
+						$('#'+data['model']).data('property')[generationLoadModel] = true;
+					}
+				}else if( this.checked && $(this).attr('class') == generationProcessForm ){
 					$('#'+data['model']).find('.'+generationSaveModel).prop('checked' , this.checked );
 					$('#'+data['model']).data('property')[generationSaveModel] = this.checked;
 				}
 			}
 		}
+		aParentTr.data('property')[$(this).attr('class')] = this.checked;
 		e.stopPropagation();//停止冒泡
 	});
 	

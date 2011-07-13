@@ -20,7 +20,7 @@ jQuery(function () {
 	var sGirlNamesUsed = [];
 	
 	//数据对象
-	treeData ={"coder":"controller","filename":"","classname":"","namespace":"","children":[]};
+	treeData ={"coder":"controller","filepath":"","classname":"","namespace":"","children":[]};
 	
 	//为view显示字段而准备的数据对象
 	ormTableColumn = {};
@@ -183,13 +183,13 @@ jQuery(function () {
 		if(sNewType == 'view'){
 			var nCheckBoxsForProgramId1 = "trCheckbox_1_"+getIdTrCheckbox();
 			var nCheckBoxsForProgramId2 = "trCheckbox_2_"+getIdTrCheckbox();
-			sCheckBoxsForProgram = '<label for="'+nCheckBoxsForProgramId1+'">执行前加载数据</label><input id="'+nCheckBoxsForProgramId1+'" class="viewLoadData" type="checkbox"/>'
-									+'<label for="'+nCheckBoxsForProgramId2+'">处理表单提交</label><input id="'+nCheckBoxsForProgramId2+'" class="viewProSubmit" type="checkbox"/>';
+			sCheckBoxsForProgram = '<input id="'+nCheckBoxsForProgramId1+'" class="viewLoadData" type="checkbox"/><label for="'+nCheckBoxsForProgramId1+'">执行前加载数据</label>'
+									+'<input id="'+nCheckBoxsForProgramId2+'" class="viewProSubmit" type="checkbox"/><label for="'+nCheckBoxsForProgramId2+'">处理表单提交</label>';
 		}else if(sNewType == 'model'){
 			var nCheckBoxsForProgramId1 = "trCheckbox_1_"+getIdTrCheckbox();
 			var nCheckBoxsForProgramId2 = "trCheckbox_2_"+getIdTrCheckbox();
-			sCheckBoxsForProgram = '<label for="'+nCheckBoxsForProgramId1+'">执行前加载模型</label><input id="'+nCheckBoxsForProgramId1+'" class="modelLoadOrm" type="checkbox"/>'
-									+'<label for="'+nCheckBoxsForProgramId2+'">执行后保存模型</label><input id="'+nCheckBoxsForProgramId2+'" class="modelSaveOrm" type="checkbox"/>';
+			sCheckBoxsForProgram = '<input id="'+nCheckBoxsForProgramId1+'" class="modelLoadOrm" type="checkbox"/><label for="'+nCheckBoxsForProgramId1+'">执行前加载模型</label>'
+									+'<input id="'+nCheckBoxsForProgramId2+'" class="modelSaveOrm" type="checkbox"/><label for="'+nCheckBoxsForProgramId2+'">执行后保存模型</label>';
 		}
 		var sNewNodeHtml = '<tr id="'+ newNodeId +'"><td><span class="'+sNewType+'"></span><b>'+newNodeId+'</b></td><td></td><td>'+sCheckBoxsForProgram+'</td><td></td></tr>';
 		if(aParent==null){
@@ -345,7 +345,7 @@ jQuery(function () {
 		}
 		if(namespaceSelectValue == 0 || aClassName.val().length == 0){
 			jQuery("#namespaceComplete").addClass("noFileName").text("还没有确定命名空间...");
-			treeData["filename"] = "";
+			treeData["filepath"] = "";
 			treeData["namespace"] = "";
 			treeData["classname"] = "";
 			return;
@@ -353,7 +353,7 @@ jQuery(function () {
 			var filepath = namespaceData[namespaceSelectValue]["folder"];
 			fileName = filepath+'/'+aClassName.val()+".php";
 			jQuery("#namespaceComplete").removeClass("noFileName").text(fileName);
-			treeData["filename"] = fileName;
+			treeData["filepath"] = fileName;
 			treeData["namespace"] = namespaceSelectValue;
 			treeData["classname"] = aClassName.val();
 			extensionName = namespaceData[namespaceSelectValue]["extension"];
@@ -943,13 +943,12 @@ jQuery(function () {
 		generateCode(true);
 	});
 	
-	// treeTable.find('tr').find('input:checkbox').live('click',function(){
-		// //模拟改变checked
-		// this.checked = true;
-		// //防止点到tr上去
-		// return false;
-	// });
-// 	
+	//对象树中checkbox的点击事件
+	treeTable.find('input:checkbox').live('click',function(e){
+		var data = $(this).data('property');
+		e.stopPropagation();//停止冒泡
+	});
+	
 	//属性提交property
 	jQuery("#controller_property input,#controller_property select").live("focusout",saveForm);
 	jQuery("#view_property input,#view_property select").live("focusout",saveForm);

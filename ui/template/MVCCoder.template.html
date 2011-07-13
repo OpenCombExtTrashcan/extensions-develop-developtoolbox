@@ -9,7 +9,7 @@
   <script type="text/javascript" src="developtoolbox.js"></script>
 <div id="main">
 	<div id="namespace">
-		<label for="namespaceSelect">编辑命名空间: </label>
+		<label for="namespaceSelect">类名: </label>
 		<select id="namespaceSelect">
 			<option value="0">选择命名空间...</option>
 			<!-- 命名空间数据放在这里 -->
@@ -17,7 +17,7 @@
 		\
 		<input id="className" type="text" />
 	</div>
-	<div><b>命名空间:</b><span id="namespaceComplete">还没有确定命名空间...</span></div>
+	<div><b>类文件路径:</b><span id="namespaceComplete">还没有确定命名空间...</span></div>
 	<div id="right">
 		<div id="property">
             <div id='controller_property' class="propertys">
@@ -37,15 +37,15 @@
                 <select id="view_class">
                 	
                 </select><br/>
-                <label for="view_hasExtendClass">定义派生类 ? :</label><input id="view_hasExtendClass" type="checkbox" value="true"/><br/>
-                <label for="view_namespaceSelect">编辑命名空间: </label>
-				<select id="view_namespaceSelect" disabled="disabled">
+                <label for="view_aloneClass">定义派生类 ? :</label><input id="view_aloneClass" type="checkbox" value="true"/><br/>
+                <label for="view_namespace">类名: </label>
+				<select id="view_namespace" disabled="disabled">
 					<option value="0">选择命名空间...</option>
 					<!-- 命名空间数据放在这里 -->
 				</select>
 				\
-				<input id="view_className" type="text" disabled="disabled"/><br />
-				<label for="view_extendClass">派生类: </label><input id="view_extendClass" type="text" style="width:100%" disabled="disabled" /><br />
+				<input id="view_classname" type="text" disabled="disabled"/><br />
+				<label for="view_filepath">类文件路径: </label><input id="view_filepath" type="text" style="width:90%" disabled="disabled" /><br />
 				
                 <label for="view_model">数据交换对应的模型:</label>
                 <select id="view_model">

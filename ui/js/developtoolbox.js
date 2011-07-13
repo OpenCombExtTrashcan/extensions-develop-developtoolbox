@@ -76,6 +76,7 @@ jQuery(function () {
 	function setSelected(aNode){
 		if(aNode.hasClass("selected")){
 			aNode.removeClass("selected");
+			$('.propertys').hide(0);
 			// changeBtnStateByTrType(null);
 			// getPropertyPage(null);
 			return;
@@ -343,6 +344,9 @@ jQuery(function () {
 	
 	//删除node ,包括子node
 	function removeNode(aSelected){
+		if(aSelected.hasClass('selected')){
+			$(".propertys").hide(0);
+		}
 		var arrChildren = getChildren(aSelected);
 		if(arrChildren != false){
 			jQuery.each(arrChildren,function(i,n){

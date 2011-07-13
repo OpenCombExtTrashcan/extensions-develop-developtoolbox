@@ -1,6 +1,8 @@
 <?php
 namespace oc\ext\developtoolbox\coder\mvc ;
 
+use jc\fs\File;
+
 use jc\pattern\composite\Container;
 
 use jc\io\OutputStreamBuffer;
@@ -48,7 +50,13 @@ class View extends AbstractCoder
 		}
 		
 		// 生成对应的模板文件
-		$this->arrData['template'] ;
+		list($sExtName,$sTemplateFolder) = explode(':',$this->arrData['templateFolder']) ;
+		$sTemplateFolder = $this->application()->extensionsDir().$this->application()->extensions()->extension($sExtName)->metainfo()->installFolder().$sTemplateFolder.'/' ;
+		$sTemplatePath = File::formatPath($sTemplateFolder.$this->arrData['template']) ;
+		
+		$aDevPool[$sTemplatePath] = new OutputStreamBuffer() ;
+		$this->generateByUINgin('code_view_template.template.php',$aDevPool[$sTemplatePath],$aDevPool) ;
+		
 	}
 
 	public function detectUsedClasses(Container $aClasses,$bExcludeSelf=false)

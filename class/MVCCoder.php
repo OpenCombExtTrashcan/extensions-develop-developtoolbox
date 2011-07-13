@@ -1,6 +1,8 @@
 <?php
 namespace oc\ext\developtoolbox ;
 
+use jc\message\Message;
+
 use jc\fs\Dir;
 
 use jc\fs\File;
@@ -42,17 +44,51 @@ class MVCCoder extends Controller
 			
 			$aCoder->generate($aOutputDevPool) ;
 		
+			// 保存到文件
+			if( $this->aParams['act_generate_save'] )
+			{
+				foreach($aOutputDevPool as $sFilePath=>$aOutputDev)
+				{
+					if( !$bFileExists=file_exists($sFilePath) or $this->aParams['cover'] )
+					{
+						$aFile = new File($sFilePath) ;
+						$aOutput = $aFile->openWriter() ;
+						$aOutput->write($aOutputDev->bufferBytes(false)) ;
+						$aOutput->close() ;
+						
+						if( $bFileExists )
+						{
+							$this->messageQueue()->create(Message::warning,"文件已经覆盖：%s",$sFilePath) ;
+						}
+						else 
+						{
+							$this->messageQueue()->create(Message::success,"文件已经保存：%s",$sFilePath) ;
+						}
+					}
+					else 
+					{
+						$this->messageQueue()->create(Message::error,"文件已经存在：%s",$sFilePath) ;
+					}
+				}
+				
+				$this->messageQueue()->display() ;
+			}
 			
 			foreach($aOutputDevPool as $sFilePath=>$aOutputDev)
 			{
-				echo "<hr />创建文件：", $sFilePath, "<br />\r\n" ;
-				highlight_string($aOutputDev->bufferBytes()) ;
-				echo "<br />\r\n<br />\r\n" ;
+				if($this->aParams['act_generate_save'])
+				{
+					echo "<hr />", $sFilePath, ":<br />\r\n" ;
+					highlight_string($aOutputDev->bufferBytes()) ;
+					echo "<br />\r\n<br />\r\n" ;
+				}
+				else 
+				{
+					echo "-------------------------------------------------------------------------\r\n"
+								, $sFilePath, ":\r\n" ;
+					echo $aOutputDev->bufferBytes(), "\r\n\r\n\r\n" ; ;
+				}
 			}
-			
-			echo "<pre>" ;
-			print_r($arrData) ;
-			echo "</pre>" ;
 		}
 		
 		else
@@ -201,10 +237,10 @@ class MVCCoder extends Controller
 		
 		$arrFolders = array() ;
 		
-		foreach($this->application()->extensionsIterator() as $aExtension)
+		foreach($this->application()->extensions()->iterator() as $aExtension)
 		{
 			$sExtName = $aExtension->metainfo()->name() ;
-			$sExtPath = $this->application()->extenstionsDir().$aExtension->metainfo()->installFolder();
+			$sExtPath = $this->application()->extensionsDir().$aExtension->metainfo()->installFolder();
 			$sExtPath = File::formatPath($sExtPath) ;
 			$nExtPathLen = strlen($sExtPath) ;
 		

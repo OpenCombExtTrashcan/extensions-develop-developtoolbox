@@ -949,6 +949,14 @@ jQuery(function () {
 		$("#view_filepath").val(filepath+'/'+className.val()+'.php');
 	}
 	
+	//初始化 视图命名控件 选择
+	function initView_nameSpaceSelect(){
+		for(var key in viewNamespace){
+			jQuery("#view_templateFolder").append("<option value='"+viewNamespace[key]+"'>"+viewNamespace[key]+"</option>");
+		}
+	}
+	initView_nameSpaceSelect();
+	
 	//用ajax发送编译请求
 	function generateCode(bDoSave){
 		var encoded = $.toJSON(treeData);

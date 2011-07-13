@@ -4,6 +4,7 @@
 	var controllerNames ={= $sDefineAllControllerClassesCode };
 	var ormData = {= $sDefineModelsCode };
 	var viewNames = {= $sDefineAllViewClassesCode };
+	var viewNamespace = {= $sDefineUiTemplateFolders };
   </script>
   <script type="text/javascript" src="jquery.json-2.2.min.js"></script>
   <script type="text/javascript" src="developtoolbox.js"></script>
@@ -32,7 +33,10 @@
             <div id='view_property' class="propertys">
             	<h1>视图属性</h1>
                 <label for="view_name">名称:</label><input id="view_name" type="text" class="object_name" /><br/>
-                <label for="view_template">模版:</label><input id="view_template" type="text" /><br/>
+                <label for="view_templateFolder">模板文件:</label>
+                <select id="view_templateFolder">
+                    <option value="0">请选择模板目录</option>
+                </select> / <input id="view_template" type="text" style="width:350px"/><br/>
                 <label for="view_isForm">表单视图?:</label><input id="view_isForm" type="checkbox" /><br/>
                 <label for="view_class">视图类型:</label>
                 <select id="view_class">

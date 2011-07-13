@@ -656,7 +656,7 @@ jQuery(function () {
 	//恢复verifier表单
 	function rebuildVerifierProperty(sType){
 		if(sType == "Length"){
-			clearVerifierProperty().append('<label for="verifier_min">从</label><input id="verifier_min" type="text" size="3" value="-1"/><label for="verifier_max">到</label><input id="verifier_max" type="text" size="3" value="30" /><br/>');
+			clearVerifierProperty().append('<label for="verifier_min">从</label><input id="verifier_min" type="text" size="3"/><label for="verifier_max">到</label><input id="verifier_max" type="text" size="3" /><br/>');
 		}else if(sType == "Number"){
 			clearVerifierProperty().append('<label for="verifier_bint">整数 ?</label><input id="verifier_bint" type="checkbox" checked="checked"/><br/>');
 		}else{

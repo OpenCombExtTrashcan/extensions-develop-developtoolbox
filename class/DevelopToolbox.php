@@ -10,6 +10,7 @@ class DevelopToolbox extends Extension
 		///////////////////////////////////////
 		// 向系统添加控制器
 		$this->application()->accessRouter()->addController("oc\\ext\\developtoolbox\\MVCCoder",'coder.mvc') ;
+		$this->application()->accessRouter()->addController("oc\\ext\\developtoolbox\\ORMCoder",'coder.orm') ;
 	}
 	
 }

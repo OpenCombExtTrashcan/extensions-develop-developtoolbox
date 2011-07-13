@@ -20,7 +20,7 @@ jQuery(function () {
 	var sGirlNamesUsed = [];
 	
 	//数据对象
-	treeData ={"coder":"controller","filepath":"","classname":"","namespace":"","children":[],'coverExistFile':false};
+	treeData ={"coder":"controller","filepath":"","classname":"","namespace":"","children":[]};
 	
 	//为view显示字段而准备的数据对象
 	ormTableColumn = {};
@@ -965,9 +965,13 @@ jQuery(function () {
 	function generateCode(bDoSave){
 		var encoded = $.toJSON(treeData);
 		var url = window.location;
+		var bCoverExistFile = '0';
+		if($('#coverExistFile').prop('checked')){
+			bCoverExistFile = '1';
+		}
 		var data = "&data="+encoded+"&act=generate";
 		if(bDoSave){
-			data += "&act.generate.save=1";
+			data += "&act.generate.save=1&cover="+bCoverExistFile;
 		}
 		$.ajax({
 			type: "POST",
@@ -1011,11 +1015,6 @@ jQuery(function () {
 		}
 		aParentTr.data('property')[$(this).attr('class')] = this.checked;
 		e.stopPropagation();//停止冒泡
-	});
-	
-	//覆盖同名文件?
-	$('#coverExistFile').change(function(){
-		treeData['coverExistFile'] = this.checked;
 	});
 	
 	//属性提交property

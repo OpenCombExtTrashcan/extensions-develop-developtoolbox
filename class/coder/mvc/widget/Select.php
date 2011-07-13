@@ -1,15 +1,16 @@
 <?php
 namespace oc\ext\developtoolbox\coder\mvc\widget ;
 
+use jc\util\IHashTable;
 use jc\io\IOutputStream;
 use jc\lang\Exception;
 use oc\ext\developtoolbox\coder\CoderBase;
 
 class Select extends Widget
 {
-	public function generate(IOutputStream $aDev)
+	public function generate(IHashTable $aDevPool,IOutputStream $aDev=null)
 	{
-		$this->generateByUINgin('code_widget_select.template.php',$aDev) ;
+		$this->generateByUINgin('code_widget_select.template.php',$aDev,$aDevPool) ;
 	}
 	public function generateOptions(IOutputStream $aDev)
 	{

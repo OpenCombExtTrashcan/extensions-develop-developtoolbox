@@ -3,10 +3,11 @@
 namespace oc\ext\developtoolbox\coder\mvc\verifier ;
 
 use jc\io\IOutputStream;
+use jc\util\IHashTable;
 
 class Length extends VerifierCoder
 {
-	public function generate(IOutputStream $aDev)
+	public function generate(IHashTable $aDevPool,IOutputStream $aDev=null)
 	{
 		$nMin = intval($this->arrData['min']) ;
 		$nMax = intval($this->arrData['max']) ;

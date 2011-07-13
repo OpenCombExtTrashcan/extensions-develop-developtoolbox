@@ -2,11 +2,11 @@
 namespace oc\ext\developtoolbox\coder\mvc\widget ;
 
 use oc\ext\developtoolbox\coder\mvc\verifier\VerifierCoder;
-
 use jc\lang\Object;
 use jc\io\IOutputStream;
 use jc\lang\Exception;
 use oc\ext\developtoolbox\coder\AbstractCoder;
+use jc\util\IHashTable;
 
 abstract class Widget extends AbstractCoder
 {
@@ -19,7 +19,7 @@ abstract class Widget extends AbstractCoder
 		
 	) ;	
 	
-	static public function create($arrData,$sViewVarName,$sExchageDataName=null)
+	static public function create($arrData,$sViewVarName=null,$sExchageDataName=null)
 	{
 		if($sViewVarName)
 		{
@@ -29,17 +29,6 @@ abstract class Widget extends AbstractCoder
 		$arrData['exchange_data_name'] = $sExchageDataName ;
 		
 		return Object::createInstance(array($arrData), null, self::$mapWidgetCoders[$arrData['widgetType']] ) ;
-	}
-	
-	public function __construct($arrData,$arrNotEmptys=array())
-	{
-		parent::__construct(
-				$arrData
-				, array_merge(
-					array('view_var') ,
-					$arrNotEmptys
-				)
-		) ;
 	}
 	
 	public function viewVarName()
@@ -60,7 +49,7 @@ abstract class Widget extends AbstractCoder
 		}
 	}
 	
-	public function generateVerifiers(IOutputStream $aDev)
+	public function generateVerifiers(IHashTable $aDevPool,IOutputStream $aDev)
 	{
 		$aIter = $this->childrenIterator('verifier') ;
 		if( $aIter->valid() )
@@ -68,7 +57,7 @@ abstract class Widget extends AbstractCoder
 			$aDev->write("\r\n				// 为表单控件添加校验器") ;
 			foreach($aIter as $arrVerifier)
 			{
-				VerifierCoder::create($arrVerifier)->generate($aDev) ;
+				VerifierCoder::create($arrVerifier)->generate($aDevPool,$aDev) ;
 			}
 		}
 		

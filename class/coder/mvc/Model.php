@@ -2,6 +2,7 @@
 namespace oc\ext\developtoolbox\coder\mvc ;
 
 use jc\io\IOutputStream;
+use jc\util\IHashTable;
 use jc\ui\xhtml\UIFactory;
 use jc\lang\Exception;
 use oc\ext\developtoolbox\coder\AbstractCoder;
@@ -13,7 +14,7 @@ class Model extends AbstractCoder
 		parent::__construct($arrData,array('name')) ;			
 	}
 	
-	public function generate(IOutputStream $aDev)
+	public function generate(IHashTable $aDevPool,IOutputStream $aDev=null)
 	{
 		$sCode = "// -- 模型:{$this->arrData['name']}\r\n" ;
 		$sCode.= '		$this->'.$this->arrData['name'] ;

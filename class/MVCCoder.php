@@ -1,6 +1,14 @@
 <?php
 namespace oc\ext\developtoolbox ;
 
+use jc\fs\Dir;
+
+use jc\fs\File;
+use jc\ui\xhtml\UIFactory;
+
+use jc\ui\SourceFileManager;
+use jc\util\HashTable;
+use oc\ext\developtoolbox\coder\AbstractCoder;
 use oc\ext\developtoolbox\coder\mvc\Controller as ControllerCoder;
 use jc\io\OutputStreamBuffer;
 use jc\mvc\model\db\orm\PrototypeAssociationMap;
@@ -29,15 +37,18 @@ class MVCCoder extends Controller
 			
 			$arrData = json_decode($this->aParams->get('data'),true) ;
 			
-			// 这里需要一个 coder 管理器
-			// todo
+			$aCoder = AbstractCoder::create($arrData) ;
+			$aOutputDevPool = new HashTable() ;
 			
-			$aCoder = new ControllerCoder($arrData) ;
-			
-			$aBuff = new OutputStreamBuffer() ;
-			$aCoder->generate($aBuff) ;
+			$aCoder->generate($aOutputDevPool) ;
 		
-			echo highlight_string($aBuff->bufferBytes()) ;
+			
+			foreach($aOutputDevPool as $sFilePath=>$aOutputDev)
+			{
+				echo "<hr />创建文件：", $sFilePath, "<br />\r\n" ;
+				highlight_string($aOutputDev->bufferBytes()) ;
+				echo "<br />\r\n<br />\r\n" ;
+			}
 			
 			echo "<pre>" ;
 			print_r($arrData) ;
@@ -57,6 +68,9 @@ class MVCCoder extends Controller
 			$arrModels = $this->scanOrm( PrototypeAssociationMap::singleton() ) ;
 			$this->view->variables()->set('sDefineModelsCode',json_encode($arrModels)) ;
 		
+			// 反射系统中的模板文件目录
+			$arrUiTemplateFolders = $this->scanUiTemplateFolders() ;
+			$this->view->variables()->set('sDefineUiTemplateFolders',json_encode($arrUiTemplateFolders)) ;
 		}
 	}
 
@@ -64,7 +78,7 @@ class MVCCoder extends Controller
 	{
 		$arrNamespacesInfo = array() ;
 		$arrControllerClasses = array() ;
-		$arrViewClasses = array( 'oc\\mvc\\view' ) ;
+		$arrViewClasses = array( 'oc\\mvc\\view\\View', 'oc\\mvc\\view\\FormView' ) ;
 		
 		foreach( $aClassLoader->namespaceIterator() as $sNamespace)
 		{
@@ -179,6 +193,31 @@ class MVCCoder extends Controller
 		}
 		
 		return $arrModels ;
+	}
+	
+	public function scanUiTemplateFolders()
+	{
+		$aSrcFileMgr = UIFactory::singleton()->sourceFileManager() ;
+		
+		$arrFolders = array() ;
+		
+		foreach($this->application()->extensionsIterator() as $aExtension)
+		{
+			$sExtName = $aExtension->metainfo()->name() ;
+			$sExtPath = $this->application()->extenstionsDir().$aExtension->metainfo()->installFolder();
+			$sExtPath = File::formatPath($sExtPath) ;
+			$nExtPathLen = strlen($sExtPath) ;
+		
+			foreach ($aSrcFileMgr->foldersIterator($sExtName) as $sFolder)
+			{
+				if( substr($sFolder,0,$nExtPathLen)==$sExtPath )
+				{
+					$arrFolders[] = $sExtName.':'.substr($sFolder,$nExtPathLen) ;
+				}
+			}
+		}
+		
+		return $arrFolders ;
 	}
 }
 

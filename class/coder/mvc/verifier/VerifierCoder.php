@@ -2,6 +2,7 @@
 namespace oc\ext\developtoolbox\coder\mvc\verifier ;
 
 use jc\lang\Object;
+use jc\util\IHashTable;
 use jc\io\IOutputStream;
 use jc\lang\Exception;
 use oc\ext\developtoolbox\coder\AbstractCoder;
@@ -21,8 +22,7 @@ class VerifierCoder extends AbstractCoder
 		return Object::createInstance(array($arrData), null, self::$mapVerifierCoders[$arrData['verifierType']] ) ;
 	}
 	
-	
-	public function generate(IOutputStream $aDev)
+	public function generate(IHashTable $aDevPool,IOutputStream $aDev=null)
 	{
 		$aDev->write("\r\n				->addVerifer({$this->arrData['verifierType']}::singleton())") ;
 	}

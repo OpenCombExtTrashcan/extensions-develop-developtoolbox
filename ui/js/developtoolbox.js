@@ -863,7 +863,7 @@ jQuery(function () {
 	function initNameSpaceSelect(){
 		for(var key in namespaceData){
 			jQuery("#namespaceSelect").append("<option value='"+key+"'>"+key+"</option>");
-			jQuery("#view_namespaceSelect").append("<option value='"+key+"'>"+key+"</option>");
+			jQuery("#view_namespace").append("<option value='"+key+"'>"+key+"</option>");
 		}
 	}
 	initNameSpaceSelect();
@@ -891,30 +891,30 @@ jQuery(function () {
 		}
 	}
 	initView_classSelect();
-	$("#view_hasExtendClass").live("change",function(){
+	$("#view_aloneClass").live("change",function(){
 		if($(this).prop("checked")){
-			$("#view_namespaceSelect ,#view_className").prop("disabled",false);
-			if($('#view_className').val().length == 0 && $('#view_name').val().length > 0){
-				$('#view_className').val( $('#view_name').val() );
-				$("#view_className").val($('#view_name').val()[0].toUpperCase()+$('#view_name').val().substr(1));
+			$("#view_namespace ,#view_classname").prop("disabled",false);
+			if($('#view_classname').val().length == 0 && $('#view_name').val().length > 0){
+				$('#view_classname').val( $('#view_name').val() );
+				$("#view_classname").val($('#view_name').val()[0].toUpperCase()+$('#view_name').val().substr(1));
 			}
 		}else{
-			$("#view_namespaceSelect ,#view_className").prop("disabled",true);
+			$("#view_namespace ,#view_classname").prop("disabled",true);
 		}
 	});
-	$("#view_namespaceSelect ,#view_className").live('change',saveViewExtendClass);
+	$("#view_namespace ,#view_classname").live('change',saveViewExtendClass);
 	function saveViewExtendClass(){
-		var namespaceSelectValue = $("#view_namespaceSelect").val();
-		var className = $("#view_className");
+		var namespaceSelectValue = $("#view_namespace").val();
+		var className = $("#view_classname");
 		if(className.val().length > 0){
-			$("#view_className").val(className.val()[0].toUpperCase()+className.val().substr(1));
+			$("#view_classname").val(className.val()[0].toUpperCase()+className.val().substr(1));
 		}
 		if(namespaceSelectValue == 0 || className.val().length < 1){
-			$("#view_extendClass").val('');
+			$("#view_filepath").val('');
 			return;
 		}
 		var filepath = namespaceData[namespaceSelectValue]["folder"];
-		$("#view_extendClass").val(filepath+'/'+className.val()+'.php');
+		$("#view_filepath").val(filepath+'/'+className.val()+'.php');
 	}
 	
 	//用ajax发送编译请求

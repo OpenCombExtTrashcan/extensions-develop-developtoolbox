@@ -94,6 +94,10 @@ jQuery(function () {
 		//如果是widget的属性页,把属性附表先隐藏
 		if(sNodeType == "widget"){
 			widgetOtherPropertyGoBackToStore();
+			widgetTypeChange(null);
+		}
+		if(sNodeType == "verifier"){
+			rebuildVerifierProperty(jQuery('#verifier_verifierType').val());
 		}
 		//处理属性通用页面
 		jQuery( ".propertys" ).hide(0);
@@ -147,6 +151,7 @@ jQuery(function () {
 		if(aObjectName.length > 0 && aObjectName.val().length == 0){
 			aObjectName.val(jQuery("#toolpanel .selected").attr("id"));
 		}
+		aObjectName.focus();
 	}
 	
 	//返回一个数组,包含propertypage的可提交控件的对象数组,比如input和select控件
@@ -183,13 +188,13 @@ jQuery(function () {
 		if(sNewType == 'view'){
 			var nCheckBoxsForProgramId1 = "trCheckbox_1_"+getIdTrCheckbox();
 			var nCheckBoxsForProgramId2 = "trCheckbox_2_"+getIdTrCheckbox();
-			sCheckBoxsForProgram = '<input id="'+nCheckBoxsForProgramId1+'" class="viewLoadData" type="checkbox"/><label for="'+nCheckBoxsForProgramId1+'">执行前加载数据</label>'
-									+'<input id="'+nCheckBoxsForProgramId2+'" class="viewProSubmit" type="checkbox"/><label for="'+nCheckBoxsForProgramId2+'">处理表单提交</label>';
+			sCheckBoxsForProgram = '<input id="'+nCheckBoxsForProgramId1+'" class="generationLoadWidgets" type="checkbox" /><label for="'+nCheckBoxsForProgramId1+'">执行前加载数据</label>'
+									+'<input id="'+nCheckBoxsForProgramId2+'" class="generationProcessForm" type="checkbox" checked="checked"/><label for="'+nCheckBoxsForProgramId2+'">处理表单提交</label>';
 		}else if(sNewType == 'model'){
 			var nCheckBoxsForProgramId1 = "trCheckbox_1_"+getIdTrCheckbox();
 			var nCheckBoxsForProgramId2 = "trCheckbox_2_"+getIdTrCheckbox();
-			sCheckBoxsForProgram = '<input id="'+nCheckBoxsForProgramId1+'" class="modelLoadOrm" type="checkbox"/><label for="'+nCheckBoxsForProgramId1+'">执行前加载模型</label>'
-									+'<input id="'+nCheckBoxsForProgramId2+'" class="modelSaveOrm" type="checkbox"/><label for="'+nCheckBoxsForProgramId2+'">执行后保存模型</label>';
+			sCheckBoxsForProgram = '<input id="'+nCheckBoxsForProgramId1+'" class="generationLoadModel" type="checkbox" /><label for="'+nCheckBoxsForProgramId1+'">执行前从模型加载控件的数据</label>'
+									+'<input id="'+nCheckBoxsForProgramId2+'" class="generationSaveModel" type="checkbox" checked="checked" /><label for="'+nCheckBoxsForProgramId2+'">执行后保存模型</label>';
 		}
 		var sNewNodeHtml = '<tr id="'+ newNodeId +'"><td><span class="'+sNewType+'"></span><b>'+newNodeId+'</b></td><td></td><td>'+sCheckBoxsForProgram+'</td><td></td></tr>';
 		if(aParent==null){
@@ -199,14 +204,39 @@ jQuery(function () {
 			//如果有父对象,就建立一个子对象
 			var arrChildren = getChildren(aParent);
 			if(arrChildren.length > 0){
-				$(arrChildren[arrChildren.length - 1]).after(sNewNodeHtml);
+				var aLastChildNode = $(arrChildren[arrChildren.length - 1]);
+				// var aLastChildNodeLevel = getLevel(aLastChildNode);
+				// var aNextTrs = aLastChildNode.nextAll('tr');
+				// if(aNextTrs.length > 0){
+					// aNextTrs.each(function(i,v){
+						// if(getLevel($(v)) < aLastChildNodeLevel){
+							// $(v).before(sNewNodeHtml);
+						// }
+					// });
+				// }else{
+					aLastChildNode.after(sNewNodeHtml);
+				// }
 			}else{
 				aParent.after(sNewNodeHtml);
 			}
 		}
 		
 		var aNewNode = jQuery("#"+newNodeId);
+		//默认数据
 		var aNewNodeProperty = {"coder":sNewType,"children":[]};
+		//额外的默认数据
+		if(sNewType == 'view'){
+			aNewNodeProperty['generationLoadWidgets'] = false;
+			aNewNodeProperty['generationProcessForm'] = true;
+		}
+		if(sNewType == 'model'){
+			aNewNodeProperty['generationLoadModel'] = false;
+			aNewNodeProperty['generationSaveModel'] = true;
+		}
+		if(sNewType == 'verifier'){
+			aNewNodeProperty['max'] = 30;
+			aNewNodeProperty['min'] = -1;
+		}
 		aNewNode.data("property",aNewNodeProperty);
 		if(aParent!=null){
 			var aParentProperty = aParent.data("property");
@@ -468,6 +498,7 @@ jQuery(function () {
 	jQuery(treeTableId + " tbody tr").live("click",function(){
 		//选中
 		setSelected(jQuery(this));
+		// $('.propertys').find(':visible').find('.object_name').focus();
 	});
 	
 	//保存表单
@@ -483,11 +514,11 @@ jQuery(function () {
 		if(aSelected.data("property")!=undefined){
 			dataObject=aSelected.data("property");
 			//除了children意外,清除所有的数据
-			for(var key in dataObject){
-				if(key != "children" && key!="coder"){
-					delete dataObject[key];
-				}
-			}
+			// for(var key in dataObject){
+				// if(key != "children" && key!="coder"){
+					// delete dataObject[key];
+				// }
+			// }
 		}
 		//取值
 		jQuery.each( arrProperties , function(i, n){
@@ -624,7 +655,7 @@ jQuery(function () {
 	//恢复verifier表单
 	function rebuildVerifierProperty(sType){
 		if(sType == "Length"){
-			clearVerifierProperty().append('<label for="verifier_min">从</label><input id="verifier_min" type="text" size="3" value="-1"/><label for="verifier_max">到</label><input id="verifier_max" type="text" size="3" value="-1"/><br/>');
+			clearVerifierProperty().append('<label for="verifier_min">从</label><input id="verifier_min" type="text" size="3" value="-1"/><label for="verifier_max">到</label><input id="verifier_max" type="text" size="3" value="30" /><br/>');
 		}else if(sType == "Number"){
 			clearVerifierProperty().append('<label for="verifier_bint">整数 ?</label><input id="verifier_bint" type="checkbox" checked="checked"/><br/>');
 		}else{
@@ -945,7 +976,26 @@ jQuery(function () {
 	
 	//对象树中checkbox的点击事件
 	treeTable.find('input:checkbox').live('click',function(e){
-		var data = $(this).data('property');
+		var aParentTr = $(this).parents('tr').first();
+		if(getNodeType(aParentTr) == 'view'){
+			var generationLoadWidgets = 'generationLoadWidgets';
+			var generationProcessForm = 'generationProcessForm';
+			var generationLoadModel = 'generationLoadModel';
+			var generationSaveModel = 'generationSaveModel';
+			
+			var data = aParentTr.data('property');
+			if(data['model'] != 0){
+				if($(this).attr('class') == generationLoadWidgets){
+					aParentTr.data('property')[generationLoadWidgets] = this.checked;
+					$('#'+data['model']).find('.'+generationLoadModel).prop('checked' , this.checked );
+					$('#'+data['model']).data('property')[generationLoadModel] = this.checked;
+				}else if($(this).attr('class') == generationProcessForm){
+					aParentTr.data('property')[generationProcessForm] = this.checked;
+					$('#'+data['model']).find('.'+generationSaveModel).prop('checked' , this.checked );
+					$('#'+data['model']).data('property')[generationSaveModel] = this.checked;
+				}
+			}
+		}
 		e.stopPropagation();//停止冒泡
 	});
 	

@@ -33,6 +33,7 @@
             	<h1>视图属性</h1>
                 <label for="view_name">名称:</label><input id="view_name" type="text" class="object_name" /><br/>
                 <label for="view_template">模版:</label><input id="view_template" type="text" /><br/>
+                <label for="view_isForm">表单视图?:</label><input id="view_isForm" type="checkbox" /><br/>
                 <label for="view_class">视图类型:</label>
                 <select id="view_class">
                 	
@@ -69,7 +70,6 @@
 				<h1>控件属性</h1>
 				<label for="widget_widgetType">类名:</label>
                 <select id="widget_widgetType">
-                    <option value="0">请选择</option>
                     <option value="text">Text</option>
                     <option value="checkbtn">CheckBtn</option>
 					<option value="group">Group</option>
@@ -87,10 +87,9 @@
             	<h1>校验器属性</h1>
                 <label for="verifier_verifierType">类名:</label>
                 <select id="verifier_verifierType" class="object_name">
-                    <option value="0">请选择...</option>
+                    <option value="Length">长度范围</option>
                     <option value="Email">邮箱格式</option>
                     <option value="Number">数字格式</option>
-                    <option value="Length">长度范围</option>
 					<option value="Same">相等</option>
                     <option value="NotEmpty">不为空</option>
                 </select><br/>

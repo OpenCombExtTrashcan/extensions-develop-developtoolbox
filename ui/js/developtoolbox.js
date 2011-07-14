@@ -896,7 +896,6 @@ jQuery(function () {
 				}else{
 					jQuery("#preview_div").html("").append("<textarea id='code_textarea' style='width:100%;'></textarea>").find('textarea').html(msg);
 					var textarea = jQuery("#preview_div").find('textarea');
-					
 					textarea.css('height',textarea[0].scrollHeight+'px');
 				}
 			}

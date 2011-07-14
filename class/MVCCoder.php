@@ -86,7 +86,7 @@ class MVCCoder extends Controller
 				{
 					echo "-------------------------------------------------------------------------\r\n"
 								, $sFilePath, ":\r\n" ;
-					echo $aOutputDev->bufferBytes(), "\r\n\r\n\r\n" ; ;
+					echo $aOutputDev->bufferBytes(), "\r\n\r\n\r\n" ;
 				}
 			}
 		}

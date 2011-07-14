@@ -894,13 +894,14 @@ jQuery(function () {
 				if(bDoSave){
 					jQuery("#preview_div").html("").append(msg);
 				}else{
-					jQuery("#preview_div").html("").append("<textarea style='border: 1px solid #94BBE2;width:100%;' rows=15 onpropertychange='this.style.posHeight=this.scrollHeight' id=textarea onfocus='textarea.style.posHeight=this.scrollHeight'></textarea>").find('textarea').html(msg);
+					jQuery("#preview_div").html("").append("<textarea id='code_textarea' style='width:100%;'></textarea>").find('textarea').html(msg);
+					var textarea = jQuery("#preview_div").find('textarea');
+					
+					textarea.css('height',textarea[0].scrollHeight+'px');
 				}
 			}
 		});
 	}
-	
-	
 	
 	//命名空间部分被编辑时触发
 	jQuery("#className").change(nameSpaceEdit);

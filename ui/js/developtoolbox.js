@@ -894,7 +894,7 @@ jQuery(function () {
 				if(bDoSave){
 					jQuery("#preview_div").html("").append(msg);
 				}else{
-					jQuery("#preview_div").html("").append('<textarea style="width:100%" />').find('textarea').val(msg);
+					jQuery("#preview_div").html("").append("<textarea style='border: 1px solid #94BBE2;width:100%;' rows=15 onpropertychange='this.style.posHeight=this.scrollHeight' id=textarea onfocus='textarea.style.posHeight=this.scrollHeight'></textarea>").find('textarea').html(msg);
 				}
 			}
 		});

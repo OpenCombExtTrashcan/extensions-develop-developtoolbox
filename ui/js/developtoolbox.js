@@ -1033,10 +1033,10 @@ jQuery(function () {
 	});
 	
 	//属性提交property
-	jQuery("#controller_property input,#controller_property select").live("focusout",saveForm);
-	jQuery("#view_property input,#view_property select").live("focusout",saveForm);
-	jQuery("#widget_property input,#widget_property select").live("focusout",saveForm);
-	jQuery("#verifier_property input,#verifier_property select").live("focusout",saveForm);
+	jQuery("#controller_property input,#controller_property select").live("focusout change",saveForm);
+	jQuery("#view_property input , #view_property select").live("focusout change",saveForm);
+	jQuery("#widget_property input,#widget_property select").live("focusout change",saveForm);
+	jQuery("#verifier_property input,#verifier_property select").live("focusout change",saveForm);
 	jQuery("#model_property input,#model_property select").live("change focusout",saveForm);
 	
 });

@@ -94,7 +94,7 @@ jQuery(function () {
 		var sNodeType = getNodeType(aNode);
 		//如果是widget的属性页,把属性附表先隐藏
 		if(sNodeType == "widget"){
-			widgetOtherPropertyGoBackToStore();
+			// widgetOtherPropertyGoBackToStore();
 			widgetTypeChange(null);
 		}
 		if(sNodeType == "verifier"){
@@ -118,11 +118,11 @@ jQuery(function () {
 	function getProperties(aPropertyPage,aData){
 		//先看看是不是widget类型,如果是widget类型,那么先组合附表单
 		if( aData["coder"] == "widget" && aData["widgetType"] != undefined){  //处理select属性附属页面
-			widgetTypeChange(aData["classname"]);
+			widgetTypeChange(aData["widgetType"]);
 		}
 		//先看看是不是verifier类型,如果是verifier类型,那么先组合附表单
-		if(aData["coder"] == "verifier" && aData["class"] != undefined){
-			rebuildVerifierProperty(aData["class"]);
+		if(aData["coder"] == "verifier" && aData["verifierType"] != undefined){
+			rebuildVerifierProperty(aData["verifierType"]);
 		}
 		
 		//得到属性表单中的widget
@@ -164,7 +164,7 @@ jQuery(function () {
 	function widgetTypeChange(widgetClass){
 		var sWidgetClass = "";
 		if(widgetClass == null){
-			sWidgetClass = jQuery("#widget_property #widget_widgetType").val();
+			sWidgetClass = jQuery("#widget_widgetType").val();
 		}else{
 			sWidgetClass = widgetClass;
 		}
@@ -395,64 +395,6 @@ jQuery(function () {
 		}
 	}
 	
-	//命名空间部分被编辑时触发
-	jQuery("#className").change(nameSpaceEdit);
-	jQuery("#namespaceSelect").change(nameSpaceEdit);
-	
-	//视图名称变化时自动生成template
-	jQuery("#view_name").keyup(function(){
-		// if(extensionName == ""){
-			// return;
-		// }
-		var name = jQuery(this).val();
-		if(name.length > 0){
-			name = name[0].toUpperCase()+name.substr(1);
-		}
-		
-		jQuery("#view_template").val('view'+name+".template.html");//extensionName + "_" +jQuery(this).val()+".template.html");
-	});
-	
-	//添加按钮功能
-	jQuery(".topButtons").click(function(){
-		var sNewType = getBtnType(jQuery(this));
-		var newNodeName = getAName();
-		makeNewNode(null,newNodeName,sNewType);
-		return false;
-	});
-	
-	//鼠标浮动在对象tr上方的时候显示subbuttons
-	treeTable.find("tbody").find("tr").live("mouseover",trMouseOver);
-	function trMouseOver(){
-		subBtnsDisplay(true);
-		subBtnsPosition(jQuery(this));
-		accessOfBtns(jQuery(this));
-	}
-	treeTable.find("tbody").find("tr").live("mouseout",trMouseOut);
-	function trMouseOut(){
-		subBtnsDisplay(false);
-		accessOfBtns(null);
-	}
-	
-	//添加子对象按钮功能
-	jQuery(".subButtons").click(function(){
-		if($(this).hasClass('sub_btn_disabled')){
-			return false;
-		}
-		var sNewType = getBtnType(jQuery(this));
-		var selectedTr = jQuery(this).parents("tr").first();
-		if(sNewType == "delete"){
-			deleteTr(selectedTr);
-			return false;
-		}
-		var newNodeName = getAName();
-		if(selectedTr.length <= 0){
-			//目前没有node,显示所有的btn
-			makeNewNode(null,newNodeName,sNewType);
-			return false;
-		}
-		makeNewNode(selectedTr,newNodeName,sNewType);
-		return false;
-	});
 	//控制按钮显示或者消失,以前的版本没有参数,但是那样ubuntu下会显示错乱
 	function subBtnsDisplay(bDisplay){
 		if(bDisplay){
@@ -498,13 +440,6 @@ jQuery(function () {
 		trMouseOut();
 		return;
 	}
-	
-	//表格点击后..
-	jQuery(treeTableId + " tbody tr").live("click",function(){
-		//选中
-		setSelected(jQuery(this));
-		// $('.propertys').find(':visible').find('.object_name').focus();
-	});
 	
 	//保存表单
 	function saveForm(){
@@ -559,42 +494,6 @@ jQuery(function () {
 	}
 	
 	
-	
-	
-	//widget 类型选择
-	jQuery("#widget_widgetType").live("change",function(){
-		widgetTypeChange(null);												   
-	});
-	
-	//添加optoions
-	jQuery("#add_option").click(function(){
-		jQuery(this).parents("tr").before('<tr><td class="options"></td><td class="options"></td><td><input type="checkbox" class="nosave"/></td><td><a class="del_option" title="点击删除选项" href="#">删</a></td></tr>');
-		return false;
-	});
-	
-	//可编辑表格
-	jQuery("#widget_options_table .options").live("click" , function(){
-		var aTd = jQuery(this);
-		var sTdText = aTd.text();
-		aTd.text("").append('<input type="text" value="'+sTdText+'"/>');
-		var aNewInput = aTd.find("input");
-		aNewInput.focus();
-		aNewInput.live("focusout",function(){
-			var sNewValue = aNewInput.val();
-			aTd.text(sNewValue);
-			saveOptionsData();
-		});
-	});
-	//删除可编辑表格的行
-	jQuery("#widget_options_table .del_option").live("click",function(){
-		jQuery(this).parents("tr").remove();
-		saveOptionsData();
-	});
-	//select的options数据的保存行为通过3个行为触发,1.是编辑表格后触发,2.是点击"选中"checkbox后触发,3.是删除时触发 可以搜索函数名saveOptionsData找到所有的触发点 
-	//这里处理"选中"checkbox的触发情况
-	jQuery("#widget_options_table td input:checkbox").live("click",function(){
-		saveOptionsData();
-	});
 	//保存option数据到widget_options的data中
 	function saveOptionsData(){
 		var arrOptions = [];
@@ -652,15 +551,11 @@ jQuery(function () {
 		}
 	}
 	
-	//
-	jQuery("#verifier_verifierType").live("change",function(){
-		rebuildVerifierProperty(jQuery(this).val());
-	});
 	
 	//恢复verifier表单
 	function rebuildVerifierProperty(sType){
 		if(sType == "Length"){
-			clearVerifierProperty().append('<label for="verifier_min">从</label><input id="verifier_min" type="text" size="3"/><label for="verifier_max">到</label><input id="verifier_max" type="text" size="3" /><br/>');
+			clearVerifierProperty().append('<label for="verifier_min">从</label><input id="verifier_min" type="text" size="3" value="-1"/><label for="verifier_max">到</label><input id="verifier_max" type="text" size="3" value="30"/><br/>');
 		}else if(sType == "Number"){
 			clearVerifierProperty().append('<label for="verifier_bint">整数 ?</label><input id="verifier_bint" type="checkbox" checked="checked"/><br/>');
 		}else{
@@ -676,12 +571,6 @@ jQuery(function () {
 	}
 	
 	
-	
-	
-	//选择orm关系的起点
-	jQuery("#model_orm-start").live("change",function(){
-		rebuildOrmProperty();
-	});
 	//恢复model的orm表单
 	function rebuildOrmProperty(){
 		jQuery("#model_orm_div").html('');
@@ -702,28 +591,8 @@ jQuery(function () {
 		sOrm += '</ul>';
 		target.append(sOrm);
 	}
-	//用户请求添加一层orm关系
-	jQuery("#model_orm_div").find("input").live("change",function(){
-		if(jQuery(this).prop("checked")){
-			//添加层次
-			addOrmTree(jQuery(this).parents("li").first(),jQuery(this).attr("id").split("|")[0]);
-			var aOrmTreeData = getOrmTreeData(jQuery("#model_orm_div > ul"),'');
-			jQuery("#model_orm-data").data("value",aOrmTreeData[0]);
-			jQuery("#model_widgetcolumbmap").data("widgetcolumbmap",aOrmTreeData[1]) ;
-		}else{
-			//删除层次
-			jQuery(this).nextAll("ul").remove();
-			//如果表单中有完整的树结构(至少有一个checkbox被选中)就建立数据给model_orm-data,如果没有,删除以前的数据
-			if(jQuery("#model_orm_div").find("input:checked").length > 0){
-				var aOrmTreeData = getOrmTreeData(jQuery("#model_orm_div > ul"),'');
-				jQuery("#model_orm-data").data("value",aOrmTreeData[0]);
-				jQuery("#model_widgetcolumbmap").data("widgetcolumbmap",aOrmTreeData[1]) ;
-			}else{
-				jQuery("#model_orm-data").removeData("value");
-				jQuery("#model_widgetcolumbmap").removeData("widgetcolumbmap") ;
-			}
-		}
-	});
+	
+	
 	//重建一层orm关系树数据,同时找出本次遍历的数据表的所有字段,组合成完整的带有orm关系的字段字符串
 	//本函数的返回值是由前两者组合而成的数组,组合的目的仅仅是为了返回2个值
 	//本函数是递归函数
@@ -782,20 +651,6 @@ jQuery(function () {
 		});
 	}
 	
-	//view数据交换
-	jQuery("#view_model").change(function(){
-		jQuery("#view_model_table tbody > tr").remove();
-		addNewTrForDataExchange();
-	});
-	//删除tr
-	jQuery(".del_dbmap").live("click",function(){
-		jQuery(this).parents("tr").first().remove();
-		saveDataExchangeData();
-	});
-	//数据保存
-	jQuery(".view_dbmap_widget, .view_dbmap_column").live("change",function(){
-		saveDataExchangeData();
-	});
 	//数据保存
 	function saveDataExchangeData(){
 		var arrTr = jQuery("#view_model_table tbody > tr");
@@ -927,6 +782,64 @@ jQuery(function () {
 		}
 	}
 	initView_classSelect();
+	
+	
+	
+	//表格点击后..
+	jQuery(treeTableId + " tbody tr").live("click",function(){
+		//选中
+		setSelected(jQuery(this));
+		// $('.propertys').find(':visible').find('.object_name').focus();
+	});
+	//
+	jQuery("#verifier_verifierType").live("change",function(){
+		rebuildVerifierProperty(jQuery(this).val());
+	});
+	//选择orm关系的起点
+	jQuery("#model_orm-start").live("change",function(){
+		rebuildOrmProperty();
+	});
+	
+	
+	//用户请求添加一层orm关系
+	jQuery("#model_orm_div").find("input").live("change",function(){
+		if(jQuery(this).prop("checked")){
+			//添加层次
+			addOrmTree(jQuery(this).parents("li").first(),jQuery(this).attr("id").split("|")[0]);
+			var aOrmTreeData = getOrmTreeData(jQuery("#model_orm_div > ul"),'');
+			jQuery("#model_orm-data").data("value",aOrmTreeData[0]);
+			jQuery("#model_widgetcolumbmap").data("widgetcolumbmap",aOrmTreeData[1]) ;
+		}else{
+			//删除层次
+			jQuery(this).nextAll("ul").remove();
+			//如果表单中有完整的树结构(至少有一个checkbox被选中)就建立数据给model_orm-data,如果没有,删除以前的数据
+			if(jQuery("#model_orm_div").find("input:checked").length > 0){
+				var aOrmTreeData = getOrmTreeData(jQuery("#model_orm_div > ul"),'');
+				jQuery("#model_orm-data").data("value",aOrmTreeData[0]);
+				jQuery("#model_widgetcolumbmap").data("widgetcolumbmap",aOrmTreeData[1]) ;
+			}else{
+				jQuery("#model_orm-data").removeData("value");
+				jQuery("#model_widgetcolumbmap").removeData("widgetcolumbmap") ;
+			}
+		}
+	});
+	
+	
+	//view数据交换
+	jQuery("#view_model").change(function(){
+		jQuery("#view_model_table tbody > tr").remove();
+		addNewTrForDataExchange();
+	});
+	//删除tr
+	jQuery(".del_dbmap").live("click",function(){
+		jQuery(this).parents("tr").first().remove();
+		saveDataExchangeData();
+	});
+	//数据保存
+	jQuery(".view_dbmap_widget, .view_dbmap_column").live("change",function(){
+		saveDataExchangeData();
+	});
+	
 	$("#view_aloneClass").live("change",function(){
 		if($(this).prop("checked")){
 			$("#view_namespace ,#view_classname").prop("disabled",false);
@@ -978,10 +891,111 @@ jQuery(function () {
 			url: url,
 			data: data,
 			success: function(msg){
-				jQuery("#preview_div").html("").append(msg);
+				if(bDoSave){
+					jQuery("#preview_div").html("").append(msg);
+				}else{
+					jQuery("#preview_div").html("").append('<textarea style="width:100%" />').find('textarea').val(msg);
+				}
 			}
 		});
 	}
+	
+	
+	
+	//命名空间部分被编辑时触发
+	jQuery("#className").change(nameSpaceEdit);
+	jQuery("#namespaceSelect").change(nameSpaceEdit);
+	
+	//视图名称变化时自动生成template
+	jQuery("#view_name").keyup(function(){
+		// if(extensionName == ""){
+			// return;
+		// }
+		var name = jQuery(this).val();
+		if(name.length > 0){
+			name = name[0].toUpperCase()+name.substr(1);
+		}
+		
+		jQuery("#view_template").val('view'+name+".template.html");//extensionName + "_" +jQuery(this).val()+".template.html");
+	});
+	
+	//添加按钮功能
+	jQuery(".topButtons").click(function(){
+		var sNewType = getBtnType(jQuery(this));
+		var newNodeName = getAName();
+		makeNewNode(null,newNodeName,sNewType);
+		return false;
+	});
+	
+	//鼠标浮动在对象tr上方的时候显示subbuttons
+	treeTable.find("tbody").find("tr").live("mouseover",trMouseOver);
+	function trMouseOver(){
+		subBtnsDisplay(true);
+		subBtnsPosition(jQuery(this));
+		accessOfBtns(jQuery(this));
+	}
+	treeTable.find("tbody").find("tr").live("mouseout",trMouseOut);
+	function trMouseOut(){
+		subBtnsDisplay(false);
+		accessOfBtns(null);
+	}
+	
+	//添加子对象按钮功能
+	jQuery(".subButtons").click(function(){
+		if($(this).hasClass('sub_btn_disabled')){
+			return false;
+		}
+		var sNewType = getBtnType(jQuery(this));
+		var selectedTr = jQuery(this).parents("tr").first();
+		if(sNewType == "delete"){
+			deleteTr(selectedTr);
+			return false;
+		}
+		var newNodeName = getAName();
+		if(selectedTr.length <= 0){
+			//目前没有node,显示所有的btn
+			makeNewNode(null,newNodeName,sNewType);
+			return false;
+		}
+		makeNewNode(selectedTr,newNodeName,sNewType);
+		return false;
+	});
+	
+	//widget 类型选择
+	jQuery("#widget_widgetType").live("change",function(){
+		widgetTypeChange(null);												   
+	});
+	
+	//添加optoions
+	jQuery("#add_option").click(function(){
+		jQuery(this).parents("tr").before('<tr><td class="options"></td><td class="options"></td><td><input type="checkbox" class="nosave"/></td><td><a class="del_option" title="点击删除选项" href="#">删</a></td></tr>');
+		return false;
+	});
+	
+	//可编辑表格
+	jQuery("#widget_options_table .options").live("click" , function(){
+		var aTd = jQuery(this);
+		var sTdText = aTd.text();
+		aTd.text("").append('<input type="text" value="'+sTdText+'"/>');
+		var aNewInput = aTd.find("input");
+		aNewInput.focus();
+		aNewInput.live("focusout",function(){
+			var sNewValue = aNewInput.val();
+			aTd.text(sNewValue);
+			saveOptionsData();
+		});
+	});
+	//删除可编辑表格的行
+	jQuery("#widget_options_table .del_option").live("click",function(){
+		jQuery(this).parents("tr").remove();
+		saveOptionsData();
+	});
+	//select的options数据的保存行为通过3个行为触发,1.是编辑表格后触发,2.是点击"选中"checkbox后触发,3.是删除时触发 可以搜索函数名saveOptionsData找到所有的触发点 
+	//这里处理"选中"checkbox的触发情况
+	jQuery("#widget_options_table td input:checkbox").live("click",function(){
+		saveOptionsData();
+	});
+	
 	//只生成代码
 	jQuery("#generate_code").click(function(){
 		generateCode(false);

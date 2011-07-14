@@ -10,6 +10,11 @@ interface ICoder
 	public function generate(IHashTable $aDevPool,IOutputStream $aDev=null) ;
 	
 	public function detectUsedClasses(Container $aClasses) ;
+	
+	/**
+	 * 生成的类
+	 */
+	public function detectClass() ;
 }
 
 ?>

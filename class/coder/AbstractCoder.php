@@ -49,12 +49,14 @@ abstract class AbstractCoder extends Object implements ICoder
 		}
 	}
 	
-	public function childrenIterator($sType)
+	public function childrenIterator($types)
 	{
+		$types = $types? (array)$types: array() ;
+		
 		$arrReqChildren = array() ;
 		foreach($this->arrData['children'] as $arrChildData)
 		{
-			if($arrChildData['coder'] == $sType)
+			if( in_array($arrChildData['coder'],$types) )
 			{
 				$arrReqChildren[] = $arrChildData ;
 			}

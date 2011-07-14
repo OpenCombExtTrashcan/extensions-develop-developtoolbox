@@ -89,7 +89,14 @@ class Model extends AbstractCoder
 		
 		$aDev->write($sCode) ;
 	}
-
+	
+	/**
+	 * 生成的类
+	 */
+	public function detectClass()
+	{
+		return 'oc\\mvc\\model\\Model' ;
+	}
 }
 
 ?>

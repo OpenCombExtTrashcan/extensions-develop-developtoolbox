@@ -63,7 +63,14 @@ abstract class Widget extends AbstractCoder
 		
 		$aDev->write(" ;") ;
 	}
-	
+
+	/**
+	 * 生成的类
+	 */
+	public function detectClass()
+	{
+		return 'jc\\mvc\\view\\widget\\IWidget' ;
+	}
 }
 
 ?>

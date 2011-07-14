@@ -24,7 +24,7 @@ class Controller extends AbstractCoder
 			parent::__construct($arrData,array('classname')) ;	
 		}
 		else 
-		{		
+		{
 			parent::__construct($arrData,array('filepath','classname','namespace')) ;		
 		}
 	}
@@ -111,6 +111,13 @@ class Controller extends AbstractCoder
 		}
 	}
 	
+	/**
+	 * 生成的类
+	 */
+	public function detectClass()
+	{
+		return 'oc\\mvc\\controller\\Controller' ;
+	}
 }
 
 ?>

@@ -97,6 +97,21 @@ class View extends AbstractCoder
 		
 		return null ;
 	}
+	
+	/**
+	 * 生成的类
+	 */
+	public function detectClass()
+	{
+		if($this->arrData['aloneClass'])
+		{
+			return $this->arrData['namespace'].'\\'.$this->arrData['classname'] ;
+		}
+		else 
+		{
+			return $this->arrData['class'] ;
+		}
+	}
 }
 
 ?>

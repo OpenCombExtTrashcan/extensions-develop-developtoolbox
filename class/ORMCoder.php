@@ -65,7 +65,7 @@ class ORMCoder extends Controller
 			
 			@list($sExtName,$sOrmName) = explode(':', $sName) ;
 			
-			$arrOrm[] = array(
+			$arrOrm[$sExtName][$sOrmName] = array(
 					'name' => $aPrototype->name() ,
 					'title' => $sOrmName ,
 					'table' => $aPrototype->tableName() ,

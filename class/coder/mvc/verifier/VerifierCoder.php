@@ -26,6 +26,14 @@ class VerifierCoder extends AbstractCoder
 	{
 		$aDev->write("\r\n				->addVerifer({$this->arrData['verifierType']}::singleton())") ;
 	}
+
+	/**
+	 * 生成的类
+	 */
+	public function detectClass()
+	{
+		return 'jc\\verifier\\IVerifier' ;
+	}
 }
 
 ?>

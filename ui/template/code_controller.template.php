@@ -99,9 +99,20 @@ class {=$arrData['classname']} extends Controller
 		// ------------------------------------------<nl /><clear />
 			</if><clear />
 		</foreach>
-	}
-	
-
+	}<clear />
+	{? $aIter=$theCoder->childrenIterator(array('view','model','controller')) ; }<clear />
+	<if "$aIter->valid()"><nl /><nl />
+	// -------------------------------------------
+	// 申明控制器中所拥有的mvc对象属性
+	// 对php来说申明属性并不是必须的。但是IDE能够根据显式申明，提供自动补全功能(某些高级的IDE甚至可以识别javadoc格式内的类型定义)。<nl /><clear />
+	<foreach for="$aIter" item="arrChild" idx="nIdx"><if "$nIdx>0"><nl /></if>
+	/**
+	 * @var {=\oc\ext\developtoolbox\coder\AbstractCoder::create($arrChild)->detectClass()}<nl />
+	 */
+	public ${=$arrChild['name']} ;<nl /><clear />
+	</foreach>
+	// -------------------------------------------
+	</if><nl />
 }
 
 {= '?>' }

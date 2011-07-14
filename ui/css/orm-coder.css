@@ -33,12 +33,21 @@ h1 {
 #ormlist{
 	width:200px;
 	float:left;
-	background: #8AC9E3;
+	background: #CFE9F3;
 	padding:10px 0 0 0 ;
 }
 
 #ormlistUl li{
 	padding-left:20px;
+	background: #8AC9E3;
+}
+
+#ormlistUl li:hover{
+	background: #C0D9D9;
+}
+
+#ormListUl .selected{
+	background:#CCC;
 }
 
 #property{
@@ -46,4 +55,8 @@ h1 {
 	width:auto;
 	background: #8C8CFF;
 	padding:10px;
+}
+
+.block{
+	clear:both;
 }

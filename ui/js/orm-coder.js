@@ -2,55 +2,62 @@ $(function () {
 	//配置
 	GLOBAL = [];
 	var messagebox = $("#message");
+	var nUniqueId = 1 ; 
 	
 	/**
-	* ORM 渲染器
+	* 工具函数
 	* */
 	
-	function OrmFactory(sExtend,sName,sData){
-		this.id = sExtend+':'+sName;
-		this.template = '<li id="'+this.id+'"><span>'+this.id+'</span></li>';
-		this.getData = function(){
-			return this.c.data('property');
-		};
-		this.setData = function(Property){
-			this.c.data('property',Property);
-		};
-		this.display = function(){
-			return this.template;
-		}
+	//产生
+	function getUniqueId(){
+		return nUniqueId++;
 	}
 	
 	/**
 	* ORM 工厂
 	* */
 	
-	function OrmFactory(sExtend,sName,sData){
-		this.id = sExtend+':'+sName;
-		this.template = '<li id="'+this.id+'"><span>'+this.id+'</span></li>';
-		this.getData = function(){
-			return this.c.data('property');
-		};
-		this.setData = function(Property){
-			this.c.data('property',Property);
-		};
-		this.display = function(){
-			return this.template;
+	function OrmFactory(){
+		this.createOrm = function(sExtend,aData){
+			var sId = sExtend+':'+aData['title']+'_'+getUniqueId();
+			var sTemplate = '<li id="'+sId+'"><span>'+aData['title']+'</span></li>';
+			//建立orm的jquery对象
+			var aOrm = $(sTemplate);
+			//绑定数据
+			aOrm.data('property',aData);
+			//扩展数据
+			aOrm.ocExtend = sExtend;
+			//加工完毕,拿去玩吧
+			return aOrm;
 		}
 	}
-	
 	
 	/**
 	* ORM 管理器
 	* */
 
 	function OrmsController(sOrmFormId){
-		this.c = $('.'+sOrmFormId);
+		this.c = $('#'+sOrmFormId);
 		this.id = sOrmFormId;
 		this.arrOrms = [];
-		this.addOrm = function(sExtend,sName,sData){
-			
+		this.ormFactory = new OrmFactory();
+		//创建一个orm,同时登记到这个控制器的orm名单中
+		this.addOrm = function(sExtend,aData){
+			var aOrm = this.ormFactory.createOrm(sExtend,aData);
+			this.arrOrms.push(aOrm);
 		};
+		this.registerOrm = function(){
+			for(var sExtend in defineOrm){
+				for(var ormName in defineOrm[sExtend]){
+					this.addOrm(sExtend,defineOrm[sExtend][ormName]);
+				}
+			}
+		}
+		this.renderOrmForm = function(){
+			for(var key in this.arrOrms){
+				this.arrOrms[key].appendTo(this.c);
+			}
+		}
 		this.searchOrm = function(sKeyword){};
 		this.hideOrms = function(){};
 		this.showOrms = function(){};
@@ -64,6 +71,10 @@ $(function () {
 				this.arrOrms[key].show(0);
 			}
 		};
+		
+		//初始化
+		this.registerOrm();
+		this.renderOrmForm();
 	}
 	
 	/**
@@ -149,11 +160,18 @@ $(function () {
 	}
 	
 	//test
-	$("#test_submit").click(function(){
-		var myForm = new FormHandler($(".wanted:visible"));
-		//输出?
-		messagebox.append(myForm.getValues().join("\n"));
-	});
+	// $("#test_submit").click(function(){
+		// var myForm = new FormHandler($(".wanted:visible"));
+		// //输出?
+		// messagebox.append(myForm.getValues().join("\n"));
+	// });
 	
+	
+	
+	/**
+	*    初始化页面 
+	* */
+	
+	var aOrmController = new OrmsController("ormlistUl");
 	
 });

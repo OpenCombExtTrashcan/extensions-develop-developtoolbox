@@ -143,7 +143,7 @@ class MVCCoder extends Controller
 			
 			$aIter = new FSOIterator($sFolderPath,(FSOIterator::FLAG_DEFAULT&(~FSOIterator::RETURN_PATH))|FSOIterator::RETURN_SUBPATH) ;
 			$aIter->filters()->add(function ($sPath){
-				if( strstr($sPath,'.svn/')===false )
+				if( strstr($sPath,'.svn')===false )
 				{
 					return $sPath ;
 				}

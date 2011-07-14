@@ -76,7 +76,7 @@ jQuery(function () {
 	function setSelected(aNode){
 		if(aNode.hasClass("selected")){
 			aNode.removeClass("selected");
-			$('.propertys').hide(0);
+			jQuery('.propertys').hide(0);
 			// changeBtnStateByTrType(null);
 			// getPropertyPage(null);
 			return;
@@ -205,13 +205,13 @@ jQuery(function () {
 			//如果有父对象,就建立一个子对象
 			var arrBrothers = getChildren(aParent);
 			if(arrBrothers.length > 0){
-				var aLastBrotherNode = $(arrBrothers[arrBrothers.length - 1]);
+				var aLastBrotherNode = jQuery(arrBrothers[arrBrothers.length - 1]);
 				var aLastBrotherNodeLevel = getLevel(aLastBrotherNode);
 				var aNextTrs = aLastBrotherNode.nextAll('tr');
 				if(aNextTrs.length > 0){
 					aNextTrs.each(function(i,v){
-						if(getLevel($(v)) <= aLastBrotherNodeLevel){
-							$(v).before(sNewNodeHtml);
+						if(getLevel(jQuery(v)) <= aLastBrotherNodeLevel){
+							jQuery(v).before(sNewNodeHtml);
 							return false;
 						}
 					});
@@ -312,7 +312,7 @@ jQuery(function () {
 			return false;
 		}
 		var arrSubNode = [];
-		$.each(arrNodes,function(i,v){
+		jQuery.each(arrNodes,function(i,v){
 			if(getNodeType(jQuery(v)) == sType){
 				arrSubNode.push(jQuery(v));
 			}
@@ -345,7 +345,7 @@ jQuery(function () {
 	//删除node ,包括子node
 	function removeNode(aSelected){
 		if(aSelected.hasClass('selected')){
-			$(".propertys").hide(0);
+			jQuery(".propertys").hide(0);
 		}
 		var arrChildren = getChildren(aSelected);
 		if(arrChildren != false){
@@ -502,7 +502,7 @@ jQuery(function () {
 			if(jQuery(n).attr("id") == "modeify_options"){
 				return true;
 			}
-			$.each( jQuery(n).find("td") , function(v,b){
+			jQuery.each( jQuery(n).find("td") , function(v,b){
 				// 前三个td记录有用的数据,最后一个没有用,前2个是text和value,第3个是是否选中
 				if(v < 2){ 
 					arrAOption.push(jQuery(b).text());
@@ -581,9 +581,9 @@ jQuery(function () {
 	//添加一层orm关系
 	function addOrmTree(target,sOrmTop){
 		var sOrm = '<ul>';
-		$.each(ormData[sOrmTop]['assoc'],function(i,v){
+		jQuery.each(ormData[sOrmTop]['assoc'],function(i,v){
 			sOrm+='<li><b>'+i+'</b></li>';
-			$.each(v,function(c,b){
+			jQuery.each(v,function(c,b){
 				var id=getIdForOrm();
 				sOrm+='<li><input type="checkbox" class="nosave" id="'+b['name']+'|'+id+'" value="'+b['prop']+'"/><label for="'+b['name']+'|'+id+'">'+b['prop']+'('+b['name']+')'+'</label></li>';
 			});
@@ -602,14 +602,14 @@ jQuery(function () {
 		var aOrmTemp = {};
 		var sToColumn = '';
 		if(arrChecked.length > 0){
-			$.each(arrChecked,function(i,v){
+			jQuery.each(arrChecked,function(i,v){
 				var sOrmName = getTableName(jQuery(v));
 				var sOrmProp = getTableProp(jQuery(v));
 				var sWholePre = sLastPre+sOrmProp+".";
 				var arrResult =  getOrmTreeData(jQuery(this).nextAll("ul"),sWholePre);
 				aOrmTemp[sOrmProp] = arrResult[0];
 				sToColumn = arrResult[1];
-				$.each( ormData[sOrmName].columns , function(c,b){
+				jQuery.each( ormData[sOrmName].columns , function(c,b){
 					sToColumn = sToColumn+' '+sWholePre+b;
 				});
 			});
@@ -638,8 +638,8 @@ jQuery(function () {
 			aArgWidget = aArgWidget.nextAll("ul");
 		}
 		arrCheckboxs = aArgWidget.children("li").children("input:checkbox");
-		$.each(Value,function(i,v){
-			$.each(arrCheckboxs,function(c,d){
+		jQuery.each(Value,function(i,v){
+			jQuery.each(arrCheckboxs,function(c,d){
 				if(jQuery(d).val() == i){
 					jQuery(d).attr("checked","checked");
 					//恢复表单
@@ -655,7 +655,7 @@ jQuery(function () {
 	function saveDataExchangeData(){
 		var arrTr = jQuery("#view_model_table tbody > tr");
 		var arrValues = [];
-		$.each( arrTr ,function(v,n){
+		jQuery.each( arrTr ,function(v,n){
 			var arrSelect = jQuery(n).find("select");
 			var aValue = { "widget" : jQuery(arrSelect[0]).val(), "column":jQuery(arrSelect[1]).val() };
 			arrValues.push( aValue );
@@ -671,7 +671,7 @@ jQuery(function () {
 		if(dataExchange == undefined){
 			return false;
 		} 
-		$.each(dataExchange,function(v,d){
+		jQuery.each(dataExchange,function(v,d){
 			addNewTrForDataExchange();
 			//找到最后2个select分别赋值
 			jQuery("#view_model_table").find(".view_dbmap_column").last().val(d.column);
@@ -712,7 +712,7 @@ jQuery(function () {
 		if(!ormTableColumn[sModelId]) return;
 		
 		var arrColumnOptions = ormTableColumn[sModelId].split(" ");
-		$.each(arrColumnOptions,function(i,v){
+		jQuery.each(arrColumnOptions,function(i,v){
 			if(v != ""){
 				jQuery("#view_model_table").find(".view_dbmap_column").last().append('<option value="'+v+'">'+v+'</option>');
 			}
@@ -725,7 +725,7 @@ jQuery(function () {
 		if(arrSubNodes.length > 0){
 			arrSubWidgets = findNodeFormChildren(arrSubNodes,"widget");
 		}
-		$.each(arrSubWidgets,function(c,b){
+		jQuery.each(arrSubWidgets,function(c,b){
 			var sWidgetId = jQuery(b).attr("id");
 			jQuery("#view_model_table").find(".view_dbmap_widget").last().append('<option value="'+sWidgetId+'">'+sWidgetId+'</option>');
 		});
@@ -744,7 +744,7 @@ jQuery(function () {
 		arrSubModel = findNodeFormChildren(arrChildren,"model");
 		//初始化select
 		jQuery("#view_model").find("option[value!='0']").remove();
-		$.each(arrSubModel,function(v,b){
+		jQuery.each(arrSubModel,function(v,b){
 			var sModelId = jQuery(b).attr("id");
 			jQuery("#view_model").append('<option value="'+sModelId+'">'+sModelId+'</option>');
 		});
@@ -789,7 +789,7 @@ jQuery(function () {
 	jQuery(treeTableId + " tbody tr").live("click",function(){
 		//选中
 		setSelected(jQuery(this));
-		// $('.propertys').find(':visible').find('.object_name').focus();
+		// jQuery('.propertys').find(':visible').find('.object_name').focus();
 	});
 	//
 	jQuery("#verifier_verifierType").live("change",function(){
@@ -840,30 +840,30 @@ jQuery(function () {
 		saveDataExchangeData();
 	});
 	
-	$("#view_aloneClass").live("change",function(){
-		if($(this).prop("checked")){
-			$("#view_namespace ,#view_classname").prop("disabled",false);
-			if($('#view_classname').val().length == 0 && $('#view_name').val().length > 0){
-				$('#view_classname').val( $('#view_name').val() );
-				$("#view_classname").val($('#view_name').val()[0].toUpperCase()+$('#view_name').val().substr(1));
+	jQuery("#view_aloneClass").live("change",function(){
+		if(jQuery(this).prop("checked")){
+			jQuery("#view_namespace ,#view_classname").prop("disabled",false);
+			if(jQuery('#view_classname').val().length == 0 && jQuery('#view_name').val().length > 0){
+				jQuery('#view_classname').val( jQuery('#view_name').val() );
+				jQuery("#view_classname").val(jQuery('#view_name').val()[0].toUpperCase()+jQuery('#view_name').val().substr(1));
 			}
 		}else{
-			$("#view_namespace ,#view_classname").prop("disabled",true);
+			jQuery("#view_namespace ,#view_classname").prop("disabled",true);
 		}
 	});
-	$("#view_namespace ,#view_classname").live('change',saveViewExtendClass);
+	jQuery("#view_namespace ,#view_classname").live('change',saveViewExtendClass);
 	function saveViewExtendClass(){
-		var namespaceSelectValue = $("#view_namespace").val();
-		var className = $("#view_classname");
+		var namespaceSelectValue = jQuery("#view_namespace").val();
+		var className = jQuery("#view_classname");
 		if(className.val().length > 0){
-			$("#view_classname").val(className.val()[0].toUpperCase()+className.val().substr(1));
+			jQuery("#view_classname").val(className.val()[0].toUpperCase()+className.val().substr(1));
 		}
 		if(namespaceSelectValue == 0 || className.val().length < 1){
-			$("#view_filepath").val('');
+			jQuery("#view_filepath").val('');
 			return;
 		}
 		var filepath = namespaceData[namespaceSelectValue]["folder"];
-		$("#view_filepath").val(filepath+'/'+className.val()+'.php');
+		jQuery("#view_filepath").val(filepath+'/'+className.val()+'.php');
 	}
 	
 	//初始化 视图命名控件 选择
@@ -876,17 +876,17 @@ jQuery(function () {
 	
 	//用ajax发送编译请求
 	function generateCode(bDoSave){
-		var encoded = $.toJSON(treeData);
+		var encoded = jQuery.toJSON(treeData);
 		var url = window.location;
 		var bCoverExistFile = '0';
-		if($('#coverExistFile').prop('checked')){
+		if(jQuery('#coverExistFile').prop('checked')){
 			bCoverExistFile = '1';
 		}
 		var data = "&data="+encoded+"&act=generate";
 		if(bDoSave){
 			data += "&act.generate.save=1&cover="+bCoverExistFile;
 		}
-		$.ajax({
+		jQuery.ajax({
 			type: "POST",
 			url: url,
 			data: data,
@@ -942,7 +942,7 @@ jQuery(function () {
 	
 	//添加子对象按钮功能
 	jQuery(".subButtons").click(function(){
-		if($(this).hasClass('sub_btn_disabled')){
+		if(jQuery(this).hasClass('sub_btn_disabled')){
 			return false;
 		}
 		var sNewType = getBtnType(jQuery(this));
@@ -1007,7 +1007,7 @@ jQuery(function () {
 	
 	//对象树中checkbox的点击事件
 	treeTable.find('input:checkbox').live('click',function(e){
-		var aParentTr = $(this).parents('tr').first();
+		var aParentTr = jQuery(this).parents('tr').first();
 		if(getNodeType(aParentTr) == 'view'){
 			var generationLoadWidgets = 'generationLoadWidgets';
 			var generationProcessForm = 'generationProcessForm';
@@ -1016,18 +1016,18 @@ jQuery(function () {
 			
 			var data = aParentTr.data('property');
 			if(data['model'] != 0){
-				if( this.checked && $(this).attr('class') == generationLoadWidgets){
+				if( this.checked && jQuery(this).attr('class') == generationLoadWidgets){
 					if(this.checked){
-						$('#'+data['model']).find('.'+generationLoadModel).prop('checked' , true );
-						$('#'+data['model']).data('property')[generationLoadModel] = true;
+						jQuery('#'+data['model']).find('.'+generationLoadModel).prop('checked' , true );
+						jQuery('#'+data['model']).data('property')[generationLoadModel] = true;
 					}
-				}else if( this.checked && $(this).attr('class') == generationProcessForm ){
-					$('#'+data['model']).find('.'+generationSaveModel).prop('checked' , this.checked );
-					$('#'+data['model']).data('property')[generationSaveModel] = this.checked;
+				}else if( this.checked && jQuery(this).attr('class') == generationProcessForm ){
+					jQuery('#'+data['model']).find('.'+generationSaveModel).prop('checked' , this.checked );
+					jQuery('#'+data['model']).data('property')[generationSaveModel] = this.checked;
 				}
 			}
 		}
-		aParentTr.data('property')[$(this).attr('class')] = this.checked;
+		aParentTr.data('property')[jQuery(this).attr('class')] = this.checked;
 		e.stopPropagation();//停止冒泡
 	});
 	

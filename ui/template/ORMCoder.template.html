@@ -9,24 +9,31 @@
 	<div id="ormlist">
 		<div><h1>ORM</h1></div>
 		<ul id='ormlistUl'>
-			
+			<foreach for='$sDefineOrm' key='sExtend' item='arrOrm'>
+				<li><span>{= $sExtend}</span>
+					<ul>
+					<foreach for='$arrOrm' key='ormName' item = 'orm'>
+						<li><span>{= $ormName}</span></li>
+					</foreach>
+					</ul>
+				</li>
+			</foreach>
 		</ul>
 	</div>
 	<div id="property">
 		<div><h1>配置页面</h1></div>
-		<input type='text'/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
+		
+		<msgqueue for="$theController" ></msgqueue>
+
+		<form method="post">
+			<div>所属扩展: <widget id="extend" ></widget></div>
+			<div>表: <widget id="table" ></widget></div>
+			<div>表别名: <widget id="tableProp" ></widget></div>
+		</form>
+				
+		<form method="post">
+			<div>orm类型: <widget id="ormType" ></widget></div>
+		</form>
 	</div>
 	<div class="block"></div>
   	

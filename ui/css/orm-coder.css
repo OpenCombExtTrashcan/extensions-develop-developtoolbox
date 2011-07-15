@@ -37,23 +37,25 @@ h1 {
 	padding:10px 0 0 0 ;
 }
 
-#ormlistUl li{
-	padding-left:20px;
+#ormlistUl ul li{
+	margin-left:20px;
 	background: #8AC9E3;
 }
 
-#ormlistUl li:hover{
+#ormlistUl ul li:hover{
 	background: #C0D9D9;
+	cursor: pointer;
 }
 
-#ormListUl .selected{
-	background:#CCC;
+#ormlistUl .selected{
+	font-weight:bold;
+	background: #C0D9D9;
 }
 
 #property{
 	margin-left:200px;
 	width:auto;
-	background: #8C8CFF;
+	background: #8fC5FF;
 	padding:10px;
 }
 

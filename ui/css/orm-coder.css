@@ -59,6 +59,37 @@ h1 {
 	padding:10px;
 }
 
+#property .prototypeForm{
+	width:1000px;
+}
+
+#property .ormFrom{
+	width:250px;
+	float:left;
+	background:#081;
+}
+#property .ormBridge{
+	width:500px;
+	float:left;
+	background:#AAA;
+}
+
+#property .ormBridgeStart{
+	width:250px;
+	float:left;
+}
+
+#property .ormBridgeEnd{
+	width:250px;
+	float:left;
+}
+
+#property .ormTo{
+	width:250px;
+	float:left;
+	background:#081;
+}
+
 .block{
 	clear:both;
 }

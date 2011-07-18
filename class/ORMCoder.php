@@ -28,30 +28,69 @@ class ORMCoder extends Controller
 {
 	protected function init()
 	{
+		//页面内容
+		$this->add(new FrontFrame()) ;
+
+		$this->createView('view','ORMCoder.template.html') ;
+
+
 		//数据
 		// 反射 orm 配置
 		$arrOrm = $this->reflectionOrm() ;
-		$this->view->variables()->set('sDefineOrm',$arrOrm) ;
+		$this->view->variables()->set('arrDefineOrm',$arrOrm) ;
 		$this->view->variables()->set('sDefineOrm',json_encode($arrOrm)) ;
 		
 		// 反射 数据表
 		$arrTables = $this->reflectionDbTable() ;
-		$this->view->variables()->set('sDefineDbTable',$arrTables) ;
+		$this->view->variables()->set('arrDefineDbTable',$arrTables) ;
 		$this->view->variables()->set('sDefineDbTable',json_encode($arrTables)) ;
 		
-		//ormtype
-		$arrOrmType = Association::allAssociationTypes();
+		/*
+		 * prototype 部分
+		 * */
 		
-		//页面内容
-		$this->add(new FrontFrame()) ;
-		
-		$this->createView('prototypeForm','ORMCoder.template.html') ;
-		$this->prototypeForm->addWidget( new Select('extend','所属扩展') );
-		$this->prototypeForm->addWidget( new Select('table','表') );
-		$this->prototypeForm->addWidget( new Text('tableProp','表别名','',Text::single) )
+		$this->view->addWidget( new Select('extend','所属扩展') );
+		$this->view->addWidget( new Select('table','表') );
+		$this->view->addWidget( new Text('tableProp','表别名','',Text::single) )
 				->addVerifier(Length::flyweight(array(2,30))) ;
-		$this->createView('newOrmForm','ORMCoder.template.html') ;
-		$this->newOrmForm->addWidget( new Select('ormType','orm关系') ) ;
+		
+		$aPrimaryKey = new Select('primaryKey','主键');  // TODO 多个
+		$this->view->addWidget( $aPrimaryKey );
+		
+		/*
+		 * orm关系部分
+		 * */
+		//orm类型分类,用原生函数获取
+		$arrOrmType = Association::allAssociationTypes();
+		//array(4) { [0]=> string(6) "hasOne" [1]=> string(9) "belongsTo" [2]=> string(7) "hasMany" [3]=> string(19) "hasAndBelongsToMany" }
+		$aOrmType = new Select('ormType','orm关系');
+		foreach($arrOrmType as $sOrmType){
+			$aOrmType->addOption($sOrmType,$sOrmType);
+		}
+		$this->view->addWidget( $aOrmType );
+		
+		$aOrmFromKey = new Select('ormFromKey','FromKey');
+		$this->view->addWidget( $aOrmFromKey );
+		$aOrmBrigdeToKey = new Select('ormBrigdeToKey','BrigdeToKey');
+		$this->view->addWidget( $aOrmBrigdeToKey );
+		$aOrmBrigdeFromKey = new Select('ormBrigdeFromKey','BrigdeFromKey');
+		$this->view->addWidget( $aOrmBrigdeFromKey );
+		$aOrmToKey = new Select('ormToKey','ToKey');
+		$this->view->addWidget( $aOrmToKey );
+		
+		/*
+		 * 数据还原
+		 * */
+		
+		if($this->aParams->get('ormname')){
+			$sExt = $this->aParams->get('ext');
+			$sOrmname = $this->aParams->get('ormname');
+		}
+		
+		
+		
+			//用户现在的行为
+//		$this->view->variables()->set('whatyoudoing', ) ;
 	}
 
 	public function process()

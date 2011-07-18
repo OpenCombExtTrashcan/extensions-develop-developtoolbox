@@ -3,17 +3,17 @@
 	var defineOrm = {= $sDefineOrm };
 	var defineDbTable = {= $sDefineDbTable };
 </script>
-<script type="text/javascript" src="jquery.json-2.2.min.js"></script>
-<script type="text/javascript" src="orm-coder.js"></script>
+<js type="text/javascript" src="jquery.json-2.2.min.js" />
+<js type="text/javascript" src="orm-coder.js" />
 <div id="main">
 	<div id="ormlist">
 		<div><h1>ORM</h1></div>
 		<ul id='ormlistUl'>
-			<foreach for='$sDefineOrm' key='sExtend' item='arrOrm'>
+			<foreach for='$arrDefineOrm' key='sExtend' item='arrOrm'>
 				<li><span>{= $sExtend}</span>
 					<ul>
 					<foreach for='$arrOrm' key='ormName' item = 'orm'>
-						<li><span>{= $ormName}</span></li>
+						<li><a href='?c=developtoolbox.coder.orm&ext={= $sExtend}&ormname={= $ormName}'>{= $ormName}</a></li>
 					</foreach>
 					</ul>
 				</li>
@@ -24,16 +24,39 @@
 		<div><h1>配置页面</h1></div>
 		
 		<msgqueue for="$theController" ></msgqueue>
-
-		<form method="post">
-			<div>所属扩展: <widget id="extend" ></widget></div>
-			<div>表: <widget id="table" ></widget></div>
-			<div>表别名: <widget id="tableProp" ></widget></div>
-		</form>
-				
-		<form method="post">
-			<div>orm类型: <widget id="ormType" ></widget></div>
-		</form>
+		<div id='message'>{= $whatyoudoing}</div>
+		<div class="prototypeForm">
+			<form method="post">
+				<label for="extend">所属扩展:</label><widget id="extend" ></widget><br />
+				<label for="table">表:</label><widget id="table" ></widget><br />
+				<label for="tableProp">表别名:</label><widget id="tableProp" ></widget><br />
+				<label for="primaryKey">主键:</label><widget id="primaryKey"></widget><br />
+			</form>
+		</div>
+		<div class="prototypeForm">
+			<form method="post">
+				<div class="ormTypeDiv">
+					<label for="ormType">orm类型:</label><widget id="ormType" ></widget><br />
+				</div>
+				<div class="ormFrom">
+					<label for="ormFromKey">fromkey:</label><widget id="ormFromKey" ></widget><br />
+					<a href="#" class='addOrmFromKey'>添加</a><br/>
+				</div>
+				<div class="ormBridge">
+					<div class="ormBridgeStart">
+						<label for="ormBrigdeToKey">BrigdeToKey:</label><widget id="ormBrigdeToKey" ></widget><br />
+					</div>
+					<div class="ormBridgeEnd">
+						<label for="ormBrigdeFromKey">BrigdeFromKey:</label><widget id="ormBrigdeFromKey" ></widget><br />
+						<a href="#" class='addOrmBrigdeFromKey'>添加</a><br/>
+					</div>
+				</div>
+				<div class="ormTo">
+					<label for="ormToKey">ToKey:</label><widget id="ormToKey" ></widget><br />
+				</div>
+			</form>
+			<div class="block"></div>
+		</div>
 	</div>
 	<div class="block"></div>
   	

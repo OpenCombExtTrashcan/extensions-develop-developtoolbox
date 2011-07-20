@@ -12,8 +12,8 @@
 			<foreach for='$arrDefineOrm' key='sExtend' item='arrOrm'>
 				<li><span>{= $sExtend}</span>
 					<ul>
-					<foreach for='$arrOrm' key='ormName' item = 'orm'>
-						<li><a href='?c=developtoolbox.coder.orm&ext={= $sExtend}&ormname={= $ormName}'>{= $ormName}</a></li>
+					<foreach for='$arrOrm' key='ormTitle' item = 'orm'>
+						<li><a href='?c=developtoolbox.coder.orm&ext={= $sExtend}&title={= $ormTitle}' >{= $ormTitle}</a></li>
 					</foreach>
 					</ul>
 				</li>
@@ -29,11 +29,35 @@
 			<form method="post">
 				<label for="extend">所属扩展:</label><widget id="extend" /><br />
 				<label for="table">表:</label><widget id="table" /><br />
-				<label for="tableProp">表别名:</label><widget id="tableProp" /><br />
-				<label for="primaryKey">主键:</label><widget id="primaryKey" attr.name="primaryKey[]"  /><br />
+				<label for="ormTitle">表别名:</label><widget id="ormTitle" /><br />
+				<table class="column">
+					<thead>
+						<tr>
+							<th>主键</th>
+							<th>使用</th>
+							<th>字段</th>
+						</tr>
+					</thead>
+					<tbody>
+						<foreach for='$arrDefineColumns' item='arrAColumn' >
+							<tr>
+								<td><input type='checkbox' name='colums[]' value='{= $arrAColumn[0]}_isPrimary' {? echo $arrAColumn[1] ? 'checked="checked"' : ''}/></td>
+								<td><input type='checkbox' name='colums[]' value='{= $arrAColumn[0]}_isUsed'  {? echo $arrAColumn[2] ? 'checked="checked"' : ''}/></td>
+								<td>{= $arrAColumn[0]}</td>
+							</tr>
+						</foreach>
+						<tr>
+							<td></td>
+							<td><input type='checkbox'/></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+				<input name='prototypeForm' type="hidden" value="true" />
+				<input type="submit" value="保存" />
 			</form>
 		</div>
-		<div class="prototypeForm">
+		<div class="ormForm">
 			<form method="post">
 				<div class="ormTypeDiv">
 					<label for="ormType">orm类型:</label><widget id="ormType" /><br />

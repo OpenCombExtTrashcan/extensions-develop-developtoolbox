@@ -33,7 +33,6 @@ class ORMCoder extends Controller
 
 		$this->createView('view','ORMCoder.template.html') ;
 
-
 		//数据
 		// 反射 orm 配置
 		$arrOrm = $this->reflectionOrm() ;
@@ -45,24 +44,60 @@ class ORMCoder extends Controller
 		$this->view->variables()->set('arrDefineDbTable',$arrTables) ;
 		$this->view->variables()->set('sDefineDbTable',json_encode($arrTables)) ;
 		
+		//所有的扩展名
+		$arrExtends = array_keys($arrOrm); 
+		
+		//整理请求参数
+		$sExtend = $this->aParams->has('ext') ? $this->aParams->get('ext') : $arrExtends[0] ;    //请求的扩展名,如果不存在就给与默认的扩展名
+		$sOrmTitle = $this->aParams->has('title') ? $this->aParams->get('title') : "";  //指定orm的名字
+		
+		if($sOrmTitle != ''){
+			$sTableName = $arrOrm[$sExtend][$sOrmTitle]['table'];                           //指定orm所属table
+			$arrAllColumns = $arrTables[$sExtend][$sTableName]['columns'];					//指定orm所属table的所有列
+			$arrUsedColumns = $arrOrm[$sExtend][$sOrmTitle]['columns'];						//指定orm所属table的使用到的列
+			$arrPrimaryKey = $arrOrm[$sExtend][$sOrmTitle]['primaryKeys'];					//指定orm的所有主键
+			$sDevicePrimaryKey = $arrOrm[$sExtend][$sOrmTitle]['devicePrimaryKey'];			//指定orm的设备主键
+		}
+		
 		/*
-		 * prototype 部分
+		 * prototype 表单
 		 * */
 		
-		$this->view->addWidget( new Select('extend','所属扩展') );
-		$this->view->addWidget( new Select('table','表') );
-		$this->view->addWidget( new Text('tableProp','表别名','',Text::single) )
+		$aExtend = new Select('extend','所属扩展') ;
+		foreach($arrExtends as $sExt){
+			$aExtend->addOption($sExt, $sExt);
+		}
+		$this->view->addWidget( $aExtend );
+		$aExtend->setValue($sExtend);
+
+		
+		$aOrmTable = new Select('table','表');
+		foreach($arrTables[$sExtend] as $sTableName=>$aTable){
+			$aOrmTable->addOption($aTable['title'], $sTableName);
+		}
+		$this->view->addWidget( $aOrmTable );
+		if($sOrmTitle != ''){
+			$aOrmTable->setValue($sTableName);
+		}
+		
+		
+		$aOrmTitle = new Text('ormTitle','表别名','',Text::single);
+		$this->view->addWidget( $aOrmTitle )
 				->addVerifier(Length::flyweight(array(2,30))) ;
+		$aOrmTitle->setValue($arrOrm[$sExtend][$sOrmTitle]['title']);
 		
-		$aPrimaryKey = new Select('primaryKey','主键');  // TODO 多个
-		$this->view->addWidget( $aPrimaryKey );
+				
+		//主键,列
+		$arrColumns = $this->getColumns($arrOrm,$arrAllColumns,$arrPrimaryKey,$arrUsedColumns );
+		$this->view->variables()->set('arrDefineColumns',$arrColumns);
+//			$this->view->variables()->set('sDefineColumns',json_encode($arrColumns)) ;
 		
 		/*
-		 * orm关系部分
+		 * orm关系表单
 		 * */
+		
 		//orm类型分类,用原生函数获取
 		$arrOrmType = Association::allAssociationTypes();
-		//array(4) { [0]=> string(6) "hasOne" [1]=> string(9) "belongsTo" [2]=> string(7) "hasMany" [3]=> string(19) "hasAndBelongsToMany" }
 		$aOrmType = new Select('ormType','orm关系');
 		foreach($arrOrmType as $sOrmType){
 			$aOrmType->addOption($sOrmType,$sOrmType);
@@ -98,37 +133,16 @@ class ORMCoder extends Controller
 		//整理orm列表的数据
 	}
 	
-
-	/**
-	 * 执行控制器
-	 */
-//	public function process()
-//	{
-//
-//		// ------------------------------------------
-//		// 处理表单视图(ORMCoder)的提交
-//		if( $this->ORMCoder->isSubmit() )
-//		{do{
-//			// 从控制器的参数中加载数据到视图的窗体中
-//			$this->ORMCoder->loadWidgets() ;
-//			
-//			// 校验视图窗体中的数据
-//			if( !$this->ORMCoder->verifyWidgets() )
-//			{
-//				break ;
-//			}
-//			
-//			// 数据交换：从视图窗体到模型
-//			$this->ORMCoder->exchangeData(DataExchanger::WIDGET_TO_MODEL) ;
-//			
-//			// 其他操作
-//			// todo ... ...
-//
-//						
-//		}while(1) ; }
-//		// 处理表单结束
-//		// ------------------------------------------
-//	}
+	//返回一个数组,数组中记录所给orm
+	public function getColumns($arrOrm,$arrAllColumns,$arrPrimaryKey,$arrUsedColumns ){
+		$arrColumns = array();
+		foreach($arrAllColumns as $sColumn){
+			$bIsPrimary = in_array($sColumn,$arrPrimaryKey);
+			$bIsUsedColumn = in_array($sColumn,$arrUsedColumns);
+			$arrColumns[] = array($sColumn , $bIsPrimary , $bIsUsedColumn);
+		}
+		return $arrColumns;
+	}
 
 	public function reflectionOrm()
 	{
@@ -188,18 +202,19 @@ class ORMCoder extends Controller
 				continue ;
 			}
 			
-			$arrTables[$sExtensionName][$sTableName] = array(
+			$arrTables[$sExtensionName][$sTable] = array(
 					'name' => $sTableName ,
 					'primaryKey' => null ,
+					'title' => $sTableName ,
 			) ;
 			
 			foreach(DB::singleton()->query("show columns from ".$sTable) as $arrClm)
 			{
-				$arrTables[$sExtensionName][$sTableName]['columns'][] = $arrClm['Field'] ;
+				$arrTables[$sExtensionName][$sTable]['columns'][] = $arrClm['Field'] ;
 				
 				if($arrClm['Key']=='PRI')
 				{
-					$arrTables[$sExtensionName][$sTableName]['primaryKey'] = $arrClm['Field'] ;
+					$arrTables[$sExtensionName][$sTable]['primaryKey'] = $arrClm['Field'] ;
 				}
 			}
 		}

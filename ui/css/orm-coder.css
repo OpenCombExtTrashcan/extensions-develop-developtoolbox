@@ -61,6 +61,10 @@ h1 {
 
 #property .prototypeForm{
 	width:1000px;
+	background:#DDD;
+}
+#property .ormForm{
+	background:#70C7C5;
 }
 
 #property .ormFrom{

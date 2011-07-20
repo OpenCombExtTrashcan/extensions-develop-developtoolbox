@@ -24,9 +24,7 @@ class MVCCoder extends Controller
 {
 	protected function init()
 	{
-		
-		
-		$this->createView('view','MVCCoder.template.html') ;
+		$this->createView('Form','MVCCoder.template.html') ;
 	}
 
 	public function process()
@@ -36,24 +34,24 @@ class MVCCoder extends Controller
 			// 反射 class namespace
 			list($arrNamespacesInfo,$arrControllerClasses,$arrViewClasses) = $this->scanExtensions( $this->application()->classLoader() ) ;
 			
-			$this->view->variables()->set('sDefineNamespacesCode',json_encode($arrNamespacesInfo)) ;
-			$this->view->variables()->set('sDefineAllControllerClassesCode',json_encode($arrControllerClasses)) ;
-			$this->view->variables()->set('sDefineAllViewClassesCode',json_encode($arrViewClasses)) ;
+			$this->viewForm->variables()->set('sDefineNamespacesCode',json_encode($arrNamespacesInfo)) ;
+			$this->viewForm->variables()->set('sDefineAllControllerClassesCode',json_encode($arrControllerClasses)) ;
+			$this->viewForm->variables()->set('sDefineAllViewClassesCode',json_encode($arrViewClasses)) ;
 	
 			// 反射系统中的orm
 			$arrModels = $this->scanOrm( PrototypeAssociationMap::singleton() ) ;
-			$this->view->variables()->set('sDefineModelsCode',json_encode($arrModels)) ;
+			$this->viewForm->variables()->set('sDefineModelsCode',json_encode($arrModels)) ;
 		
 			// 反射系统中的模板文件目录
 			$arrUiTemplateFolders = $this->scanUiTemplateFolders() ;
-			$this->view->variables()->set('sDefineUiTemplateFolders',json_encode($arrUiTemplateFolders)) ;
+			$this->viewForm->variables()->set('sDefineUiTemplateFolders',json_encode($arrUiTemplateFolders)) ;
 		}
 	}
 	
 	public function actionGenerate()
 	{
 		$this->aParams->set('noframe',true) ;
-		$this->view->disable() ;
+		$this->viewForm->disable() ;
 		
 		$arrData = json_decode($this->aParams->get('data'),true) ;
 		
@@ -97,17 +95,17 @@ class MVCCoder extends Controller
 			// 反射 class namespace
 			list($arrNamespacesInfo,$arrControllerClasses,$arrViewClasses) = $this->scanExtensions( $this->application()->classLoader() ) ;
 			
-			$this->view->variables()->set('sDefineNamespacesCode',json_encode($arrNamespacesInfo)) ;
-			$this->view->variables()->set('sDefineAllControllerClassesCode',json_encode($arrControllerClasses)) ;
-			$this->view->variables()->set('sDefineAllViewClassesCode',json_encode($arrViewClasses)) ;
+			$this->viewForm->variables()->set('sDefineNamespacesCode',json_encode($arrNamespacesInfo)) ;
+			$this->viewForm->variables()->set('sDefineAllControllerClassesCode',json_encode($arrControllerClasses)) ;
+			$this->viewForm->variables()->set('sDefineAllViewClassesCode',json_encode($arrViewClasses)) ;
 	
 			// 反射系统中的orm
 			$arrModels = $this->scanOrm( PrototypeAssociationMap::singleton() ) ;
-			$this->view->variables()->set('sDefineModelsCode',json_encode($arrModels)) ;
+			$this->viewForm->variables()->set('sDefineModelsCode',json_encode($arrModels)) ;
 		
 			// 反射系统中的模板文件目录
 			$arrUiTemplateFolders = $this->scanUiTemplateFolders() ;
-			$this->view->variables()->set('sDefineUiTemplateFolders',json_encode($arrUiTemplateFolders)) ;
+			$this->viewForm->variables()->set('sDefineUiTemplateFolders',json_encode($arrUiTemplateFolders)) ;
 			if($this->aParams['act_generate_save'])
 			{
 				echo "<hr />", $sFilePath, ":<br />\r\n" ;

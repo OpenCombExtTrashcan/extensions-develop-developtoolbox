@@ -2,7 +2,6 @@
 namespace oc\ext\developtoolbox ;
 
 use jc\db\DB;
-
 use jc\fs\Dir;
 use jc\fs\File;
 use jc\ui\xhtml\UIFactory;
@@ -29,33 +28,28 @@ use jc\mvc\view\widget\RadioGroup;
 use jc\mvc\view\widget\Text;
 use jc\mvc\view\widget\FileUpdate;
 use jc\mvc\view\View;
-use jc\ui\xhtml\Factory as UIFactory;
 use jc\mvc\model\db\orm\PrototypeAssociationMap;
 use oc\base\FrontFrame;
-use jc\db\DB;
 
 class ORMCoder extends Controller
 {
 	protected function init()
 	{
 		//页面内容
-		
-
-		$this->createView('view','ORMCoder.template.html') ;
+		$this->createView('Form','ORMCoder.template.html') ;
 
 		//数据
-		
-		$this->view->variables()->set('aPam',PrototypeAssociationMap::singleton()) ;
+		$this->viewForm->variables()->set('aPam',PrototypeAssociationMap::singleton()) ;
 		
 		// 反射 orm 配置
 		$arrOrm = $this->reflectionOrm() ;
-		$this->view->variables()->set('arrDefineOrm',$arrOrm) ;
-		$this->view->variables()->set('sDefineOrm',json_encode($arrOrm)) ;
+		$this->viewForm->variables()->set('arrDefineOrm',$arrOrm) ;
+		$this->viewForm->variables()->set('sDefineOrm',json_encode($arrOrm)) ;
 		
 		// 反射 数据表
 		$arrTables = $this->reflectionDbTable() ;
-		$this->view->variables()->set('arrDefineDbTable',$arrTables) ;
-		$this->view->variables()->set('sDefineDbTable',json_encode($arrTables)) ;
+		$this->viewForm->variables()->set('arrDefineDbTable',$arrTables) ;
+		$this->viewForm->variables()->set('sDefineDbTable',json_encode($arrTables)) ;
 		
 		//所有的扩展名
 		$arrExtends = array_keys($arrOrm); 
@@ -80,7 +74,7 @@ class ORMCoder extends Controller
 		foreach($arrExtends as $sExt){
 			$aExtend->addOption($sExt, $sExt);
 		}
-		$this->view->addWidget( $aExtend );
+		$this->viewForm->addWidget( $aExtend );
 		$aExtend->setValue($sExtend);
 
 		
@@ -88,22 +82,22 @@ class ORMCoder extends Controller
 		foreach($arrTables[$sExtend] as $sTableName=>$aTable){
 			$aOrmTable->addOption($aTable['title'], $sTableName);
 		}
-		$this->view->addWidget( $aOrmTable );
+		$this->viewForm->addWidget( $aOrmTable );
 		if($sOrmTitle != ''){
 			$aOrmTable->setValue($sTableName);
 		}
 		
 		
 		$aOrmTitle = new Text('ormTitle','表别名','',Text::single);
-		$this->view->addWidget( $aOrmTitle )
+		$this->viewForm->addWidget( $aOrmTitle )
 				->addVerifier(Length::flyweight(array(2,30))) ;
 		$aOrmTitle->setValue($arrOrm[$sExtend][$sOrmTitle]['title']);
 		
 				
 		//主键,列
 		$arrColumns = $this->getColumns($arrOrm,$arrAllColumns,$arrPrimaryKey,$arrUsedColumns );
-		$this->view->variables()->set('arrDefineColumns',$arrColumns);
-//			$this->view->variables()->set('sDefineColumns',json_encode($arrColumns)) ;
+		$this->viewForm->variables()->set('arrDefineColumns',$arrColumns);
+//			$this->viewForm->variables()->set('sDefineColumns',json_encode($arrColumns)) ;
 		
 		/*
 		 * orm关系表单
@@ -115,16 +109,16 @@ class ORMCoder extends Controller
 		foreach($arrOrmType as $sOrmType){
 			$aOrmType->addOption($sOrmType,$sOrmType);
 		}
-		$this->view->addWidget( $aOrmType );
+		$this->viewForm->addWidget( $aOrmType );
 		
 		$aOrmFromKey = new Select('ormFromKey','FromKey');
-		$this->view->addWidget( $aOrmFromKey );
+		$this->viewForm->addWidget( $aOrmFromKey );
 		$aOrmBrigdeToKey = new Select('ormBrigdeToKey','BrigdeToKey');
-		$this->view->addWidget( $aOrmBrigdeToKey );
+		$this->viewForm->addWidget( $aOrmBrigdeToKey );
 		$aOrmBrigdeFromKey = new Select('ormBrigdeFromKey','BrigdeFromKey');
-		$this->view->addWidget( $aOrmBrigdeFromKey );
+		$this->viewForm->addWidget( $aOrmBrigdeFromKey );
 		$aOrmToKey = new Select('ormToKey','ToKey');
-		$this->view->addWidget( $aOrmToKey );
+		$this->viewForm->addWidget( $aOrmToKey );
 		
 		/*
 		 * 数据还原
@@ -138,7 +132,7 @@ class ORMCoder extends Controller
 		
 		
 			//用户现在的行为
-//		$this->view->variables()->set('whatyoudoing', ) ;
+//		$this->viewForm->variables()->set('whatyoudoing', ) ;
 	}
 
 	public function process()

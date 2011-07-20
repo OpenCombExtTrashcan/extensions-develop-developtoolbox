@@ -30,9 +30,7 @@ class MVCCoder extends Controller
 	}
 
 	public function process()
-	{
-		$this->permissionDenied() ;
-		
+	{		
 		if( !$this->doAction() )
 		{
 			// 反射 class namespace

@@ -19,8 +19,7 @@ class {=$arrData['classname']} extends {=basename(str_replace('\\','/',$arrData[
 		<if "$iter->valid()"><clear />
 		<foreach for="$iter" item='arrView' ><nl /><clear />
 		{? $arrView['belongsView']='1' }<clear />
-		{? ob_flush() }{? \oc\ext\developtoolbox\coder\mvc\View::createInstance(array($arrView))->generate($theOutputDevPool,$theDevice)}<nl />
-		$this->add($this->{=$arrView['name']}) ; // 建立视图“父子”关系<clear />
+		{? ob_flush() }{? \oc\ext\developtoolbox\coder\mvc\View::createInstance(array($arrView))->generate($theOutputDevPool,$theDevice)}<clear />
 		</foreach><nl /><clear />
 		</if><nl />
 	}

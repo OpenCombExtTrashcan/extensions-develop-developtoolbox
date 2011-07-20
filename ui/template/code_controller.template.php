@@ -11,6 +11,7 @@ class {=$arrData['classname']} extends Controller
 	 */
 	protected function init()
 	{
+		{* 生成 创建模型的代码 }<clear />
 		{? $aIter=$theCoder->childrenIterator('model'); }<clear />
 		<if "$aIter->valid()"><clear />
 		// ---------------------------------------------
@@ -20,24 +21,27 @@ class {=$arrData['classname']} extends Controller
 		</foreach><nl /><clear />
 		</if><clear />
 		
+		
+		{* 生成 创建视图的代码 }<clear />
 		{? $aIter=$theCoder->childrenIterator('view'); }<clear />
 		<if "$aIter->valid()"><nl />
 		// ---------------------------------------------
 		// 创建视图<clear />
 		<foreach for="$aIter" item='arrView'><nl /><clear />
 		{? $arrView['belongsController']='1' }<clear />
-		{? ob_flush() }{? \oc\ext\developtoolbox\coder\mvc\View::createInstance(array($arrView))->generate($theOutputDevPool,$theDevice)}<clear />
+		{? ob_flush() }{? \oc\ext\developtoolbox\coder\mvc\View::create($arrView)->generate($theOutputDevPool,$theDevice)}<clear />
 		<if "$arrView['model']"><nl />
-		$this->{=$arrView['name']}->setModel($this->model{=$arrView['model']}) ;<clear />
+		$this->view{=$arrView['name']}->setModel($this->model{=$arrView['model']}) ;<clear />
 		</if><clear />
 		</foreach><nl /><clear />
 		</if><clear />
 		
+		{* 生成 创建子控制器的代码 }<clear />
 		{? $aIter=$theCoder->childrenIterator('controller'); }<clear />
 		<if "$aIter->valid()"><nl />
 		// create child controllers -------------<clear />
 			<foreach for="$aIter" item='arrChild'><nl />
-		$this->add( $this->{=$arrChild['name']} = new {=$arrChild['classname']}() ) ;<clear />
+		$this->add( new {=$theCoder->baseClassName($arrChild['classname'])}() ) ;<clear />
 			</foreach><clear />
 		</if><clear />
 <nl />	}
@@ -47,10 +51,13 @@ class {=$arrData['classname']} extends Controller
 	 */
 	public function process()
 	{<nl /><clear />
+	
+	
 		{* 生成视图执行代码 }<clear />
 		<foreach for="$theCoder->childrenIterator('model')" item='arrModel'><clear />
 		{? ob_flush() }{? $theCoder->generateProcessingCodeForLoadModel($arrModel,$theDevice) }<nl /><clear />
 		</foreach><clear />
+		
 		
 		{* 生成视图执行代码 }<clear />
 		<foreach for="$theCoder->childrenIterator('view')" item='arrView'><clear />
@@ -65,28 +72,22 @@ class {=$arrData['classname']} extends Controller
 		// 处理表单视图({=$arrView['name']})的提交
 		if( $this->{=$arrView['name']}->isSubmit() )
 		{do{
-			// 从控制器的参数中加载数据到视图的窗体中
-			$this->{=$arrView['name']}->loadWidgets() ;
-			
-			// 校验视图窗体中的数据
-			if( !$this->{=$arrView['name']}->verifyWidgets() )
+			// 加载校验表单，并将表单中的数据交换给模型
+			if(!$this->preprocessForm($this->view{=$arrView['name']}))
 			{
 				break ;
 			}
-			
-			// 数据交换：从视图窗体到模型
-			$this->{=$arrView['name']}->exchangeData(DataExchanger::WIDGET_TO_MODEL) ;
 			
 			// 其他操作
 			// todo ... ...
 
 			<if "$arrView['model']"><clear />
 			// 保存模型：
-			if( $this->{=$arrView['model']}->save() )
+			if( $this->model{=$arrView['model']}->save() )
 			{
 				$this->messageQueue()->create(Message::success,"记录已经保存成功。") ;	
 				
-				$this->{=$arrView['model']}->hideForm() ; // 隐藏表单
+				$this->view{=$arrView['model']}->hideForm() ; // 隐藏表单
 			}
 			else
 			{
@@ -100,6 +101,8 @@ class {=$arrData['classname']} extends Controller
 			</if><clear />
 		</foreach>
 	}<clear />
+	
+	
 	{? $aIter=$theCoder->childrenIterator(array('view','model','controller')) ; }<clear />
 	<if "$aIter->valid()"><nl /><nl />
 	// -------------------------------------------
@@ -109,7 +112,7 @@ class {=$arrData['classname']} extends Controller
 	/**
 	 * @var {=\oc\ext\developtoolbox\coder\AbstractCoder::create($arrChild)->detectClass()}<nl />
 	 */
-	public ${=$arrChild['name']} ;<nl /><clear />
+	public ${=$arrChild['coder']}{=$arrChild['name']} ;<nl /><clear />
 	</foreach>
 	// -------------------------------------------
 	</if><nl />

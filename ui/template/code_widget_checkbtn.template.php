@@ -1,0 +1,2 @@
+		{= $theCoder->viewVarName()}->addWidget( new CheckBtn('{=addslashes($arrData['id'])}','{=addslashes($arrData['title'])}','{=addslashes($arrData['value'])}',CheckBtn::{=$arrData['checkbtnType']}){=$theCoder->generateDataExchange()},{=$arrData['isChecked']?'true':'false'} )<clear />
+		{? ob_flush() }{? $theCoder->generateVerifiers($theOutputDevPool,$theDevice) }

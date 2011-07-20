@@ -12,7 +12,6 @@ class Text extends Widget
 	{
 		$this->generateByUINgin('code_widget_text.template.php',$aDev,$aDevPool) ;
 	}
-
 	
 	/**
 	 * 生成的类

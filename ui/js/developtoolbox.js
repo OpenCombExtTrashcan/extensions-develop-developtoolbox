@@ -1031,6 +1031,10 @@ jQuery(function () {
 		e.stopPropagation();//停止冒泡
 	});
 	
+	$('#controller_classname').live('change',function(){
+		$(this).val();
+	});
+	
 	//属性提交property
 	jQuery("#controller_property input,#controller_property select").live("focusout change",saveForm);
 	jQuery("#view_property input , #view_property select").live("focusout change",saveForm);

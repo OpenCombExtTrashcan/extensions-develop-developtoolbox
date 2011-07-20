@@ -28,7 +28,7 @@ class {=$arrData['classname']} extends Controller
 		{? $arrView['belongsController']='1' }<clear />
 		{? ob_flush() }{? \oc\ext\developtoolbox\coder\mvc\View::createInstance(array($arrView))->generate($theOutputDevPool,$theDevice)}<clear />
 		<if "$arrView['model']"><nl />
-		$this->{=$arrView['name']}->setModel($this->{=$arrView['model']}) ;<clear />
+		$this->{=$arrView['name']}->setModel($this->model{=$arrView['model']}) ;<clear />
 		</if><clear />
 		</foreach><nl /><clear />
 		</if><clear />

@@ -92,20 +92,6 @@ class MVCCoder extends Controller
 		
 		foreach($aOutputDevPool as $sFilePath=>$aOutputDev)
 		{
-			// 反射 class namespace
-			list($arrNamespacesInfo,$arrControllerClasses,$arrViewClasses) = $this->scanExtensions( $this->application()->classLoader() ) ;
-			
-			$this->viewForm->variables()->set('sDefineNamespacesCode',json_encode($arrNamespacesInfo)) ;
-			$this->viewForm->variables()->set('sDefineAllControllerClassesCode',json_encode($arrControllerClasses)) ;
-			$this->viewForm->variables()->set('sDefineAllViewClassesCode',json_encode($arrViewClasses)) ;
-	
-			// 反射系统中的orm
-			$arrModels = $this->scanOrm( PrototypeAssociationMap::singleton() ) ;
-			$this->viewForm->variables()->set('sDefineModelsCode',json_encode($arrModels)) ;
-		
-			// 反射系统中的模板文件目录
-			$arrUiTemplateFolders = $this->scanUiTemplateFolders() ;
-			$this->viewForm->variables()->set('sDefineUiTemplateFolders',json_encode($arrUiTemplateFolders)) ;
 			if($this->aParams['act_generate_save'])
 			{
 				echo "<hr />", $sFilePath, ":<br />\r\n" ;
@@ -116,7 +102,8 @@ class MVCCoder extends Controller
 			{
 				echo "-------------------------------------------------------------------------\r\n"
 							, $sFilePath, ":\r\n" ;
-				echo $aOutputDev->bufferBytes(), "\r\n\r\n\r\n" ;
+				echo htmlspecialchars($aOutputDev->bufferBytes()), "\r\n\r\n\r\n" ;
+				ob_flush() ;
 			}
 		}
 	}

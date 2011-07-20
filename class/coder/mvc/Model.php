@@ -17,18 +17,17 @@ class Model extends AbstractCoder
 	public function generate(IHashTable $aDevPool,IOutputStream $aDev=null)
 	{
 		$sCode = "// -- 模型:{$this->arrData['name']}\r\n" ;
-		$sCode.= '		$this->'.$this->arrData['name'] ;
+		$sCode.= '		$this->createModel(' ;
 			
 		// 创建一个空模型
 		if( empty($this->arrData['orm-start']) )
 		{
-			$sCode.= " = new Model(null" ;
+			$sCode.= "null" ;
 			
 			if(!empty($this->arrData['aggregation']))
 			{
 				$sCode.= ',true' ;
 			}
-			$sCode.= ") ;" ;
 		}
 		
 		// 通过 orm 片段创建模型
@@ -75,7 +74,7 @@ class Model extends AbstractCoder
 				$this->arrData['orm-data'] = ','.$fnGenerateOrmFragmentCode($this->arrData['orm-data'],$fnGenerateOrmFragmentCode) ;
 			}
 			
-			$sCode.= " = Model::fromFragment('{$this->arrData['orm-start']}'{$this->arrData['orm-data']}" ;
+			$sCode.= "'{$this->arrData['orm-start']}'{$this->arrData['orm-data']}" ;
 			if(!empty($this->arrData['aggregation']))
 			{
 				if( empty($this->arrData['orm-data']) )
@@ -84,8 +83,11 @@ class Model extends AbstractCoder
 				}
 				$sCode.= ',true' ;
 			}
-			$sCode.= ") ;" ;
 		}
+		
+			
+		$sCode.= ",'{$this->arrData['name']}'" ;
+		$sCode.= ") ;" ;
 		
 		$aDev->write($sCode) ;
 	}

@@ -1,13 +1,13 @@
 <?php
 namespace oc\ext\developtoolbox ;
 
+use jc\lang\Exception;
+
+use jc\auth\AuthenticationException;
 use jc\message\Message;
-
 use jc\fs\Dir;
-
 use jc\fs\File;
 use jc\ui\xhtml\UIFactory;
-
 use jc\ui\SourceFileManager;
 use jc\util\HashTable;
 use oc\ext\developtoolbox\coder\AbstractCoder;
@@ -31,67 +31,9 @@ class MVCCoder extends Controller
 
 	public function process()
 	{
-		// 生成代码
-		if( $this->aParams->get('act')=='generate' )
-		{
-			$this->aParams->set('noframe',true) ;
-			$this->view->disable() ;
-			
-			$arrData = json_decode($this->aParams->get('data'),true) ;
-			
-			$aCoder = AbstractCoder::create($arrData) ;
-			$aOutputDevPool = new HashTable() ;
-			
-			$aCoder->generate($aOutputDevPool) ;
+		$this->permissionDenied() ;
 		
-			// 保存到文件
-			if( $this->aParams['act_generate_save'] )
-			{
-				foreach($aOutputDevPool as $sFilePath=>$aOutputDev)
-				{
-					if( !$bFileExists=file_exists($sFilePath) or $this->aParams['cover'] )
-					{
-						$aFile = new File($sFilePath) ;
-						$aOutput = $aFile->openWriter() ;
-						$aOutput->write($aOutputDev->bufferBytes(false)) ;
-						$aOutput->close() ;
-						
-						if( $bFileExists )
-						{
-							$this->messageQueue()->create(Message::warning,"文件已经覆盖：%s",$sFilePath) ;
-						}
-						else 
-						{
-							$this->messageQueue()->create(Message::success,"文件已经保存：%s",$sFilePath) ;
-						}
-					}
-					else 
-					{
-						$this->messageQueue()->create(Message::error,"文件已经存在：%s",$sFilePath) ;
-					}
-				}
-				
-				$this->messageQueue()->display() ;
-			}
-			
-			foreach($aOutputDevPool as $sFilePath=>$aOutputDev)
-			{
-				if($this->aParams['act_generate_save'])
-				{
-					echo "<hr />", $sFilePath, ":<br />\r\n" ;
-					highlight_string($aOutputDev->bufferBytes()) ;
-					echo "<br />\r\n<br />\r\n" ;
-				}
-				else 
-				{
-					echo "-------------------------------------------------------------------------\r\n"
-								, $sFilePath, ":\r\n" ;
-					echo $aOutputDev->bufferBytes(), "\r\n\r\n\r\n" ;
-				}
-			}
-		}
-		
-		else
+		if( !$this->doAction() )
 		{
 			// 反射 class namespace
 			list($arrNamespacesInfo,$arrControllerClasses,$arrViewClasses) = $this->scanExtensions( $this->application()->classLoader() ) ;
@@ -109,6 +51,81 @@ class MVCCoder extends Controller
 			$this->view->variables()->set('sDefineUiTemplateFolders',json_encode($arrUiTemplateFolders)) ;
 		}
 	}
+	
+	public function actionGenerate()
+	{
+		$this->aParams->set('noframe',true) ;
+		$this->view->disable() ;
+		
+		$arrData = json_decode($this->aParams->get('data'),true) ;
+		
+		$aCoder = AbstractCoder::create($arrData) ;
+		$aOutputDevPool = new HashTable() ;
+		
+		$aCoder->generate($aOutputDevPool) ;
+	
+		// 保存到文件
+		if( $this->aParams['act_generate_save'] )
+		{
+			foreach($aOutputDevPool as $sFilePath=>$aOutputDev)
+			{
+				if( !$bFileExists=file_exists($sFilePath) or $this->aParams['cover'] )
+				{
+					$aFile = new File($sFilePath) ;
+					$aOutput = $aFile->openWriter() ;
+					$aOutput->write($aOutputDev->bufferBytes(false)) ;
+					$aOutput->close() ;
+					
+					if( $bFileExists )
+					{
+						$this->messageQueue()->create(Message::warning,"文件已经覆盖：%s",$sFilePath) ;
+					}
+					else 
+					{
+						$this->messageQueue()->create(Message::success,"文件已经保存：%s",$sFilePath) ;
+					}
+				}
+				else 
+				{
+					$this->messageQueue()->create(Message::error,"文件已经存在：%s",$sFilePath) ;
+				}
+			}
+			
+			$this->messageQueue()->display() ;
+		}
+		
+		foreach($aOutputDevPool as $sFilePath=>$aOutputDev)
+		{
+			// 反射 class namespace
+			list($arrNamespacesInfo,$arrControllerClasses,$arrViewClasses) = $this->scanExtensions( $this->application()->classLoader() ) ;
+			
+			$this->view->variables()->set('sDefineNamespacesCode',json_encode($arrNamespacesInfo)) ;
+			$this->view->variables()->set('sDefineAllControllerClassesCode',json_encode($arrControllerClasses)) ;
+			$this->view->variables()->set('sDefineAllViewClassesCode',json_encode($arrViewClasses)) ;
+	
+			// 反射系统中的orm
+			$arrModels = $this->scanOrm( PrototypeAssociationMap::singleton() ) ;
+			$this->view->variables()->set('sDefineModelsCode',json_encode($arrModels)) ;
+		
+			// 反射系统中的模板文件目录
+			$arrUiTemplateFolders = $this->scanUiTemplateFolders() ;
+			$this->view->variables()->set('sDefineUiTemplateFolders',json_encode($arrUiTemplateFolders)) ;
+			if($this->aParams['act_generate_save'])
+			{
+				echo "<hr />", $sFilePath, ":<br />\r\n" ;
+				highlight_string($aOutputDev->bufferBytes()) ;
+				echo "<br />\r\n<br />\r\n" ;
+			}
+			else 
+			{
+				echo "-------------------------------------------------------------------------\r\n"
+							, $sFilePath, ":\r\n" ;
+				echo $aOutputDev->bufferBytes(), "\r\n\r\n\r\n" ;
+			}
+		}
+	}
+	
+	
 
 	public function scanExtensions(ClassLoader $aClassLoader)
 	{

@@ -1,6 +1,16 @@
 <?php
 namespace oc\ext\developtoolbox ;
 
+use jc\db\DB;
+
+use jc\fs\Dir;
+use jc\fs\File;
+use jc\ui\xhtml\UIFactory;
+use jc\ui\SourceFileManager;
+use jc\util\HashTable;
+use oc\ext\developtoolbox\coder\AbstractCoder;
+use oc\ext\developtoolbox\coder\mvc\Controller as ControllerCoder;
+use jc\io\OutputStreamBuffer;
 use jc\mvc\model\db\orm\Association;
 use oc\mvc\controller\Controller ;
 use jc\mvc\view\DataExchanger ;
@@ -34,6 +44,9 @@ class ORMCoder extends Controller
 		$this->createView('view','ORMCoder.template.html') ;
 
 		//数据
+		
+		$this->view->variables()->set('aPam',PrototypeAssociationMap::singleton()) ;
+		
 		// 反射 orm 配置
 		$arrOrm = $this->reflectionOrm() ;
 		$this->view->variables()->set('arrDefineOrm',$arrOrm) ;
@@ -165,12 +178,11 @@ class ORMCoder extends Controller
 					'bridgeToKeys' => $aAssoc->bridgeToKeys() ,
 					'bridgeTableName' => $aAssoc->bridgeTableName() ,
 					'toPrototype' => $aAssoc->toPrototype()->name() ,
-				
 				) ;
 			}
 			
 			@list($sExtName,$sOrmName) = explode(':', $sName) ;
-			
+
 			$arrOrm[$sExtName][$sOrmName] = array(
 					'name' => $aPrototype->name() ,
 					'title' => $sOrmName ,

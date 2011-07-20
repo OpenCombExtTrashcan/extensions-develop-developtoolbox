@@ -13,6 +13,14 @@ class Length extends VerifierCoder
 		$nMax = intval($this->arrData['max']) ;
 		$aDev->write("\r\n				->addVerifer(Length::flyweight(array({$nMin},{$nMax})))") ;
 	}
+
+	/**
+	 * 生成的类
+	 */
+	public function detectClass()
+	{
+		return 'jc\\verifier\\Length' ;
+	}
 }
 
 ?>

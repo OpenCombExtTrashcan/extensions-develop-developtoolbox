@@ -83,6 +83,8 @@ abstract class AbstractCoder extends Object implements ICoder
 		
 	public function detectUsedClasses(Container $aClasses)
 	{
+		$aClasses->add($this->detectClass()) ;
+		
 		$this->detectChildrenUsedClasses($aClasses) ;
 	}
 	protected function detectChildrenUsedClasses(Container $aClasses)
@@ -93,13 +95,23 @@ abstract class AbstractCoder extends Object implements ICoder
 		}
 	}
 	
-	
 	public function generateClassesUse(Container $aClasses,IOutputStream $aDev)
 	{
 		foreach($aClasses->iterator() as $sClass)
 		{
 			$aDev->write("use {$sClass} ;\r\n") ;
 		}
+	}
+	
+	public function baseClassName($sFullClassname)
+	{
+		$nLastSlashPos = strrpos($sFullClassname, '\\') ;
+		if($nLastSlashPos===false)
+		{
+			return $sFullClassname ;
+		}
+		
+		return substr($sFullClassname,$nLastSlashPos+1) ;
 	}
 	
 	protected $arrData = array() ;

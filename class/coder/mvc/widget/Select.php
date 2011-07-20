@@ -30,6 +30,14 @@ class Select extends Widget
 			$aDev->write("\r\n				->addOption('{$arrOption[0]}','{$arrOption[1]}'{$arrOption[2]})") ;
 		}
 	}
+	
+	/**
+	 * 生成的类
+	 */
+	public function detectClass()
+	{
+		return $this->arrData['size']<=1? 'jc\\mvc\\view\\widget\\Select': 'jc\\mvc\\view\\widget\\SelectList' ;
+	}
 }
 
 ?>

@@ -22,12 +22,7 @@ class Model extends AbstractCoder
 		// 创建一个空模型
 		if( empty($this->arrData['orm-start']) )
 		{
-			$sCode.= "null" ;
-			
-			if(!empty($this->arrData['aggregation']))
-			{
-				$sCode.= ',true' ;
-			}
+			$sCode.= "null,null" ;
 		}
 		
 		// 通过 orm 片段创建模型
@@ -64,27 +59,28 @@ class Model extends AbstractCoder
 			} ;
 		
 			// -- --
+			$sCode.= "'{$this->arrData['orm-start']}'" ;
+			
+			
 			if( empty($this->arrData['orm-data']) )
 			{
-				$this->arrData['orm-data'] = '' ;
+				$sCode.= ',null' ;
 			}
 			
 			else 
 			{
-				$this->arrData['orm-data'] = ','.$fnGenerateOrmFragmentCode($this->arrData['orm-data'],$fnGenerateOrmFragmentCode) ;
-			}
-			
-			$sCode.= "'{$this->arrData['orm-start']}'{$this->arrData['orm-data']}" ;
-			if(!empty($this->arrData['aggregation']))
-			{
-				if( empty($this->arrData['orm-data']) )
-				{
-					$sCode.= ',null' ;
-				}
-				$sCode.= ',true' ;
+				$sCode.= ','.$fnGenerateOrmFragmentCode($this->arrData['orm-data'],$fnGenerateOrmFragmentCode) ;
 			}
 		}
-		
+	
+		if(!empty($this->arrData['aggregation']))
+		{
+			$sCode.= ',true' ;
+		}
+		else 
+		{
+			$sCode.= ',false' ;
+		}
 			
 		$sCode.= ",'{$this->arrData['name']}'" ;
 		$sCode.= ") ;" ;

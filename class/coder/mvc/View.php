@@ -1,6 +1,8 @@
 <?php
 namespace oc\ext\developtoolbox\coder\mvc ;
 
+use jc\lang\Exception;
+
 use jc\fs\File;
 
 use jc\pattern\composite\Container;
@@ -27,6 +29,11 @@ class View extends AbstractCoder
 		parent::__construct($arrData,$arrNotEmptys) ;
 	}
 	
+	static public function create($arrData,$sParentVarName='$this')
+	{
+		$arrData['parent_var_name'] = $sParentVarName ;
+		return new self($arrData) ;
+	}
 	public function generate(IHashTable $aDevPool,IOutputStream $aDev=null)
 	{
 		$aDev->write("		// -- 视图: {$this->arrData['name']}\r\n") ;
@@ -37,7 +44,7 @@ class View extends AbstractCoder
 		}
 		else 
 		{
-			$aDev->write("		\$this->{$this->arrData['name']} = new {$this->arrData['classname']}() ;") ;
+			$aDev->write("		{$this->arrData['parent_var_name']}->addView(new {$this->arrData['classname']}()) ;") ;
 			
 			$aDev = new OutputStreamBuffer() ;
 			$aDevPool[ $this->arrData['filepath'] ] = $aDev ;
@@ -50,19 +57,22 @@ class View extends AbstractCoder
 		}
 		
 		// 生成对应的模板文件
+		if(empty($this->arrData['templateFolder']))
+		{
+			throw new Exception("请选择视图%s的模板目录",$this->arrData['name']) ;
+		}
 		list($sExtName,$sTemplateFolder) = explode(':',$this->arrData['templateFolder']) ;
 		$sTemplateFolder = $this->application()->extensionsDir().$this->application()->extensions()->extension($sExtName)->metainfo()->installFolder().$sTemplateFolder.'/' ;
 		$sTemplatePath = File::formatPath($sTemplateFolder.$this->arrData['template']) ;
 		
 		$aDevPool[$sTemplatePath] = new OutputStreamBuffer() ;
 		$this->generateByUINgin('code_view_template.template.php',$aDevPool[$sTemplatePath],$aDevPool) ;
-		
 	}
 
-	public function detectUsedClasses(Container $aClasses,$bExcludeSelf=false)
+	public function detectUsedClasses(Container $aClasses,$bIncludeSelf=true)
 	{
 		// 
-		if( !empty($this->arrData['aloneClass']) and !$bExcludeSelf)
+		if( !empty($this->arrData['aloneClass']) ) 
 		{
 			$aClasses->add($this->arrData['namespace'].'\\'.$this->arrData['classname']) ;
 		}

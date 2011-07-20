@@ -12,6 +12,16 @@ class Text extends Widget
 	{
 		$this->generateByUINgin('code_widget_text.template.php',$aDev,$aDevPool) ;
 	}
+
+	
+	/**
+	 * 生成的类
+	 */
+	public function detectClass()
+	{
+		return 'jc\\mvc\\view\\widget\\Text' ;
+	}
+	
 }
 
 ?>

@@ -55,9 +55,7 @@ class Controller extends AbstractCoder
 		foreach($this->arrData['children'] as $arrChild)
 		{
 			if ($arrChild['coder']=='model')
-			{
-				$aClasses->add('oc\\mvc\\model\\Model') ;
-				
+			{				
 				if($arrChild['generationLoadModel'])
 				{
 					$aClasses->add('jc\\mvc\\view\\DataExchanger') ;
@@ -71,6 +69,14 @@ class Controller extends AbstractCoder
 		}
 		
 		$this->detectChildrenUsedClasses($aClasses) ;
+	}
+	
+	/**
+	 * 生成的类
+	 */
+	public function detectClass()
+	{
+		return 'oc\\mvc\\controller\\Controller' ;
 	}
 	
 	public function generateProcessingCodeForLoadModel(array $arrModel,IOutputStream $aDev)
@@ -109,14 +115,6 @@ class Controller extends AbstractCoder
 				 
 			$aDev->write(" ) ;	// 从控制器的参数中得到DB模型主键值\r\n") ;
 		}
-	}
-	
-	/**
-	 * 生成的类
-	 */
-	public function detectClass()
-	{
-		return 'oc\\mvc\\controller\\Controller' ;
 	}
 }
 

@@ -32,7 +32,7 @@ class VerifierCoder extends AbstractCoder
 	 */
 	public function detectClass()
 	{
-		return 'jc\\verifier\\IVerifier' ;
+		return 'jc\\verifier\\'.$this->arrData['verifierType'] ;
 	}
 }
 

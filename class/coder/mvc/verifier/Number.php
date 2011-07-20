@@ -12,6 +12,14 @@ class Number extends VerifierCoder
 		$sInt = $this->arrData['bint']? 'true': 'false' ;
 		$aDev->write("\r\n				->addVerifer(Number::flyweight(array({$sInt})))") ;
 	}
+
+	/**
+	 * 生成的类
+	 */
+	public function detectClass()
+	{
+		return 'jc\\verifier\\Number' ;
+	}
 }
 
 ?>

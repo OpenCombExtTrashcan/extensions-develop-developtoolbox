@@ -29,7 +29,7 @@ class ORMCoder extends Controller
 	protected function init()
 	{
 		//页面内容
-		$this->add(new FrontFrame()) ;
+		
 
 		$this->createView('view','ORMCoder.template.html') ;
 

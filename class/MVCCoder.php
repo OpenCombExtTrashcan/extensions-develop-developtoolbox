@@ -24,7 +24,7 @@ class MVCCoder extends Controller
 {
 	protected function init()
 	{
-		$this->add(new FrontFrame()) ;
+		
 		
 		$this->createView('view','MVCCoder.template.html') ;
 	}

@@ -30,6 +30,7 @@ use jc\mvc\view\widget\FileUpdate;
 use jc\mvc\view\View;
 use jc\mvc\model\db\orm\PrototypeAssociationMap;
 use oc\base\FrontFrame;
+use jc\mvc\controller\WebpageFrame;
 
 class ORMCoder extends Controller
 {
@@ -55,16 +56,15 @@ class ORMCoder extends Controller
 		$arrExtends = array_keys($arrOrm); 
 		
 		//整理请求参数
+		$sDO =  $this->aParams->has('do') ? $this->aParams->get('do') : 'new';						//请求分类
 		$sExtend = $this->aParams->has('ext') ? $this->aParams->get('ext') : $arrExtends[0] ;    //请求的扩展名,如果不存在就给与默认的扩展名
-		$sOrmTitle = $this->aParams->has('title') ? $this->aParams->get('title') : "";  //指定orm的名字
+		$sOrmTitle = $this->aParams->has('title') ? $this->aParams->get('title') : "";  		//指定orm的名字
 		
-		if($sOrmTitle != ''){
-			$sTableName = $arrOrm[$sExtend][$sOrmTitle]['table'];                           //指定orm所属table
-			$arrAllColumns = $arrTables[$sExtend][$sTableName]['columns'];					//指定orm所属table的所有列
-			$arrUsedColumns = $arrOrm[$sExtend][$sOrmTitle]['columns'];						//指定orm所属table的使用到的列
-			$arrPrimaryKey = $arrOrm[$sExtend][$sOrmTitle]['primaryKeys'];					//指定orm的所有主键
-			$sDevicePrimaryKey = $arrOrm[$sExtend][$sOrmTitle]['devicePrimaryKey'];			//指定orm的设备主键
-		}
+		$sTableName = $sOrmTitle != '' ? $arrOrm[$sExtend][$sOrmTitle]['table'] : $this->getFirstTable($arrTables , $sExtend);                           //指定orm所属table
+		$arrAllColumns = $arrTables[$sExtend][$sTableName]['columns'] ;																	//指定orm所属table的所有列
+		$arrUsedColumns =  $sOrmTitle != '' ? $arrOrm[$sExtend][$sOrmTitle]['columns'] : '';										//指定orm所属table的使用到的列
+		$arrPrimaryKey = $sOrmTitle != '' ?  $arrOrm[$sExtend][$sOrmTitle]['primaryKeys'] : '';									//指定orm的所有主键
+		$sDevicePrimaryKey = $arrTables[$sExtend][$sTableName]['primaryKey'];		
 		
 		/*
 		 * prototype 表单
@@ -91,8 +91,9 @@ class ORMCoder extends Controller
 		$aOrmTitle = new Text('ormTitle','表别名','',Text::single);
 		$this->viewForm->addWidget( $aOrmTitle )
 				->addVerifier(Length::flyweight(array(2,30))) ;
-		$aOrmTitle->setValue($arrOrm[$sExtend][$sOrmTitle]['title']);
-		
+		if($sOrmTitle != ''){
+			$aOrmTitle->setValue($arrOrm[$sExtend][$sOrmTitle]['title']);
+		}
 				
 		//主键,列
 		$arrColumns = $this->getColumns($arrOrm,$arrAllColumns,$arrPrimaryKey,$arrUsedColumns );
@@ -144,11 +145,23 @@ class ORMCoder extends Controller
 	public function getColumns($arrOrm,$arrAllColumns,$arrPrimaryKey,$arrUsedColumns ){
 		$arrColumns = array();
 		foreach($arrAllColumns as $sColumn){
-			$bIsPrimary = in_array($sColumn,$arrPrimaryKey);
-			$bIsUsedColumn = in_array($sColumn,$arrUsedColumns);
+			$bIsPrimary = false;
+			if($arrPrimaryKey != ''){
+				$bIsPrimary = in_array($sColumn,$arrPrimaryKey);
+			}
+			$bIsUsedColumn = false;
+			if($arrUsedColumns != ''){
+				$bIsUsedColumn = in_array($sColumn,$arrUsedColumns);
+			}
 			$arrColumns[] = array($sColumn , $bIsPrimary , $bIsUsedColumn);
 		}
 		return $arrColumns;
+	}
+	
+	//返回指定扩展下"第一个"table的全名
+	public function getFirstTable($arrTables , $sExtend){
+		$arrTablesTemp = array_keys($arrTables[$sExtend]) ;
+		return array_shift($arrTablesTemp);
 	}
 
 	public function reflectionOrm()
@@ -239,6 +252,11 @@ class ORMCoder extends Controller
 		return array(substr($sTableName,0,$nPos),substr($sTableName,$nPos+1)) ;
 	}
 	
+	
+    public function createFrame()
+    {
+    	return new WebpageFrame() ;
+    }
 }
 
 ?>

@@ -25,6 +25,11 @@ class MVCCoder extends Controller
 	protected function init()
 	{
 		$this->createView('Form','MVCCoder.template.html') ;
+		
+		if( isset($this->aParams['act']) )
+		{
+			$this->aParams->set('noframe',1) ;
+		}
 	}
 
 	public function process()
@@ -50,8 +55,7 @@ class MVCCoder extends Controller
 	
 	public function actionGenerate()
 	{
-		$this->aParams->set('noframe',true) ;
-		$this->viewForm->disable() ;
+		$this->mainView()->disable() ;
 		
 		$arrData = json_decode($this->aParams->get('data'),true) ;
 		

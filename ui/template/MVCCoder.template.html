@@ -62,8 +62,8 @@
 				<input id="view_classname" type="text" disabled="disabled"/><br />
 				<label for="view_filepath">类文件路径: </label><input id="view_filepath" type="text" style="width:90%" disabled="disabled" /><br />
 				
-                <label for="view_model">模型:</label>
-                <select id="view_model">
+                <label for="view_modelSelect">模型:</label>
+                <select id="view_modelSelect">
                     <option value="0">请选择</option>
                 </select><br/>
 				数据交换设置：<br />
@@ -86,7 +86,7 @@
 				<label for="widget_widgetType"></label>
 				控件类型：
 				<select name="select2" class="required" id="widget_widgetType">
-                  <option value="text">文本控件</option>
+                  <option value="text" selected='selected'>文本控件</option>
                   <option value="checkbtn">复选框</option>
                   <option value="radiogroup">单选按钮组</option>
                   <option value="select">下拉菜单/列表</option>
@@ -104,7 +104,7 @@
             	<h3>校验器属性</h3>
             	<label for="verifier_verifierType">类型:</label>
                 <select id="verifier_verifierType" class="object_name required">
-                    <option value="Length">长度范围</option>
+                    <option value="Length" selected='selected'>长度范围</option>
                     <option value="Email">邮箱格式</option>
                     <option value="Number">数字格式</option>
 					<option value="Same">相等</option>
@@ -148,7 +148,7 @@
 				<input id="widget_value" type="text" /><br/>
 				<label for="widget_textType">类型:</label>
 				<select id="widget_textType">
-					<option value="single">单行</option>
+					<option value="single" selected = 'selected'>单行</option>
 					<option value="password">密码</option>
 					<option value="multiple">多行</option>
 					<option value="hidden">隐藏</option>
@@ -159,9 +159,8 @@
 				<input id="widget_value" type="text" /><br/>
 				<label for="widget_checkbtnType">类型:</label>
 				<select id="widget_checkbtnType">
-					<option value="0">请选择</option>
+					<option value="checkbox" selected = 'selected'>多选框</option>
 					<option value="radio">单选框</option>
-					<option value="checkbox">多选框</option>
 				</select><br/>
 				初始状态：
 			  <label for="widget_isChecked">

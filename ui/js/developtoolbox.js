@@ -187,6 +187,10 @@ jQuery(function () {
 		//需要对象额外执行代码时
 		var sCheckBoxsForProgram = '';
 		if(sNewType == 'view'){
+			if(newNodeId.length > 1){
+				newNodeId = newNodeId[0].toUpperCase()+newNodeId.substr(1);
+			}
+			$('#view_name').trigger("keyup");
 			var nCheckBoxsForProgramId1 = "trCheckbox_1_"+getIdTrCheckbox();
 			var nCheckBoxsForProgramId2 = "trCheckbox_2_"+getIdTrCheckbox();
 			sCheckBoxsForProgram = '<input id="'+nCheckBoxsForProgramId1+'" class="generationLoadWidgets" type="checkbox" /><label for="'+nCheckBoxsForProgramId1+'">执行前加载数据</label>'
@@ -236,6 +240,7 @@ jQuery(function () {
 			aNewNodeProperty['generationSaveModel'] = true;
 		}
 		if(sNewType == 'verifier'){
+			aNewNodeProperty['verifierType'] = "Length";
 			aNewNodeProperty['max'] = 30;
 			aNewNodeProperty['min'] = -1;
 		}
@@ -477,9 +482,16 @@ jQuery(function () {
 					delete ormTableColumn[sArgValue];
 				}
 				ormTableColumn[sArgValue] = widgetcolumbmap;
+			}else if(n.id == "view_modelSelect"){ //保存view的orm,要保存的是select的text而不是value
+				sArgValue = jQuery(n).val();
+				if(sArgValue.length > 1){
+					dataObject['model'] = $('#'+sArgValue).data('property')['name'];
+				}
 			}else{
 				sArgValue = jQuery(n).val();
 			}
+			
+			
 			if(sArgName!="submit"){
 				dataObject[sArgName] = sArgValue;
 			}
@@ -685,7 +697,7 @@ jQuery(function () {
 	});
 	//新添加一行select
 	function addNewTrForDataExchange(){
-		var sModelId = jQuery("#view_model").val();
+		var sModelId = jQuery("#view_modelSelect").val();
 		if(sModelId == 0){
 			return;
 		}
@@ -702,7 +714,7 @@ jQuery(function () {
 				+'</tr>';
 		jQuery("#view_model_table").append(newTr);
 		//初始化select
-		initLastViewWidgetAndColumnSelect(sModelId);
+		initLastViewWidgetAndColumnSelect($('#'+sModelId).data('property')['name']);
 	}
 	//初始化数据关系widget和column选项
 	function initLastViewWidgetAndColumnSelect(sModelId){
@@ -743,10 +755,11 @@ jQuery(function () {
 		}
 		arrSubModel = findNodeFormChildren(arrChildren,"model");
 		//初始化select
-		jQuery("#view_model").find("option[value!='0']").remove();
+		jQuery("#view_modelSelect").find("option[value!='0']").remove();
 		jQuery.each(arrSubModel,function(v,b){
 			var sModelId = jQuery(b).attr("id");
-			jQuery("#view_model").append('<option value="'+sModelId+'">'+sModelId+'</option>');
+			var sModelName = jQuery(b).data('property')['name'];
+			jQuery("#view_modelSelect").append('<option value="'+sModelId+'">'+sModelName+'</option>');
 		});
 	}
 	
@@ -827,7 +840,7 @@ jQuery(function () {
 	
 	
 	//view数据交换
-	jQuery("#view_model").change(function(){
+	jQuery("#view_modelSelect").change(function(){
 		jQuery("#view_model_table tbody > tr").remove();
 		addNewTrForDataExchange();
 	});
@@ -908,7 +921,7 @@ jQuery(function () {
 	jQuery("#namespaceSelect").change(nameSpaceEdit);
 	
 	//视图名称变化时自动生成template
-	jQuery("#view_name").keyup(function(){
+	jQuery("#view_name").live('focusout keyup',function(){
 		// if(extensionName == ""){
 			// return;
 		// }
@@ -917,7 +930,7 @@ jQuery(function () {
 			name = name[0].toUpperCase()+name.substr(1);
 		}
 		
-		jQuery("#view_template").val('view'+name+".template.html");//extensionName + "_" +jQuery(this).val()+".template.html");
+		jQuery("#view_template").val(name+".html");//extensionName + "_" +jQuery(this).val()+".template.html");
 	});
 	
 	//添加按钮功能
@@ -1016,15 +1029,15 @@ jQuery(function () {
 			var generationSaveModel = 'generationSaveModel';
 			
 			var data = aParentTr.data('property');
-			if(data['model'] != 0){
+			if(data['modelSelect'] != 0){
 				if( this.checked && jQuery(this).attr('class') == generationLoadWidgets){
 					if(this.checked){
-						jQuery('#'+data['model']).find('.'+generationLoadModel).prop('checked' , true );
-						jQuery('#'+data['model']).data('property')[generationLoadModel] = true;
+						jQuery('#'+data['modelSelect']).find('.'+generationLoadModel).prop('checked' , true );
+						jQuery('#'+data['modelSelect']).data('property')[generationLoadModel] = true;
 					}
 				}else if( this.checked && jQuery(this).attr('class') == generationProcessForm ){
-					jQuery('#'+data['model']).find('.'+generationSaveModel).prop('checked' , this.checked );
-					jQuery('#'+data['model']).data('property')[generationSaveModel] = this.checked;
+					jQuery('#'+data['modelSelect']).find('.'+generationSaveModel).prop('checked' , this.checked );
+					jQuery('#'+data['modelSelect']).data('property')[generationSaveModel] = this.checked;
 				}
 			}
 		}
@@ -1047,6 +1060,7 @@ jQuery(function () {
 			$('#model_name').val(sThisVal[0].toUpperCase()+sThisVal.substr(1));
 		}
 	});
+	
 	
 	//属性提交property
 	jQuery("#controller_property input,#controller_property select").live("focusout change",saveForm);

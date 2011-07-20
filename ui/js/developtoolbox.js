@@ -794,6 +794,7 @@ jQuery(function () {
 	//
 	jQuery("#verifier_verifierType").live("change",function(){
 		rebuildVerifierProperty(jQuery(this).val());
+		//jQuery(this).val();
 	});
 	//选择orm关系的起点
 	jQuery("#model_orm-start").live("change",function(){
@@ -1032,7 +1033,19 @@ jQuery(function () {
 	});
 	
 	$('#controller_classname').live('change',function(){
-		$(this).val();
+		var sThisVal = $(this).val();
+		sThisVal = sThisVal.split('\\').pop();
+		if(sThisVal.length > 1){
+			$('#controller_name').val(sThisVal[0].toUpperCase()+sThisVal.substr(1));
+		}
+	});
+	
+	$('#model_orm-start').live('change',function(){
+		var sThisVal = $(this).val();
+		sThisVal = sThisVal.split(':').pop();
+		if(sThisVal.length > 1){
+			$('#model_name').val(sThisVal[0].toUpperCase()+sThisVal.substr(1));
+		}
 	});
 	
 	//属性提交property

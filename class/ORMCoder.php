@@ -1,6 +1,10 @@
 <?php
 namespace oc\ext\developtoolbox ;
 
+use oc\ext\Extension;
+
+use oc\mvc\model\db\orm\PAMap;
+
 use jc\db\DB;
 use jc\fs\Dir;
 use jc\fs\File;
@@ -42,8 +46,12 @@ class ORMCoder extends Controller
 		//数据
 		$this->viewForm->variables()->set('aPam',PrototypeAssociationMap::singleton()) ;
 		
+		// 反射 orm 定义
+		$arrOrmDefines = $this->reflectionExtensionsOrmDefine() ;
+		$this->viewForm->variables()->set('sDefineOrmDefines',json_encode($arrOrmDefines)) ;
+		
 		// 反射 orm 配置
-		$arrOrm = $this->reflectionOrm() ;
+		$arrOrm = $this->reflectionOrm( $aPam = PrototypeAssociationMap::singleton() ) ;
 		$this->viewForm->variables()->set('arrDefineOrm',$arrOrm) ;
 		$this->viewForm->variables()->set('sDefineOrm',json_encode($arrOrm)) ;
 		
@@ -163,12 +171,35 @@ class ORMCoder extends Controller
 		$arrTablesTemp = array_keys($arrTables[$sExtend]) ;
 		return array_shift($arrTablesTemp);
 	}
+	
+	public function reflectionExtensionsOrmDefine()
+	{
+		$arrOrmDefines = array() ;
+		$aPAMap = new _PAM() ;
+		
+		foreach($this->application()->extensions()->iterator() as $aExtension)
+		{
+			if( method_exists($aExtension, 'defineOrm') )
+			{
+				$aPAMap->clear() ;
+				$aExtension->defineOrm($aPAMap) ;
+				
+				$arrOrmDefines[$aExtension->metainfo()->name()] = $this->reflectionOrm($aPAMap) ;
+			}
+			
+			else
+			{
+				$arrOrmDefines[$aExtension->metainfo()->name()] = array() ;
+			}
+		}
+		
+		return $arrOrmDefines ;
+	}
 
-	public function reflectionOrm()
+	public function reflectionOrm(PrototypeAssociationMap $aPam)
 	{
 		$arrOrm = array() ;
 		
-		$aPam = PrototypeAssociationMap::singleton() ;
 		foreach($aPam->modelNameIterator() as $sName)
 		{
 			$aPrototype = $aPam->modelPrototype($sName) ;
@@ -190,8 +221,10 @@ class ORMCoder extends Controller
 			
 			@list($sExtName,$sOrmName) = explode(':', $sName) ;
 
+			
 			$arrOrm[$sExtName][$sOrmName] = array(
 					'name' => $aPrototype->name() ,
+					'extension' => $sExtName ,
 					'title' => $sOrmName ,
 					'table' => $aPrototype->tableName() ,
 					'devicePrimaryKey' => $aPrototype->devicePrimaryKey() ,
@@ -259,4 +292,31 @@ class ORMCoder extends Controller
     }
 }
 
+
+class _PAM extends PAMap
+{
+	public function addOrm(array $arrOrm,$bCheck=true)
+	{
+		$arrStack = debug_backtrace() ;
+		array_shift($arrStack) ;
+		$sExtension = Extension::retraceExtensionName($arrStack) ;
+		
+		parent::addOrm($arrOrm,$bCheck,$sExtension) ;
+		
+		PAMap::transFullOrmNameForCfg( $arrOrm, $sExtension ) ;
+		$this->arrNewDefines[] = $arrOrm['name'] ;
+	}
+	
+	public function modelNameIterator()
+	{
+		return new \ArrayIterator( array_values($this->arrNewDefines) ) ;
+	}
+	
+	public function clear()
+	{
+		$this->arrNewDefines = array() ;
+	}
+	
+	private $arrNewDefines = array() ;
+}
 ?>

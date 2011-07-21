@@ -60,6 +60,11 @@ class ORMCoder extends Controller
 		$this->viewForm->variables()->set('arrDefineDbTable',$arrTables) ;
 		$this->viewForm->variables()->set('sDefineDbTable',json_encode($arrTables)) ;
 		
+		//反射
+		$arrOrmType = Association::allAssociationTypes();
+		$this->viewForm->variables()->set('arrDefineOrmTable',$arrOrmType);
+		$this->viewForm->variables()->set('sDefineOrmType',json_encode($arrOrmType));
+		
 //		//所有的扩展名
 //		$arrExtends = array_keys($arrOrm); 
 //		

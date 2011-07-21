@@ -65,12 +65,17 @@ h1 {
 }
 #property .ormForm{
 	background:#70C7C5;
-}
-
-#property .ormFrom{
 	width:250px;
 	float:left;
 	background:#081;
+}
+#property .ormTypeDiv{
+	width:400px;
+	float:left;
+}
+#property .ormToPrototypeDiv{
+	width:400px;
+	float:right;
 }
 #property .ormBridge{
 	width:500px;
@@ -93,6 +98,13 @@ h1 {
 	float:left;
 	background:#081;
 }
+
+/*模板*/
+
+#template{
+	display:none;
+}
+
 
 .block{
 	clear:both;

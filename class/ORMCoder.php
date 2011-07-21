@@ -209,6 +209,7 @@ class ORMCoder extends Controller
 			{
 				$arrAssoc[] = array(
 					
+					'type' => $aAssoc->type() ,
 					'prop' => $aAssoc->modelProperty() ,
 					'fromKeys' => $aAssoc->fromKeys() ,
 					'toKeys' => $aAssoc->toKeys() ,

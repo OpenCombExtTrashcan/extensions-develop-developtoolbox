@@ -225,16 +225,18 @@ $( function () {
 		this.getNewPrototypeForm = function() {
 			$('#template').find('.prototypeForm').clone().insertAfter($('#property').find('div').first()).show(0);
 		};
-		this.initSelects = function(){
+		this.initForm = function(){
 			$('#ormExtend').html('');
 			for(var key in defineOrmDefines){
 				$('#ormExtend').append('<option value="'+key+'">'+key+'</option>');
 			}
 			$('#ormExtend').val(this.sExtend);
 			$('#ormExtend').trigger('change');
+			
 		};
 		//还原数据到表单
 		this.putDataToForm = function(){
+			$('#ormTitle').val(this.aData['title']);
 			
 		};
 		this.display = function(bDisplay) {
@@ -242,7 +244,7 @@ $( function () {
 				$('#guide').remove();
 				$('.newOrmMap').show(0);
 				this.getNewPrototypeForm();
-				this.initSelects();
+				this.initForm();
 				this.putDataToForm();
 				return this;
 			} else {
@@ -282,17 +284,22 @@ $( function () {
 			}
 			$('#ormDefine').val(that.sDefine);
 			$('#ormDefine').trigger('change');
+
 			//对ormDefine的影响
 			var arrTables = getTableByExtend($(this).val());
 			$('#ormTable').html('');
 			for(var key in arrTables){
-				$('#ormTable').append('<option value="'+arrTables[key]+'">'+arrTables[key]['title']+'</option>');
+				$('#ormTable').append('<option value="'+arrTables[key]+'">'+defineDbTable[$(this).val()][arrTables[key]]['title']+'</option>');
 			}
 			$('#ormTable').val(that.aData['table']);
 			$('#ormTable').trigger('change');
 		});
 		
-		$('#ormDefine').live('change',function(){
+		$('#ormTable').live('change',function(){
+			var template = '<tr><td><input class="primaryKey" type="checkbox" value=""/></td>'
+			+'<td><input class="usedColumn" type="checkbox" value=""/></td>'
+			+'<td></td></tr>';
+			var arrColumn = [];
 			
 		});
 	}

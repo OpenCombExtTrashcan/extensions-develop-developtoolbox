@@ -20,7 +20,7 @@
 				<p>没有选中orm,如果想编辑orm可以点击左侧列表,如果想新建orm请点击</p>
 				<button class='newOrm'>新建orm</button>
 			</div>
-		
+		<input class='newOrmMap' type='button' value='添加新orm关系'/>
 		<div class="block"></div>
   	</div>
 </div>
@@ -33,7 +33,7 @@
 		<select id="ormExtend" class='formWidget'>
 		</select><br />
 		
-		<label for="ormDefine">所属定义:</label>
+		<label for="ormDefine">保存到扩展:</label>
 		<select id="ormDefine" class='formWidget'>
 		</select><br />
 		
@@ -41,7 +41,7 @@
 		<select id="ormTable" class='formWidget'>
 		</select><br />
 		
-		<label for="ormTitle">表别名:</label>
+		<label for="ormTitle">原型名:</label>
 		<input id="ormTitle" type='text' class='formWidget'/><br />
 		
 		<table class="ormColumn" class='formWidget'>
@@ -71,17 +71,18 @@
 	
 	
 	<div class="ormForm formWidget">
-		<div class="ormTypeDiv">
+		<div class="ormTopDiv">
 			<div class='ormTypeDiv'>
-				<label>orm类型:</label><br />
+				<label>orm类型:</label>
 				<select class="ormType" >
-					<foreach for='$sDefineOrmType' key='key' item='value'>
+					<foreach for='$arrDefineOrmType' key='key' item='value'>
 						<option value="{= $value}">{= $value}</option>
 					</foreach>
 				</select><br />
 			</div>
+			<div class='ormBlock'></div>
 			<div class='ormToPrototypeDiv'>
-				<label>原型:</label><br />
+				<label>原型:</label>
 				<select class="ormToPrototype" >
 				</select><br />
 				<lable>别名:</lable>

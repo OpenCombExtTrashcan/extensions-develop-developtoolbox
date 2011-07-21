@@ -62,7 +62,7 @@ class ORMCoder extends Controller
 		
 		//反射
 		$arrOrmType = Association::allAssociationTypes();
-		$this->viewForm->variables()->set('arrDefineOrmTable',$arrOrmType);
+		$this->viewForm->variables()->set('arrDefineOrmType',$arrOrmType);
 		$this->viewForm->variables()->set('sDefineOrmType',json_encode($arrOrmType));
 		
 //		//所有的扩展名

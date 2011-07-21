@@ -63,24 +63,42 @@ h1 {
 	width:1000px;
 	background:#DDD;
 }
+
 #property .ormForm{
-	background:#70C7C5;
-	width:250px;
-	float:left;
-	background:#081;
+	
+}
+
+#property .ormTopDiv{
+	width:1000px;
+	height:60px;
 }
 #property .ormTypeDiv{
-	width:400px;
+	width:250px;
 	float:left;
 }
 #property .ormToPrototypeDiv{
-	width:400px;
-	float:right;
+	width:250px;
+	float:left;
 }
+#property .ormBlock{
+	width:500px;
+	height:60px;
+	float:left;
+	display: none;
+}
+
+
+#property .ormFrom{
+	width:250px;
+	float:left;
+	background:#f49999;
+}
+
 #property .ormBridge{
 	width:500px;
 	float:left;
 	background:#AAA;
+	display: none;
 }
 
 #property .ormBridgeStart{
@@ -97,6 +115,10 @@ h1 {
 	width:250px;
 	float:left;
 	background:#081;
+}
+
+.newOrmMap{
+	display:none;
 }
 
 /*模板*/

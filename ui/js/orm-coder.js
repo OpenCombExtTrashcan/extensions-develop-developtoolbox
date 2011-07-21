@@ -15,20 +15,22 @@ $(function () {
 	* ORM 工厂
 	* */
 	
-	// function OrmFactory(){
-		// this.createOrm = function(sExtend,aData){
-			// var sId = sExtend+':'+aData['title']+'_'+getUniqueId();
-			// var sTemplate = '<li id="'+sId+'"><span>'+aData['title']+'</span></li>';
-			// //建立orm的jquery对象
-			// var aOrm = $(sTemplate);
-			// //绑定数据
-			// aOrm.data('property',aData);
-			// //扩展数据
-			// aOrm.ocExtend = sExtend;
-			// //加工完毕,拿去玩吧
-			// return aOrm;
-		// }
-	// }
+	function OrmFactory(){
+		this.createOrm = function(sExtend,sDefines,aData){
+			var sId = sExtend+'_'+sDefines+':'+aData['title']+'_'+getUniqueId();
+			var sTemplate = '<li id="'+sId+'"><span>'+aData['title']+'</span></li>';
+			//建立orm的jquery对象
+			var aOrm = $(sTemplate);
+			//绑定数据
+			aOrm.data('property',aData);
+			//扩展数据
+			aOrm.ocExtend = sExtend;
+			//所属定义
+			aOrm.ocDefines = sDefines;
+			//加工完毕,拿去玩吧
+			return aOrm;
+		}
+	}
 	
 	/**
 	* ORM 管理器
@@ -36,33 +38,47 @@ $(function () {
 
 	 function OrmsController(sOrmFormId){
 		 this.c = $('#'+sOrmFormId);
-//		 this.id = sOrmFormId;
-//		 this.arrOrms = {};
-//		 this.ormFactory = new OrmFactory();
+		 this.id = sOrmFormId;
+		 this.arrOrms = {};
+		 this.ormFactory = new OrmFactory();
 		 //创建一个orm,同时登记到这个控制器的orm名单中
-//		 this.addOrm = function(sExtend,aData){
-//			 var aOrm = this.ormFactory.createOrm(sExtend,aData);
-//			 if(!this.arrOrms[sExtend]){
-//				 this.arrOrms[sExtend] = [];
-//			 }
-//			 this.arrOrms[sExtend].push(aOrm);
-//		 };
-//		 this.registerOrm = function(){
-//			 for(var sExtend in defineOrm){
-//				 for(var ormName in defineOrm[sExtend]){
-//					 this.addOrm(sExtend,defineOrm[sExtend][ormName]);
-//				 }
-//			 }
-//		 }
-//		 this.renderOrmForm = function(){
-//			 for(var sExtend in this.arrOrms){
-//				 var aLiForExtend = $('<li>'+sExtend+'</li>');
-//				 var aUlForOrms = $('<ul></ul>');
-//				 aLiForExtend.append(aUlForOrms).appendTo(this.c);
-//				 for(var key in this.arrOrms[sExtend])
-//					 this.arrOrms[sExtend][key].appendTo(aUlForOrms);
-//				 }
-//		 }
+		 this.addOrm = function(sExtend,sDefines,aData){
+			 var aOrm = this.ormFactory.createOrm(sExtend,sDefines,aData);
+			 if(!this.arrOrms[sExtend]){
+				 this.arrOrms[sExtend] = [];
+			 }
+			 if(!this.arrOrms[sExtend][sDefines]){
+				 this.arrOrms[sExtend][sDefines] = [];
+			 }
+			 this.arrOrms[sExtend][sDefines].push(aOrm);
+		 };
+		 this.registerOrm = function(){
+			 for(var sExtend in defineOrmDefines){
+			 	for(var sDefines in defineOrmDefines[sExtend]){
+			 		for(var ormName in defineOrmDefines[sExtend][sDefines]){
+						this.addOrm(sExtend,sDefines ,defineOrmDefines[sExtend][sDefines][ormName]);
+					}
+			 	}
+			 }
+		 }
+		 this.renderOrmForm = function(){
+			 for(var sExtend in this.arrOrms){
+				var aLiForExtend = $('<li>'+sExtend+'</li>');
+				var aUlForsDefines = $('<ul></ul>');
+				aLiForExtend.append(aUlForsDefines).appendTo(this.c);
+				for(var sDefine in this.arrOrms[sExtend]){
+					for(var key in this.arrOrms[sExtend][sDefine]){
+						var aOrm = this.arrOrms[sExtend][sDefine][key];
+						//如果定义的名字和扩展的一样,就只显示title,如果不一样(此扩展在覆盖上级扩展的orm定义),就以sDefine:title的样式显示
+						//把下面的!=改成== 来查看后者描述的效果
+						if(sExtend != sDefine){
+							aOrm.find('span').text( sDefine + ':' + aOrm.find('span').text() );
+						}
+						aOrm.appendTo(aUlForsDefines);
+					}
+				}
+			 }
+		 }
 		 this.searchOrm = function(sKeyword){};
 		 this.hideOrms = function(){};
 		 this.showOrms = function(){};
@@ -92,8 +108,8 @@ $(function () {
 		 };
  		
 		 //初始化
-//		 this.registerOrm();
-//		 this.renderOrmForm();
+		 this.registerOrm();
+		 this.renderOrmForm();
 		 var thisObj = this;
 		 $(this.c).find('ul').find('li').click(function(e){
 			 thisObj.setSelected(e,$(this));

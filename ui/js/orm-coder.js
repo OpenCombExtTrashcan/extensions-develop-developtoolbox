@@ -157,31 +157,6 @@ $( function () {
 	}
 
 	/**
-	 * property 工厂
-	 * */
-
-	// 工厂
-	// function FormWidgetFactory() {
-		// this.createFormWidget = function(aWidget) {
-			// var aJWidget = $(aWidget);
-			// var arrSubWidgets = aJWidget.find('input , select');
-			// //扩展formwidget,让它成为基本widget的容器,
-			// aJWidget.arrWidgets = [];
-			// aJWidget.getValue = function(){
-				// return $(this).val();
-			// };
-			// aJWidget.getValue = function(Value){
-				// $(this).val(Value);
-			// };
-			// //扩展子控件的行为,让他们可以使用统一的赋值和取值函数,以及ocChange事件等等
-			// arrSubWidgets.each(function(){
-// 				
-			// });
-			// return aJWidget;
-		// }
-	// }
-
-	/**
 	 * property 控制器
 	 * */
 
@@ -256,25 +231,9 @@ $( function () {
 			}
 		};
 		
-		that = this;
+		var that = this;
 		
-			//增加一个映射关系
-		$('.newOrmMap').live('click',function(){
-			$('#template .ormForm').clone().insertBefore($(this));
-		});
-		
-		$('#property .ormType').live('change',function(){
-			if($(this).val() == 'hasAndBelongsToMany'){
-				$(this).parents('.ormForm').find('.ormBridge').show(0);
-				$(this).parents('.ormForm').find('.ormBlock').show(0);
-			}else{
-				$(this).parents('.ormForm').find('.ormBridge').hide(0);
-				$(this).parents('.ormForm').find('.ormBlock').hide(0);
-			}
-		});
-		
-		
-		
+		$('#ormExtend').die();
 		$('#ormExtend').live('change',function(){
 			//对ormDefine的影响
 			var arrExtends = getExtends();
@@ -295,12 +254,33 @@ $( function () {
 			$('#ormTable').trigger('change');
 		});
 		
+		$('#ormTable').die();
 		$('#ormTable').live('change',function(){
 			var template = '<tr><td><input class="primaryKey" type="checkbox" value=""/></td>'
 			+'<td><input class="usedColumn" type="checkbox" value=""/></td>'
 			+'<td></td></tr>';
 			var arrColumn = [];
-			
+		});
+			//增加一个映射关系
+		$('.newOrmMap').die();
+		$('.newOrmMap').live('click',function(){
+			var newOrmMap = $('#template .ormForm').clone();
+			newOrmMap.insertBefore($(this));
+			//初始化ormToPrototype
+			var sExtend = that.sExtend;
+			// var sDefine = that.sDefine;
+			// .remove();
+			var aOrmToPrototype = newOrmMap.find('.ormToPrototype');
+			for(var ormName in defineOrm[sExtend]){
+				aOrmToPrototype.append('<option value="'+ormName+'">'+ormName+'</option>');
+			}
+			aOrmToPrototype.trigger('change');
+		});
+		
+		//简化用户操作,当ormToPrototype改变,顺便改变ormToProp的值,
+		$('.ormToPrototype').die();
+		$('.ormToPrototype').live('change',function(){
+			$(this).parent('.ormToPrototypeDiv').find('.ormToProp').val($(this).val());
 		});
 	}
 
@@ -309,6 +289,14 @@ $( function () {
 	 * */
 	var aOrmController = new OrmsController("ormlistUl");
 
-
-
+	
+	$('#property .ormType').live('change',function(){
+		if($(this).val() == 'hasAndBelongsToMany'){
+			$(this).parents('.ormForm').find('.ormBridge').show(0);
+			$(this).parents('.ormForm').find('.ormBlock').show(0);
+		}else{
+			$(this).parents('.ormForm').find('.ormBridge').hide(0);
+			$(this).parents('.ormForm').find('.ormBlock').hide(0);
+		}
+	});
 });

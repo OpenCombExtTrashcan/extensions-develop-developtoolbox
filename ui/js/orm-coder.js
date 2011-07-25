@@ -10,26 +10,26 @@ $( function () {
 	function getUniqueId() {
 		return nUniqueId++;
 	}
-	
-	function getExtends(){
+
+	function getExtends() {
 		var arrExtends = [];
-		for(var key in defineOrmDefines){
+		for(var key in defineOrmDefines) {
 			arrExtends.push(key);
-			}
+		}
 		return arrExtends;
 	}
-	
-	function getTableByExtend(sExtend){
+
+	function getTableByExtend(sExtend) {
 		var arrTable = [];
-		for(var table in defineDbTable[sExtend]){
+		for(var table in defineDbTable[sExtend]) {
 			arrTable.push(table);
 		}
 		return arrTable;
 	}
-	
-	function getDefineByExtend(sExtend){
+
+	function getDefineByExtend(sExtend) {
 		var arrDefine = [];
-		for(var define in defineOrmDefines[sExtend]){
+		for(var define in defineOrmDefines[sExtend]) {
 			arrDefine.push(define);
 		}
 		return arrDefine;
@@ -51,6 +51,9 @@ $( function () {
 			aOrm.data('ocExtend',sExtend) ;
 			//所属定义
 			aOrm.data('ocDefine',sDefines) ;
+			aOrm.click(function(e){
+				aOrmController.setSelected(e,$(this));
+			});
 			//加工完毕,拿去玩吧
 			return aOrm;
 		}
@@ -123,19 +126,24 @@ $( function () {
 		this.setSelected = function(e,aOrmBeClicked) {
 			if(aOrmBeClicked.hasClass('selected')) {
 				aOrmBeClicked.removeClass('selected');
-				this.aPropertyController = this.aPropertyController.display(false);
+				$('#property').find('.newOrmMap').hide(0);
+				$('#property').find('.prototypeForm').remove();
+				$('#property').find('.ormForm').remove();
+				this.aPropertyController = null;
 			} else {
 				this.getSelected().removeClass('selected');
 				aOrmBeClicked.addClass('selected');
 				//如果上次操作的界面还在,删掉它
-				if(this.aPropertyController != null){
-					this.aPropertyController = this.aPropertyController.display(false);
+				if(this.aPropertyController != null) {
+					$('#property').find('.newOrmMap').hide(0);
+					$('#property').find('.prototypeForm').remove();
+					$('#property').find('.ormForm').remove();
+					this.aPropertyController = null;
 				}
 				this.aPropertyController = new PropertyController(this.getSelected().data('property') , this.getSelectedExtend() ,this.getSelectedDefine() , defineDbTable , defineOrm);
-				this.aPropertyController.display(true);
 			}
 			//停止冒泡
-			e.stopPropagation();
+			// e.stopPropagation();
 		};
 		//选中orm的相关操作
 		this.getSelected = function() {
@@ -151,9 +159,7 @@ $( function () {
 		this.registerOrm();
 		this.renderOrmForm();
 		var thisObj = this;
-		$(this.c).find('ul').find('li').click( function(e) {
-			thisObj.setSelected(e,$(this));
-		});
+		
 	}
 
 	/**
@@ -172,7 +178,7 @@ $( function () {
 
 		this.addWidget = function(aWidget) {
 			this.arrWidgets[aWidget.id] = aWidget;
-			
+
 		};
 		this.getWidgets = function() {
 			return this.arrWidgets;
@@ -200,88 +206,105 @@ $( function () {
 		this.getNewPrototypeForm = function() {
 			$('#template').find('.prototypeForm').clone().insertAfter($('#property').find('div').first()).show(0);
 		};
-		this.initForm = function(){
+		this.initForm = function() {
 			$('#ormExtend').html('');
-			for(var key in defineOrmDefines){
+			for(var key in defineOrmDefines) {
 				$('#ormExtend').append('<option value="'+key+'">'+key+'</option>');
 			}
 			$('#ormExtend').val(this.sExtend);
-			$('#ormExtend').trigger('change');
-			
-		};
-		//还原数据到表单
-		this.putDataToForm = function(){
 			$('#ormTitle').val(this.aData['title']);
-			
+			ormExtendChange();
 		};
-		this.display = function(bDisplay) {
-			if(bDisplay) {
-				$('#guide').remove();
-				$('.newOrmMap').show(0);
-				this.getNewPrototypeForm();
-				this.initForm();
-				this.putDataToForm();
-				return this;
-			} else {
-				//消失
-				this.c.find('.newOrmMap').hide(0);
-				this.c.find('.prototypeForm').remove();
-				this.c.find('.ormForm').remove();
-				return null;
-			}
-		};
-		
 		var that = this;
+
+		$('#guide').remove();
+		$('.newOrmMap').show(0);
+		this.getNewPrototypeForm();
+		this.initForm();
+
+		$('#property .ormType').die();
+		$('#property .ormType').live('change', function() {
+			if($(this).val() == 'hasAndBelongsToMany') {
+				$(this).parents('.ormForm').find('.ormBridge').show(0);
+				$(this).parents('.ormForm').find('.ormBlock').show(0);
+			} else {
+				$(this).parents('.ormForm').find('.ormBridge').hide(0);
+				$(this).parents('.ormForm').find('.ormBlock').hide(0);
+			}
+		});
 		
 		$('#ormExtend').die();
-		$('#ormExtend').live('change',function(){
+		$('#ormExtend').live('change',ormExtendChange);
+
+		$('#ormTable').die();
+		$('#ormTable').live('change',ormTableChange);
+
+		function ormExtendChange() {
 			//对ormDefine的影响
 			var arrExtends = getExtends();
-			$('#ormDefine').html('');
-			for(var key in arrExtends){
+			$('#ormDefine').find('option').remove();
+			for(var key in arrExtends) {
 				$('#ormDefine').append('<option value="'+arrExtends[key]+'">'+arrExtends[key]+'</option>');
 			}
 			$('#ormDefine').val(that.sDefine);
-			$('#ormDefine').trigger('change');
+			// $('#ormDefine').trigger('change');
 
 			//对ormDefine的影响
-			var arrTables = getTableByExtend($(this).val());
-			$('#ormTable').html('');
-			for(var key in arrTables){
-				$('#ormTable').append('<option value="'+arrTables[key]+'">'+defineDbTable[$(this).val()][arrTables[key]]['title']+'</option>');
+			var arrTables = getTableByExtend($('#ormExtend').val());
+			$('#ormTable').find('option').remove();
+			for(var key in arrTables) {
+				$('#ormTable').append('<option value="'+arrTables[key]+'">'+defineDbTable[$('#ormExtend').val()][arrTables[key]]['title']+'</option>');
 			}
 			$('#ormTable').val(that.aData['table']);
-			$('#ormTable').trigger('change');
-		});
-		
-		$('#ormTable').die();
-		$('#ormTable').live('change',function(){
-			var template = '<tr><td><input class="primaryKey" type="checkbox" value=""/></td>'
-			+'<td><input class="usedColumn" type="checkbox" value=""/></td>'
-			+'<td></td></tr>';
-			var arrColumn = [];
-		});
-			//增加一个映射关系
-		$('.newOrmMap').die();
-		$('.newOrmMap').live('click',function(){
-			var newOrmMap = $('#template .ormForm').clone();
-			newOrmMap.insertBefore($(this));
-			//初始化ormToPrototype
-			var sExtend = that.sExtend;
-			// var sDefine = that.sDefine;
-			// .remove();
-			var aOrmToPrototype = newOrmMap.find('.ormToPrototype');
-			for(var ormName in defineOrm[sExtend]){
-				aOrmToPrototype.append('<option value="'+ormName+'">'+ormName+'</option>');
+			ormTableChange();
+		}
+
+		function ormTableChange() {
+			var sColumns = '';
+			var sExtend = $('#ormExtend').val();
+			var sTable = $('#ormTable').val();
+			if(!sTable) {
+				alert(sExtend+'扩展没有任何数据表');
+				return;
 			}
-			aOrmToPrototype.trigger('change');
-		});
-		
-		//简化用户操作,当ormToPrototype改变,顺便改变ormToProp的值,
-		$('.ormToPrototype').die();
-		$('.ormToPrototype').live('change',function(){
-			$(this).parent('.ormToPrototypeDiv').find('.ormToProp').val($(this).val());
-		});
+			var sTitle = $('#ormTitle').val();
+			var arrAllColumn = defineDbTable[sExtend][sTable]['columns'];
+			var arrUsedColumn = defineDbTable[sExtend][sTable]['columns'];
+			var arrPrimary = [];
+			if(typeof defineDbTable[sExtend][sTable]['primaryKey'] =='string') {
+				arrPrimary.push();
+			} else {
+				arrPrimary = defineDbTable[sExtend][sTable]['primaryKey'];
+			}
+			var sDevPrimary = defineDbTable[sExtend][sTable]['primaryKey'];
+			//如果是和当前页面相符的数据
+			if(sExtend == that.aData['extension'] && sTable == that.aData['table'] && sTitle == that.aData['title']) {
+				arrUsedColumn = that.aData['columns'];
+				arrPrimary = that.aData['primaryKeys'];
+				sDevPrimary = that.aData['devicePrimaryKey'];
+			}
+
+			for(var key in arrAllColumn) {
+				var bIsUsed = '';
+				if($.inArray(arrAllColumn[key],arrAllColumn) != -1 ) {
+					bIsUsed = 'checked="checked"';
+				}
+				var bIsPrimary = '';
+				if( $.inArray(arrAllColumn[key],arrPrimary) != -1  ) {
+					bIsPrimary = 'checked="checked"';
+				}
+				if(arrPrimary.length == 0 && arrAllColumn[key] == sDevPrimary) {
+					bIsPrimary = 'checked="checked"';
+				}
+				sColumns += '<tr><td><input class="primaryKey" type="checkbox" value="'+arrAllColumn[key]+'" '+ bIsPrimary +'/></td>'
+							+'<td><input class="usedColumn" type="checkbox" value="'+arrAllColumn[key]+'" '+ bIsUsed +'/></td>'
+							+'<td>'+arrAllColumn[key]+'</td></tr>';
+			}
+
+			$('#ormColumn').find('tbody').find('tr:not(:last)').remove();
+			$('#ormColumn').find('tbody').find('tr').before(sColumns);
+		}
+
 	}
 
 	/**
@@ -289,14 +312,44 @@ $( function () {
 	 * */
 	var aOrmController = new OrmsController("ormlistUl");
 
-	
-	$('#property .ormType').live('change',function(){
-		if($(this).val() == 'hasAndBelongsToMany'){
-			$(this).parents('.ormForm').find('.ormBridge').show(0);
-			$(this).parents('.ormForm').find('.ormBlock').show(0);
-		}else{
-			$(this).parents('.ormForm').find('.ormBridge').hide(0);
-			$(this).parents('.ormForm').find('.ormBlock').hide(0);
-		}
+	//原型保存按钮
+	$('#save').live('click', function() {
+		var aData = {};
+		aData['extend'] = $('#ormExtend').val();
+		aData['define'] = $('#ormDefine').val();
+		aData['table'] = $('#ormTable').val();
+		aData['title'] = $('#ormTitle').val();
+		aData['primaryKeys'] = [];
+		$('.primaryKey:checked').each( function() {
+			aData['primaryKeys'].push($(this).val());
+		});
+		aData['usedKeys'] = [];
+		$('.usedColumn:checked').each( function() {
+			aData['usedKeys'].push($(this).val());
+		});
+		ajaxSave(aData);
 	});
+	function ajaxSave(aData) {
+		var url = '?c=developtoolbox.coder.orm';
+		jQuery.ajax({
+			type: "POST",
+			url: url,
+			data: '&ajaxSaveData='+jQuery.toJSON(aData),
+			success: function(msg) {
+			}
+		});
+	}
+	
+	//全选
+	$('#checkAll').live('change',function(){
+		var bChecked = this.checked;
+		var arrCheckboxs = $('.usedColumn');
+		arrCheckboxs.prop('checked',bChecked);
+	});
+	
+	//增加一个映射关系
+	$('.newOrmMap').live('click', function() {
+		$('#template .ormForm').clone().insertBefore($(this));
+	});
+
 });

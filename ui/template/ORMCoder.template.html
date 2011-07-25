@@ -21,8 +21,8 @@
 				<button class='newOrm'>新建orm</button>
 			</div>
 		<input class='newOrmMap' type='button' value='添加新orm关系'/>
+		<input id="save" type="button" value="保存" />
 		<div class="block"></div>
-		<input id="savePrototype" type="button" value="保存" />
   	</div>
 </div>
 
@@ -45,7 +45,7 @@
 		<label for="ormTitle">原型名:</label>
 		<input id="ormTitle" type='text' class='formWidget'/><br />
 		
-		<table class="ormColumn" class='formWidget'>
+		<table id="ormColumn" class='formWidget'>
 			<thead>
 				<tr>
 					<th>主键</th>
@@ -55,18 +55,12 @@
 			</thead>
 			<tbody>
 				<tr>
-					<td><input class='primaryKey' type='checkbox' value=''/></td>
-					<td><input class='usedColumn' type='checkbox' value=''/></td>
 					<td></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td><input id='checkAll' type='checkbox'/><label for="checkAll">全选</label></td>
+					<td><input id='checkAll' type='checkbox' checked='checked'/><label for="checkAll">全选</label></td>
 					<td></td>
 				</tr>
 			</tbody>
 		</table>
-		
 	</div>
 	
 	
@@ -113,6 +107,7 @@
 			<select class="ormToKey" >
 			</select><br />
 		</div>
+		
 		<div class="block"></div>
 	</div>
 </div>

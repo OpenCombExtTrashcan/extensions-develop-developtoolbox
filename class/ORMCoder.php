@@ -151,7 +151,10 @@ class ORMCoder extends Controller
 
 	public function process()
 	{
-		//整理orm列表的数据
+		if($this->aParams->has('ajaxSaveData')){
+			var_dump($this->aParams->get('ajaxSaveData'));
+			exit();
+		}
 	}
 	
 	//返回一个数组,数组中记录所给orm

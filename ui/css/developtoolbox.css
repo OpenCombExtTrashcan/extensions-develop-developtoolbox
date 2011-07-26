@@ -18,7 +18,7 @@ body {
 	background: #fff;
 	color: #000;
 	font-family: Helvetica, Arial, sans-serif;
-	font-size: .8em;
+	font-size:14px;
 	line-height: 1.5;
 }
 h1 {
@@ -29,10 +29,26 @@ h1 {
 }
 #main {
 	width:auto;
+	overflow:hidden;
 }
 #namespace {
 	width:100%;
-	height:30px;
+	height:50px;
+	line-height:50px;
+	border-top:1px solid #FFF;	
+	background-image:url(../images/bg001.jpg);
+}
+#namespace label{
+	margin-left:24px;
+}
+.nameaddress{
+	width:100%;
+	height:27px;
+	line-height:27px;
+	background-color:#F0FAFD;
+	padding-left:24px;
+	border-bottom:solid #CAE9F4 1px;
+	
 }
 #right{
 	width:700px;
@@ -41,20 +57,32 @@ h1 {
 #left{
 	width:auto;
 	margin-right:700px;
+	min-height:200px;
+	
 }
 
 /* 顶级对象操作 start*/
 
 #topToolPanel {
-	background:#CCF;
+	background:#F0F0F0;
+	height:44px;
+	line-height:44px;
+	padding-left:15px;
+	border-bottom:solid #CCCCCC 1px;
 }
+
 #topToolPanel button {
 	color:#000;
+	height:28px !important;
+	height:25px;
+	line-height:28px  ;
+	vertical-align:middle;
 }
 #topToolPanel span {
 	background-position: center right;
 	background-repeat: no-repeat;
-	padding: .2em 0 .2em 1.5em;
+	padding: 7px 12px 4px 10px;
+	
 }
 #topToolPanel span.file {
 	background-image: url(../images/page_white_text.png);
@@ -87,17 +115,20 @@ h1 {
 	display:none;
 	position: absolute;
 	z-index: 5;
+	
 }
+
 #subToolPanel .subButtons{
 	display:block;
-	height:16px;
-	width:30px;
+	height:24px;	
+	width:auto;	
 	float:left;
-	line-height: 16px;
+	line-height: 24px;
 }
 #subToolPanel a {
 	color:#000;
 	text-decoration :none;
+	
 }
 .sub_btn_disabled {
 	filter:gray;
@@ -141,27 +172,77 @@ h1 {
 }
 #toolpanel {
 	width:100%;
+	
 }
 #toolpanel thead {
-	background:#36C;
-	color:#FFF;
+	background:#CFDBE6;
+	color:#000;
+    height:24px;
+	line-height:24px;
 }
 #toolpanel tbody tr {
 	position: relative;
 	cursor:pointer;
+	height:24px;
+	line-height:24px;
+
+	
 }
+#toolpanel tbody td {
+	padding:4px;
+	}
 #toolpanel tbody tr:hover {
-	background: #C0D9D9;
+	background:#FFE8D0;
 }
+
 #property {
 	width:700px;
 	float:right;
 }
+#property h3{
+	width:100%;
+	height:23px;
+	line-height:23px;	
+	padding-left:20px;
+}
+#propertytop{
+	border-bottom:1px solid #D8E2EB;
+	background-image: url(../images/bg002.jpg);
+}
 .propertys {
 	width:100%;
 	display:none;
-	background:#FF9;
+	background:#FFFFEE;
+	border-left:1px solid #CFDBE6;
+	border-bottom:1px solid #CFDBE6;
 }
+#propertycon{
+	padding:8px;
+
+}
+#propertycon ul{
+   height:15px;
+   line-height:15px;
+}
+
+#propertycon dl{
+	margin-left:80px;
+}
+#propertycon dd{
+	margin-left:70px;
+}
+#propertycon ul label{
+    margin-right:10px;
+	width:100px;
+	float:left;
+	list-style:none;
+	text-align:right;
+}
+#propertycon label{
+	float:none;
+	margin:0px 5px 0px 5px;
+}
+#verifier_more_property{margin-left:110px;}
 .widget_propertys {
 	width:100%;
 	display:none;
@@ -169,15 +250,54 @@ h1 {
 #preview {
 	width:100%;
 	clear:both;
-	background: #eee;
-	}
-.selected {
-	background:#CCC;
+	background:#F0F0F0;
+	border-top:1px solid #CCCCCC;
+	border-bottom:1px solid #FFF;
+    overflow:hidden;	
 }
+#preview_btns{
+	padding:8px 24px 8px 24px;
+	
+	}
+#preview h1{
+	width:100%;
+	background: #F0FAFD;
+	height:29px;
+	line-height:29px;
+	display:block;
+	font-size:14px;
+	text-align:left;
+	padding-left:24px;
+	border-top:1px solid #CCCCCC;
+}
+#preview_div{
+    min-height:100px;
+	padding:15px;
+	background: #FFFFEE;
+	border-top:1px solid #CCCCCC;
+	border-bottom:1px solid #CCCCCC;
+	
+}
+#preview_div textarea{
+	width:100%;
+	overflow:hidden;
+}
+.selected {
+	background:#DAEDE3;
+	
+}
+
+
+<!-- 视图属性的表单的个别样式 -->
+
+#view_template{width:300px;}
+#view_filepath{width:80%;}
+
 #toolpanel span {
 	background-position: center left;
 	background-repeat: no-repeat;
-	padding: .2em 0 .2em 1.5em;
+	padding: .2em .1em .2em 2em;
+	
 }
 #toolpanel .nameColumn {
 	width:20%;
@@ -233,19 +353,54 @@ h1 {
 
 #model_orm_div{
 	width:1000px;
-	background:#EEE;
+	background:#D8E4EF;
+}
+#model_orm_div ul li input {
+	margin:0px;
+	padding:0px;
+	height:20px;
+	line-height:20px;
+	float:left;   
 }
 
+#model_orm_div ul li label{
+	width: auto;
+	margin-left:8px;	
+	display:block;	
+}
+#model_orm_div ul li b{
+	float:left;
+	width: auto;
+}
 #model_orm_div ul , #model_orm_div li {
 	margin-top:0;
 	margin-bottom:0;
-	padding: 0  0 0 10px;
+	padding: 0  0  0 10px;
+	height:20px;
+	line-height:20px;
+	clear:both;
+	list-style: none;	
 }
-
+#view_model_table{
+	margin-left:40px;
+}
 #view_model_table th{
-	background:#999;
+	background:#D8E4EF;
 }
 
 #view_model_table tr{
-	background:#EEE;
+	background:#EEECDF;
 }
+
+#view_model_table tr select{
+   width:100%;
+}
+#view_model_table tr select{
+	width:100%;
+}
+#view_model_table tr  td{
+   width:40px;
+   text-align:center;
+}
+
+

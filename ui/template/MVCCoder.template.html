@@ -1,3 +1,9 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
 <style>
 .required{}
 </style>
@@ -9,6 +15,7 @@
 	var viewNames = {= $sDefineAllViewClassesCode };
 	var viewNamespace = {= $sDefineUiTemplateFolders };
   </script>
+  <css src="" />
   <js type="text/javascript" src="jquery.json-2.2.min.js" />
   <js type="text/javascript" src="developtoolbox.js" />
 <div id="main">
@@ -21,196 +28,182 @@
 		\
 		<input type="text" class="required" id="className" />
 	</div>
-	<div>类文件保存路径:<span id="namespaceComplete">还没有确定命名空间...</span></div>
+	<div class="nameaddress">类文件保存路径:<span id="namespaceComplete">还没有确定命名空间...</span></div>
 	<div id="right">
 		<div id="property">
             <div id='controller_property' class="propertys">
-				<h3>控制器属性</h3>
-				<label for="controller_name">控制器名称:</label><input id="controller_name" type="text"  class="required object_name"/>
-				<br />
-                <label for="controller_classname">类:</label>
-                <select class="required" id="controller_classname">
+				<div id="propertytop"><h3>控制器属性</h3></div>
+				<div id="propertycon">    
+                   <ul> <label for="controller_name">控制器名称:</label><input id="controller_name" type="text"  class="required object_name"/></ul>
+				   <ul><label for="controller_classname">类:</label><select class="required" id="controller_classname">
                     <option value="0">请选择控制器类...</option>
-              </select><br/>
+                    </select></ul>
                 <!--<input id="controller_submit" class="submitBtn" type="button" value ="保存"/>-->
+                </div>
             </div>
             <div id='view_property' class="propertys">
-            	<h3>视图属性</h3>
-            	<label for="view_name">视图名称:</label><input id="view_name" type="text" class="required object_name" />
-				<label for="view_class">视图类型:</label>
-                <select class="required" id="view_class"></select><br/>
-                <label for="view_templateFolder">模板文件:</label>
-                <select name="select" class="required" id="view_templateFolder">
-                  <option value="0">请选择模板目录</option>
-                </select>
-              <input type="text" class="required" id="view_template" style="width:350px"/>
-              <br/>
-              <label for="view_isForm">
-              <input name="checkbox" type="checkbox" id="view_isForm" />
-              表单视图</label>
-                <br/>
-              <label for="view_aloneClass">
-              <input name="checkbox2" type="checkbox" id="view_aloneClass" value="true"/>
-              为视图定义一个独立的类</label>
-                <br/>
-                <label for="view_namespace">类名: </label>
-				<select id="view_namespace" disabled="disabled">
-					<option value="0">选择命名空间...</option>
-					<!-- 命名空间数据放在这里 -->
-				</select>
-				\
-				<input id="view_classname" type="text" disabled="disabled"/><br />
-				<label for="view_filepath">类文件路径: </label><input id="view_filepath" type="text" style="width:90%" disabled="disabled" /><br />
-				
-                <label for="view_modelSelect">模型:</label>
-                <select id="view_modelSelect">
-                    <option value="0">请选择</option>
-                </select><br/>
-				数据交换设置：<br />
-                <table id="view_model_table">
-					<thead>
-				  <th title="视图包含的控件" width=150>控件</th>
-						<th title="控件对应的数据字段" width=350>字段</th>
-						<th title="点击删除关系" width=40>操作</th>
-					</thead>
-					<tbody>
-						
-					</tbody>
-				</table>
-				<a id="add_view_model_tr" href="#" >添加</a><br/>
+            	<div id="propertytop"><h3>视图属性</h3></div>
+                <div id="propertycon"> 
+            	   <ul><label for="view_name">视图名称:</label><input id="view_name" type="text" class="required object_name" /></ul>
+				   <ul><label for="view_class">视图类型:</label><select class="required" id="view_class"></select></ul>
+                   <ul><label for="view_templateFolder">模板文件:</label><select name="select" class="required" id="view_templateFolder">
+                  <option value="0">请选择模板目录</option></select> <input type="text" class="required" id="view_template"/></ul>
+                   <ul><dl for="view_isForm"><input name="checkbox" type="checkbox" id="view_isForm" />表单视图</dl></ul>
+                   <ul><dl for="view_aloneClass"><input name="checkbox2" type="checkbox" id="view_aloneClass" value="true"/>
+                        为视图定义一个独立的类</dl></ul>
+                   <ul><label for="view_namespace">类名: </label>
+				      <select id="view_namespace" disabled="disabled">
+					  <option value="0">选择命名空间...</option>
+				    	<!-- 命名空间数据放在这里 -->
+			          </select>
+				       \
+				      <input id="view_classname" type="text" disabled="disabled"/></ul>
+				<ul><label for="view_filepath">类文件路径: </label><input id="view_filepath" type="text" disabled="disabled" /></ul>
+				<ul><label for="view_model">模型:</label><select id="view_model"><option value="0">请选择</option></select></ul>
+				<ul>数据交换设置：</ul>
+                   <table id="view_model_table">
+                        <thead>
+                       <th title="视图包含的控件" width=150>控件</th>
+                            <th title="控件对应的数据字段" width=350>字段</th>
+                            <th title="点击除关系" width=40>操作</th>
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+				   </table>
+				<ul><a id="add_view_model_tr" href="#" >添加</a></ul>
 				<input id="view_dataexchange" type="hidden" />
 				<!--<input id="view_submit" class="submitBtn" type="button" value ="保存"/>-->
+                </div>
 			</div>
 			<div id='widget_property' class="propertys">
-				<h3>控件属性</h3>
-				<label for="widget_widgetType"></label>
-				控件类型：
-				<select name="select2" class="required" id="widget_widgetType">
-                  <option value="text" selected='selected'>文本控件</option>
-                  <option value="checkbtn">复选框</option>
-                  <option value="radiogroup">单选按钮组</option>
-                  <option value="select">下拉菜单/列表</option>
-                  <option value="group">控件组</option>
-                </select>
-				<br/>
-                <label for="widget_id">ID:</label><input id="widget_id" type="text"  class="model object_name" /><br/>
-                <label for="widget_title">标题:</label><input id="widget_title" type="text" /><br/>
-				<div id="other_property">
-					
-				</div>
-				<!--<input id="widget_submit" class="submitBtn" type="button" value ="保存"/>-->
+				<div id="propertytop"><h3>控件属性</h3></div>
+                <div id="propertycon"> 
+                    <ul><label for="widget_widgetType">控件类型：</label>                   
+                        <select name="select2" class="required" id="widget_widgetType">
+                          <option value="text">文本控件</option>
+                          <option value="checkbtn">复选框</option>
+                          <option value="radiogroup">单选按钮组</option>
+                          <option value="select">下拉菜单/列表</option>
+                          <option value="group">控件组</option>
+                        </select>
+                    </ul>
+                    <ul><label for="widget_id">ID:</label><input id="widget_id" type="text"  class="model object_name" /></ul>
+                    <ul><label for="widget_title">标题:</label><input id="widget_title" type="text" /></ul>
+                    <div id="other_property">
+                        
+                    </div>
+                    <!--<input id="widget_submit" class="submitBtn" type="button" value ="保存"/>-->
+                </div>
 			</div>
             <div id='verifier_property' class="propertys">
-            	<h3>校验器属性</h3>
-            	<label for="verifier_verifierType">类型:</label>
-                <select id="verifier_verifierType" class="object_name required">
-                    <option value="Length" selected='selected'>长度范围</option>
+            	<div id="propertytop"><h3>校验器属性</h3></div>
+                <div id="propertycon"> 
+            	<ul><label for="verifier_verifierType">类型:</label>
+                <select id="verifier_verifierType" class="required">
+                    <option value="Length">长度范围</option>
                     <option value="Email">邮箱格式</option>
                     <option value="Number">数字格式</option>
 					<option value="Same">相等</option>
                     <option value="NotEmpty">不为空</option>
-              </select><br/>
-                <div id="verifier_more_property">
-                	
+              </select></ul>
+                <div id="verifier_more_property">                	
                 </div>
                 <!--<input id="verifier_submit" class="submitBtn" type="button" value ="保存"/>-->
+                </div>
             </div>
             <div id='model_property' class="propertys">
-            	<h3>数据库模型属性</h3>
-            	<label for="model_name">名称:</label><input id="model_name" type="text"  class="required object_name"/>
-                <br/>
-                <label for="model_aggregation">
-					<input name="checkbox4" type="checkbox" id="model_aggregation"/>
-					聚合模型（用于维护多行数据表记录）
-				</label>
-                <br/>
-				
-                <label for="model_orm-start">ORM原型:</label>
-                <select id="model_orm-start">
-                    <option value="0">请选择...</option>
-                </select> 
-                <br />
-               (可以为每个数据表定义一个ORM原型：<a href="">ORM原型设置</a>)<br/>
+            	<div id="propertytop"><h3>数据库模型属性</h3></div>
+                <div id="propertycon"> 
+                <ul><label for="model_orm-start">ORM原型:</label>
+                    <select id="model_orm-start">
+                        <option value="0">请选择...</option>
+                    </select>
+                </ul>
+            	<ul><label for="model_name">名称:</label><input id="model_name" type="text"  class="required object_name"/></ul>
+                <ul><dd for="model_aggregation"><input name="checkbox4" type="checkbox" id="model_aggregation"/>聚合模型（用于维护多行数据表记录）
+				    </dd>
+                </ul>
                 <div id="model_orm_outer_div">
                 	<div id="model_orm_div"></div>
                 </div>
                 <input id="model_orm-data" type="hidden"/>
                 <input id="model_widgetcolumbmap" type="hidden"/>
                 <!--<input id="model_submit" class="submitBtn" type="button" value ="保存"/>-->
+                </div>
             </div>
 		</div>
 		
 		
 		<div id="widget_property_store">
 			<!-- 各个widget的附加属性, 当需要显示的时候会复制到propertys中,这里这是临时仓库 -->
-			<div id="text_property" class="widget_propertys">
-				<label for="widget_value">初始值:</label>
-				<input id="widget_value" type="text" /><br/>
-				<label for="widget_textType">类型:</label>
-				<select id="widget_textType">
-					<option value="single" selected = 'selected'>单行</option>
-					<option value="password">密码</option>
-					<option value="multiple">多行</option>
-					<option value="hidden">隐藏</option>
-				</select><br/>
-			</div>
-			<div id="checkbtn_property" class="widget_propertys">
-				<label for="widget_value">选中值:</label>
-				<input id="widget_value" type="text" /><br/>
-				<label for="widget_checkbtnType">类型:</label>
-				<select id="widget_checkbtnType">
-					<option value="checkbox" selected = 'selected'>多选框</option>
-					<option value="radio">单选框</option>
-				</select><br/>
-				初始状态：
-			  <label for="widget_isChecked">
-			  <input name="text" type="checkbox" id="widget_isChecked" />
-			  选中</label>
-				<br/>
-			</div>
-			<div id="group_property" class="widget_propertys">
-				<!-- <ul>
-					<li><input class="subWidget" type="checkbox"/><label for="" class="widgetName"></label></li>
-				</ul>
-				<input type="hidden" id="subWidgets" /> -->
-			</div>
-			<div id="radiogroup_property" class="widget_propertys">
-				<!-- <input type="hidden" id="subRadios" /> -->
-			</div>
-			<div id="select_property" class="widget_propertys">
-				<label for="widget_size">列表高度:</label>
-				<input id="widget_size" type="text"  value="1"/><br/>
-				<label for="widget_multiple">
-				<input name="checkbox3" type="checkbox" id="widget_multiple" />
-				允许多选</label>
-				<br/>
-				<label>选项:</label><br/>
-				<input id="widget_options" type="hidden"/>
-				<table id="widget_options_table">
-					<thead>
-				  <th title="选项显示的文本" width=100>文本</th>
-						<th title="选项显示的值" width=110>值</th>
-						<th title="选项是否选中" width=40>选中</th>
-						<th title="点击删除选项" width=40>操作</th>
-					</thead>
-					<tbody>
-						<tr id="modeify_options">
-							<td colspan="4"><a id="add_option" href="#">添加</a>   </td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
+			 <div id="propertycon"> 
+                   <div id="text_property" class="widget_propertys">
+                        <ul> <label for="widget_value">初始值:</label>
+                        <input id="widget_value" type="text" /></ul>
+                        <ul><label for="widget_textType">类型:</label>
+                        <select id="widget_textType">
+                            <option value="single">单行</option>
+                            <option value="password">密码</option>
+                            <option value="multiple">多行</option>
+                            <option value="hidden">隐藏</option>
+                        </select></ul>
+                    </div>
+                    <div id="checkbtn_property" class="widget_propertys">
+                        <ul><label for="widget_value">选中值:</label>
+                        <input id="widget_value" type="text" /></ul>
+                        <ul><label for="widget_checkbtnType">类型:</label>
+                            <select id="widget_checkbtnType">
+                                <option value="0">请选择</option>
+                                <option value="radio">单选框</option>
+                                <option value="checkbox">多选框</option>
+                            </select>
+                        </ul>
+                        <ul>初始状态：
+                      <label for="widget_isChecked"><input name="text" type="checkbox" id="widget_isChecked" /> 选中</label>
+                        </ul>
+                    </div>
+                    <div id="group_property" class="widget_propertys">
+                        <!-- <ul>
+                            <li><input class="subWidget" type="checkbox"/><label for="" class="widgetName"></label></li>
+                        </ul>
+                        <input type="hidden" id="subWidgets" /> -->
+                    </div>
+                    <div id="radiogroup_property" class="widget_propertys">
+                        <!-- <input type="hidden" id="subRadios" /> -->
+                    </div>
+                    <div id="select_property" class="widget_propertys">
+                        <ul><label for="widget_size">列表高度:</label><input id="widget_size" type="text"  value="1"/></ul>
+                        <ul><label for="widget_multiple"><input name="checkbox3" type="checkbox" id="widget_multiple" />允许多选</label></ul>
+                        <ul><label>选项:</label></ul>
+                        <input id="widget_options" type="hidden"/>
+                        <table id="widget_options_table">
+                            <thead>
+                          <th title="选项显示的文本" width=100>文本</th>
+                                <th title="选项显示的值" width=110>值</th>
+                                <th title="选项是否选中" width=40>选中</th>
+                                <th title="点击删除选项" width=40>操作</th>
+                            </thead>
+                            <tbody>
+                                <tr id="modeify_options">
+                                    <td colspan="4"><a id="add_option" href="#">添加</a>   </td>
+                                </tr>
+                            </tbody>
+                        </table>
+			    </div>
 			
 			<!-- end 各个widget的附加属性 -->
+            </div>
 		</div>
     </div>
-	<div id="left">
-		<div id="topToolPanel">
+    <div id="topToolPanel">
 			<label>创建对象:</label>
 			<button id="addTop_controller" class="topButtons" title='添加顶级Controller对象'><span class='controller'></span>创建一个子控制器</button>
 			<button id="addTop_view" class="topButtons" title='添加顶级View对象'><span class='view'></span>创建一个视图</button>
 			<button id="addTop_model" class="topButtons" title='添加顶级Model对象'><span class='model'></span>创建一个模型</button>
 		</div>
+	<div id="left">
+		
 		<div id="toolpanelDiv">
 			<table id="toolpanel">
 				<thead> 
@@ -238,17 +231,18 @@
 
 </div>
 <div id="preview">
-	<h1>代码预览</h1>
+	
 	<div id="preview_btns">
 		
-		<button id="generate_code">生成代码</button>
-		
+		<button id="generate_code">生成代码</button>		
 		<button id="save_code">生成代码并保存到文件</button>
 		<label for="coverExistFile"><input type='checkbox' id="coverExistFile" />覆盖已存在文件</label>
 		
 	</div>
+    <h1>代码预览</h1>
 	<div id="preview_div">
 		
 		
 	</div>
 </div>
+</html>

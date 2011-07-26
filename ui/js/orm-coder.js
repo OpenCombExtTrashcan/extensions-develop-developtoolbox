@@ -336,6 +336,7 @@ $( function () {
 			url: url,
 			data: '&ajaxSaveData='+jQuery.toJSON(aData),
 			success: function(msg) {
+				
 			}
 		});
 	}

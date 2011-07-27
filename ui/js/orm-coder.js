@@ -34,6 +34,10 @@ $( function () {
 		}
 		return arrDefine;
 	}
+	
+	function getTableColumns(extend,tableName){
+		return defineDbTable[extend][tableName]['columns'];
+	}
 
 	/**
 	 * ORM 工厂
@@ -217,31 +221,11 @@ $( function () {
 		};
 		this.rebuideOrmMaps = function(){
 			var ormMaps = this.defineOrm[this.sExtend][this.aData['title']];
-			// for(var key in ormMaps){
-				makeNewOrmMap(ormMaps['asscociations']);
-				
-			// }
-		}
-		var that = this;
-
-		$('#guide').remove();
-		$('.newOrmMap').show(0);
-		this.getNewPrototypeForm();
-		this.initForm();
-		this.rebuideOrmMaps();
-		
-
-		$('#property .ormType').die();
-		$('#property .ormType').live('change', function() {
-			if($(this).val() == 'hasAndBelongsToMany') {
-				$(this).parents('.ormForm').find('.ormBridge').show(0);
-				$(this).parents('.ormForm').find('.ormBridgeTableDiv').show(0);
-			} else {
-				$(this).parents('.ormForm').find('.ormBridge').hide(0);
-				$(this).parents('.ormForm').find('.ormBridgeTableDiv').hide(0);
+			if(ormMaps['asscociations'].length > 0){
+				makeNewOrmMap(ormMaps['asscociations'] , this);
 			}
-		});
-		
+		}
+
 		$('#ormExtend').die();
 		$('#ormExtend').live('change',ormExtendChange);
 
@@ -314,14 +298,32 @@ $( function () {
 			$('#ormColumn').find('tbody').find('tr:not(:last)').remove();
 			$('#ormColumn').find('tbody').find('tr').before(sColumns);
 		}
+		
+		var that = this;
 
+		$('#guide').remove();
+		$('.newOrmMap').show(0);
+		this.getNewPrototypeForm();
+		this.initForm();
+		this.rebuideOrmMaps();
 	}
 
 	/**
 	 *    初始化页面
 	 * */
-	var aOrmController = new OrmsController("ormlistUl");
-
+	
+	
+	// $('.ormType').die();
+	$('.ormType').live('change', function() {
+		if($(this).val() == 'hasAndBelongsToMany') {
+			$(this).parents('.ormForm').find('.ormBridge').show(0);
+			$(this).parents('.ormForm').find('.ormBridgeTableDiv').show(0);
+		} else {
+			$(this).parents('.ormForm').find('.ormBridge').hide(0);
+			$(this).parents('.ormForm').find('.ormBridgeTableDiv').hide(0);
+		}
+	});
+		
 	//原型保存按钮
 	$('#save').live('click', function() {
 		var aData = {};
@@ -360,17 +362,66 @@ $( function () {
 	//增加一个映射关系
 	$('.newOrmMap').live('click',makeNewOrmMap);
 	
-	function makeNewOrmMap(asscociations) {
-		if(asscociations){
-			$.each(asscociations,function(i,v){
-				//数据复原
+	function makeNewOrmMap(asscociations,theProperty) {
+		//恢复表单
+		if(asscociations != null && asscociations.length > 0){
+			$.each(asscociations,function(i,ass){
+				//获取模板
 				var newOrmMap = $('#template .ormForm').clone();
-				
-				newOrmMap.find('.ormType').val(v['type']);
 				//对象归位
-				newOrmMap.insertBefore($('.newOrmMap'));
+				newOrmMap.insertBefore($('.newOrmMap').parent('div'));
+				newOrmMap.find('.ormType').val(ass['type']);
+				newOrmMap.find('.ormType').trigger('change');
+				//恢复选项
+				//桥接表
+				if(ass['bridgeTableName'] != null){
+					rebuildBridgeTableSelect(newOrmMap,theProperty.sExtend);
+					newOrmMap.find('.ormBridgeTable').val(ass['bridgeTableName']);
+				}
+				//TO原型
+				rebuildToPrototypeSelect(newOrmMap ,defineOrm[theProperty.sExtend]);
+				newOrmMap.find('.ormToPrototype').val(ass['toPrototype'].split(':')[1]);
+				//TO原型别名
+				newOrmMap.find('.ormToProp').val(ass['prop']);
+				
+				//数据恢复
+				
+// bridgeTableName
+// bridgeToKeys
+// fromKeys
+// prop
+// toKeys
+// toPrototype
+// type
 			});
+		//新建表单
+		}else{
+			//获取模板
+			var newOrmMap = $('#template .ormForm').clone();
+			//对象归位
+			newOrmMap.insertBefore($('.newOrmMap'));
+			newOrmMap.find('.ormType').trigger('change');
+			//桥接表
+			rebuildBridgeTableSelect(newOrmMap,theProperty.sExtend);
+			//TO原型
+			rebuildToPrototypeSelect(newOrmMap ,defineOrm[theProperty.sExtend]);
 		}
 	}
+	
+	function rebuildBridgeTableSelect(ormMap,extend){
+		var arrTables = getTableByExtend(extend);
+		ormMap.find('.ormBridgeTable').find('option').remove();
+		for(var key in arrTables){
+			ormMap.find('.ormBridgeTable').append('<option value="'+arrTables[key]+'">'+arrTables[key]+'</option>');
+		}
+	}
+	
+	function rebuildToPrototypeSelect(ormMap,arrOrms){
+		$.each(arrOrms,function(key,orm){
+			ormMap.find('.ormToPrototype').append('<option value="'+key+'">'+key+'</option>');
+		});
+	}
+	
 
+	var aOrmController = new OrmsController("ormlistUl");
 });

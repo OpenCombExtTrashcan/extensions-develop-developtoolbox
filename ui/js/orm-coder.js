@@ -215,21 +215,30 @@ $( function () {
 			$('#ormTitle').val(this.aData['title']);
 			ormExtendChange();
 		};
+		this.rebuideOrmMaps = function(){
+			var ormMaps = this.defineOrm[this.sExtend][this.aData['title']];
+			// for(var key in ormMaps){
+				makeNewOrmMap(ormMaps['asscociations']);
+				
+			// }
+		}
 		var that = this;
 
 		$('#guide').remove();
 		$('.newOrmMap').show(0);
 		this.getNewPrototypeForm();
 		this.initForm();
+		this.rebuideOrmMaps();
+		
 
 		$('#property .ormType').die();
 		$('#property .ormType').live('change', function() {
 			if($(this).val() == 'hasAndBelongsToMany') {
 				$(this).parents('.ormForm').find('.ormBridge').show(0);
-				$(this).parents('.ormForm').find('.ormBlock').show(0);
+				$(this).parents('.ormForm').find('.ormBridgeTableDiv').show(0);
 			} else {
 				$(this).parents('.ormForm').find('.ormBridge').hide(0);
-				$(this).parents('.ormForm').find('.ormBlock').hide(0);
+				$(this).parents('.ormForm').find('.ormBridgeTableDiv').hide(0);
 			}
 		});
 		
@@ -259,6 +268,7 @@ $( function () {
 			ormTableChange();
 		}
 
+		//字段列表
 		function ormTableChange() {
 			var sColumns = '';
 			var sExtend = $('#ormExtend').val();
@@ -336,7 +346,6 @@ $( function () {
 			url: url,
 			data: '&ajaxSaveData='+jQuery.toJSON(aData),
 			success: function(msg) {
-				
 			}
 		});
 	}
@@ -349,8 +358,19 @@ $( function () {
 	});
 	
 	//增加一个映射关系
-	$('.newOrmMap').live('click', function() {
-		$('#template .ormForm').clone().insertBefore($(this));
-	});
+	$('.newOrmMap').live('click',makeNewOrmMap);
+	
+	function makeNewOrmMap(asscociations) {
+		if(asscociations){
+			$.each(asscociations,function(i,v){
+				//数据复原
+				var newOrmMap = $('#template .ormForm').clone();
+				
+				newOrmMap.find('.ormType').val(v['type']);
+				//对象归位
+				newOrmMap.insertBefore($('.newOrmMap'));
+			});
+		}
+	}
 
 });

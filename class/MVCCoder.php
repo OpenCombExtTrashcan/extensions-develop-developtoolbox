@@ -17,6 +17,7 @@ use jc\mvc\model\db\orm\PrototypeAssociationMap;
 use jc\fs\FSOIterator;
 use jc\system\ClassLoader;
 use oc\base\FrontFrame;
+use jc\mvc\controller\WebpageFrame;
 use jc\db\sql\Select;
 use oc\mvc\controller\Controller;
 
@@ -52,6 +53,11 @@ class MVCCoder extends Controller
 			$this->viewForm->variables()->set('sDefineUiTemplateFolders',json_encode($arrUiTemplateFolders)) ;
 		}
 	}
+	
+	public function createFrame()
+    {
+    	return new WebpageFrame() ;
+    }
 	
 	public function actionGenerate()
 	{

@@ -6,6 +6,7 @@
 	var viewNames = {= $sDefineAllViewClassesCode };
 	var viewNamespace = {= $sDefineUiTemplateFolders };
   </script>
+  <js type="text/javascript" src="jquery-1.6.2.min.js" />
   <js type="text/javascript" src="jquery.json-2.2.min.js" />
   <js type="text/javascript" src="developtoolbox.js" />
 <div id="main">
@@ -49,7 +50,7 @@
 				       \
 				      <input id="view_classname" type="text" disabled="disabled"/></ul>
 				<ul><label for="view_filepath">类文件路径: </label><input id="view_filepath" type="text" disabled="disabled" /></ul>
-				<ul><label for="view_model">模型:</label><select id="view_model"><option value="0">请选择</option></select></ul>
+				<ul><label for="view_modelSelect">模型:</label><select id="view_modelSelect"><option value="0">请选择</option></select></ul>
 				<ul>数据交换设置：</ul>
                    <table id="view_model_table">
                         <thead>

@@ -221,18 +221,110 @@ $( function () {
 		};
 		this.rebuideOrmMaps = function(){
 			var ormMaps = this.defineOrm[this.sExtend][this.aData['title']];
+			//恢复orm条目和选项等
 			if(ormMaps['asscociations'].length > 0){
-				makeNewOrmMap(ormMaps['asscociations'] , this);
+				$.each(ormMaps['asscociations'],function(i,ass){
+					var newOrmMap = makeNewOrmMap(ass , that);
+					var arrFormkeyColumns = getTableColumns(that.sExtend,that.aData['table']);
+						var arrToProto = ass['toPrototype'].split(':');
+					var arrTokeyColumns = defineOrm[arrToProto[0]][arrToProto[1]]['columns'];
+					if(ass['type'] == "hasAndBelongsToMany"){
+						var arrBFormkeyColumns = getTableColumns(that.sExtend,ass['bridgeTableName']);
+						var arrBTokeyColumns = getTableColumns(that.sExtend,ass['bridgeTableName']);
+					}
+					
+					//恢复orm关联的内容(ormFomr中所有控件的值),只在编辑状态下才进行的步骤
+					//fromkey
+					rebuildFromKeySelect(newOrmMap.find('.ormFromKey') , arrFormkeyColumns );
+					var fromkeyTemplate = newOrmMap.find('.ormFromKey').first();
+					for(var key in ass['fromKeys']){
+						var newLine = newOrmMap.find('.ormFromKey').last();
+						if(key > 0){
+							//新的key
+							newLine = fromkeyTemplate.clone();
+							newLine.after(newOrmMap.find('.ormFromKey').last().next('br'));
+							$('<br />').after(newLine);
+						}
+						var newLine = newOrmMap.find('.ormFromKey').last();
+						newLine.val(ass['fromKeys'][key]);
+					}
+					
+					//Tokey
+					rebuildToKeySelect(newOrmMap.find('.ormToKey') , arrTokeyColumns );
+					var fromkeyTemplate = newOrmMap.find('.ormToKey').first();
+					for(var key in ass['toKeys']){
+						var newLine = newOrmMap.find('.ormToKey').last();
+						if(key > 0){
+							//新的key
+							newLine = fromkeyTemplate.clone();
+							newLine.after(newOrmMap.find('.ormToKey').last().next('br'));
+							$('<br />').after(newLine);
+						}
+						var newLine = newOrmMap.find('.ormToKey').last();
+						newLine.val(ass['toKeys'][key]);
+					}
+					
+					if(ass['type'] == "hasAndBelongsToMany"){
+						//bFromkey
+						rebuildToKeySelect(newOrmMap.find('.ormBrigdeToKey') , arrBFormkeyColumns );
+						var fromkeyTemplate = newOrmMap.find('.ormBrigdeToKey').first();
+						for(var key in ass['bridgeFromKeys']){
+							var newLine = newOrmMap.find('.ormBrigdeToKey').last();
+							if(key > 0){
+								//新的key
+								newLine = fromkeyTemplate.clone();
+								newLine.after(newOrmMap.find('.ormBrigdeToKey').last().next('br'));
+								$('<br />').after(newLine);
+							}
+							var newLine = newOrmMap.find('.ormBrigdeToKey').last();
+							newLine.val(ass['bridgeFromKeys'][key]);
+						}
+						//bTokey
+						rebuildToKeySelect(newOrmMap.find('.ormBrigdeFromKey') , arrBTokeyColumns );
+						var fromkeyTemplate = newOrmMap.find('.ormBrigdeFromKey').first();
+						for(var key in ass['bridgeToKeys']){
+							var newLine = newOrmMap.find('.ormBrigdeFromKey').last();
+							if(key > 0){
+								//新的key
+								newLine = fromkeyTemplate.clone();
+								newLine.after(newOrmMap.find('.ormBrigdeFromKey').last().next('br'));
+								$('<br />').after(newLine);
+							}
+							var newLine = newOrmMap.find('.ormBrigdeFromKey').last();
+							newLine.val(ass['bridgeToKeys'][key]);
+						}
+					}
+				});
+			}
+			
+		}
+		
+		function rebuildFromKeySelect(fromKeySelect , arr){
+			for(var key in arr){
+				fromKeySelect.append('<option value="'+arr[key]+'">'+arr[key]+'</option>');
 			}
 		}
+		function rebuildBToKeySelect(){
+			
+		}
+		function rebuildBFromKeySelect(){
+			
+		}
+		function rebuildToKeySelect(toKeySelect , arr){
+			for(var key in arr){
+				toKeySelect.append('<option value="'+arr[key]+'">'+arr[key]+'</option>');
+			}
+		}
+		
 
-		$('#ormExtend').die();
+		$('#ormExtend').die('change',ormExtendChange);
 		$('#ormExtend').live('change',ormExtendChange);
 
-		$('#ormTable').die();
+		$('#ormTable').die('change',ormTableChange);
 		$('#ormTable').live('change',ormTableChange);
 
 		function ormExtendChange() {
+			
 			//对ormDefine的影响
 			var arrExtends = getExtends();
 			$('#ormDefine').find('option').remove();
@@ -359,33 +451,60 @@ $( function () {
 		arrCheckboxs.prop('checked',bChecked);
 	});
 	
+	//提醒用户不要轻易修改所属扩展
+	$('#ormExtend').die('click');
+	$('#ormExtend').live('click',function(){
+		var temp = $('#ormExtend').val();
+		//如果已经有多条orm关系,那么提醒用户那些关系会被清空
+		if($('#property').find('.ormForm').length > 0){
+			if(confirm('你正在试图改变orm所属扩展,但是你已经编写了针对这个扩展的orm关系,如果确定修改所属扩展,已经编辑好的orm关系将被删除.是否删除这些orm关系?')){
+				$('#property').find('.ormForm').remove();
+			}else{
+				$('#ormExtend').val(temp);
+				// return false;
+			}
+		}
+	});
+	//提醒用户不要轻易修改表
+	$('#ormTable').die('click');
+	$('#ormTable').live('click',function(){
+		var temp = $('#ormTable').val();
+		//如果已经有多条orm关系,那么提醒用户那些关系会被清空
+		if($('#property').find('.ormForm').length > 0){
+			if(confirm('你正在试图改变orm相关的表,但是你已经编写了针对这个扩展的orm关系,如果确定修改表,已经编辑好的orm关系将被删除.是否删除这些orm关系?')){
+				$('#property').find('.ormForm').remove();
+			}else{
+				$('#ormTable').val(temp);
+				// return false;
+			}
+		}
+	});
+	
 	//增加一个映射关系
 	$('.newOrmMap').live('click',makeNewOrmMap);
 	
-	function makeNewOrmMap(asscociations,theProperty) {
+	function makeNewOrmMap(asscociation,theProperty) {
 		//恢复表单
-		if(asscociations != null && asscociations.length > 0){
-			$.each(asscociations,function(i,ass){
-				//获取模板
-				var newOrmMap = $('#template .ormForm').clone();
-				//对象归位
-				newOrmMap.insertBefore($('.newOrmMap').parent('div'));
-				newOrmMap.find('.ormType').val(ass['type']);
-				newOrmMap.find('.ormType').trigger('change');
-				//恢复选项
-				//桥接表
-				if(ass['bridgeTableName'] != null){
-					rebuildBridgeTableSelect(newOrmMap,theProperty.sExtend);
-					newOrmMap.find('.ormBridgeTable').val(ass['bridgeTableName']);
-				}
-				//TO原型
-				rebuildToPrototypeSelect(newOrmMap ,defineOrm[theProperty.sExtend]);
-				newOrmMap.find('.ormToPrototype').val(ass['toPrototype'].split(':')[1]);
-				//TO原型别名
-				newOrmMap.find('.ormToProp').val(ass['prop']);
-				
-				//数据恢复
-				
+		if(asscociation != null && asscociation != undefined && theProperty != undefined){
+			// $.each(asscociations,function(i,ass){
+			//获取模板
+			var newOrmMap = $('#template .ormForm').clone();
+			//对象归位
+			newOrmMap.insertBefore($('.newOrmMap').parent('div'));
+			newOrmMap.find('.ormType').val(asscociation['type']);
+			newOrmMap.find('.ormType').trigger('change');
+			//恢复选项
+			//桥接表
+			if(asscociation['bridgeTableName'] != null){
+				rebuildBridgeTableSelect(newOrmMap,theProperty.sExtend);
+				newOrmMap.find('.ormBridgeTable').val(asscociation['bridgeTableName']);
+			}
+			//TO原型
+			rebuildToPrototypeSelect(newOrmMap ,defineOrm[theProperty.sExtend]);
+			newOrmMap.find('.ormToPrototype').val(asscociation['toPrototype'].split(':')[1]);
+			//TO原型别名
+			newOrmMap.find('.ormToProp').val(asscociation['prop']);
+			//数据恢复
 // bridgeTableName
 // bridgeToKeys
 // fromKeys
@@ -393,7 +512,7 @@ $( function () {
 // toKeys
 // toPrototype
 // type
-			});
+			// });
 		//新建表单
 		}else{
 			//获取模板
@@ -402,10 +521,11 @@ $( function () {
 			newOrmMap.insertBefore($('.newOrmMap'));
 			newOrmMap.find('.ormType').trigger('change');
 			//桥接表
-			rebuildBridgeTableSelect(newOrmMap,theProperty.sExtend);
+			rebuildBridgeTableSelect(newOrmMap,$('#ormExtend').val());
 			//TO原型
-			rebuildToPrototypeSelect(newOrmMap ,defineOrm[theProperty.sExtend]);
+			rebuildToPrototypeSelect(newOrmMap ,defineOrm[$('#ormExtend').val()]);
 		}
+		return newOrmMap;
 	}
 	
 	function rebuildBridgeTableSelect(ormMap,extend){
@@ -421,7 +541,6 @@ $( function () {
 			ormMap.find('.ormToPrototype').append('<option value="'+key+'">'+key+'</option>');
 		});
 	}
-	
 
 	var aOrmController = new OrmsController("ormlistUl");
 });

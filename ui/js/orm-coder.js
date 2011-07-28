@@ -299,24 +299,6 @@ $( function () {
 			
 		}
 		
-		function rebuildFromKeySelect(fromKeySelect , arr){
-			for(var key in arr){
-				fromKeySelect.append('<option value="'+arr[key]+'">'+arr[key]+'</option>');
-			}
-		}
-		function rebuildBToKeySelect(){
-			
-		}
-		function rebuildBFromKeySelect(){
-			
-		}
-		function rebuildToKeySelect(toKeySelect , arr){
-			for(var key in arr){
-				toKeySelect.append('<option value="'+arr[key]+'">'+arr[key]+'</option>');
-			}
-		}
-		
-
 		$('#ormExtend').die('change',ormExtendChange);
 		$('#ormExtend').live('change',ormExtendChange);
 
@@ -343,9 +325,13 @@ $( function () {
 			$('#ormTable').val(that.aData['table']);
 			ormTableChange();
 		}
+		function ormTableChange(){
+			//字段的变化
+			ormColumns();
+		}
 
 		//字段列表
-		function ormTableChange() {
+		function ormColumns() {
 			var sColumns = '';
 			var sExtend = $('#ormExtend').val();
 			var sTable = $('#ormTable').val();
@@ -399,22 +385,32 @@ $( function () {
 		this.initForm();
 		this.rebuideOrmMaps();
 	}
-
-	/**
-	 *    初始化页面
-	 * */
-	
 	
 	// $('.ormType').die();
 	$('.ormType').live('change', function() {
-		if($(this).val() == 'hasAndBelongsToMany') {
-			$(this).parents('.ormForm').find('.ormBridge').show(0);
-			$(this).parents('.ormForm').find('.ormBridgeTableDiv').show(0);
-		} else {
-			$(this).parents('.ormForm').find('.ormBridge').hide(0);
-			$(this).parents('.ormForm').find('.ormBridgeTableDiv').hide(0);
-		}
+		// if(!confirm('您正试图修改orm类型,如果继续操作,对应的orm关系会被清空,是否继续操作?')){
+			// return false;
+		// }
+		var newOrmForm = $('#template').find('.ormForm').clone();
+		var newVal =$(this).val();
+		
+		$(this).parents('.ormForm').replaceWith(newOrmForm);
+		newOrmForm.find('.ormType').val(newVal);
+		rebuildOrmType(newOrmForm);
+		//TODO 申请恢复表单
+		
 	});
+	
+	//根据ormtype的值显示或者隐藏中间表
+	function rebuildOrmType(ormForm){
+		if(ormForm.find('.ormType').val() == 'hasAndBelongsToMany'){
+			ormForm.find('.ormBridge').show(0);
+			ormForm.find('.ormBridgeTableDiv').show(0);
+		}else{
+			ormForm.find('.ormBridge').hide(0);
+			ormForm.find('.ormBridgeTableDiv').hide(0);
+		}
+	}
 		
 	//原型保存按钮
 	$('#save').live('click', function() {
@@ -492,7 +488,8 @@ $( function () {
 			//对象归位
 			newOrmMap.insertBefore($('.newOrmMap').parent('div'));
 			newOrmMap.find('.ormType').val(asscociation['type']);
-			newOrmMap.find('.ormType').trigger('change');
+			// newOrmMap.find('.ormType').trigger('change');
+			rebuildOrmType(newOrmMap);
 			//恢复选项
 			//桥接表
 			if(asscociation['bridgeTableName'] != null){
@@ -519,7 +516,8 @@ $( function () {
 			var newOrmMap = $('#template .ormForm').clone();
 			//对象归位
 			newOrmMap.insertBefore($('.newOrmMap'));
-			newOrmMap.find('.ormType').trigger('change');
+			// newOrmMap.find('.ormType').trigger('change');
+			rebuildOrmType(newOrmMap);
 			//桥接表
 			rebuildBridgeTableSelect(newOrmMap,$('#ormExtend').val());
 			//TO原型
@@ -541,6 +539,55 @@ $( function () {
 			ormMap.find('.ormToPrototype').append('<option value="'+key+'">'+key+'</option>');
 		});
 	}
-
+	
+	function rebuildFromKeySelect(fromKeySelect , arr){
+		for(var key in arr){
+			fromKeySelect.append('<option value="'+arr[key]+'">'+arr[key]+'</option>');
+		}
+	}
+	function rebuildBToKeySelect(BToKeySelect,arr){
+		for(var key in arr){
+			fromKeySelect.append('<option value="'+arr[key]+'">'+arr[key]+'</option>');
+		}
+	}
+	function rebuildBFromKeySelect(BFromKeySelect,arr){
+		for(var key in arr){
+			fromKeySelect.append('<option value="'+arr[key]+'">'+arr[key]+'</option>');
+		}
+	}
+	function rebuildToKeySelect(toKeySelect , arr){
+		for(var key in arr){
+			toKeySelect.append('<option value="'+arr[key]+'">'+arr[key]+'</option>');
+		}
+	}
+	
+	$('.ormToPrototype').live('change', onOrmToPrototypeChanged);
+	function onOrmToPrototypeChanged(event){
+		//如果是事件在调用函数,那么把事件的触发控件作为ormForm,如果不是就用传进来的
+		if(event['originalEvent']['type'] == 'change'){
+			ormForm = $(event['originalEvent']['target']).parents('.ormForm').first();
+		}
+		//清空所有option
+		ormForm.find('.ormToKey').find('option').remove();
+		//重新组织option
+		var arrPrototypeColumns = defineOrm[$('#ormExtend').val()][$(event['originalEvent']['target']).val()]['columns'];
+		rebuildToKeySelect( ormForm.find('.ormToKey'), arrPrototypeColumns);
+	}
+	
+	$('.ormBridgeTable').live('change', onOrmBridgeTableChanged);
+	function onOrmBridgeTableChanged(event){
+		//如果是事件在调用函数,那么把事件的触发控件作为ormForm,如果不是就用传进来的
+		if(event['originalEvent']['type'] == 'change'){
+			ormForm = $(event['originalEvent']['target']).parents('.ormForm').first();
+		}
+		//清空所有option
+		ormForm.find('.ormBrigdeToKey').find('option').remove();
+		ormForm.find('.ormBrigdeFromKey').find('option').remove();
+		//重新组织option
+		var arrPrototypeColumns = defineDbTable[$('#ormExtend').val()][$(event['originalEvent']['target']).val()]['columns'];
+		rebuildToKeySelect( ormForm.find('.ormBrigdeToKey'), arrPrototypeColumns);
+		rebuildToKeySelect( ormForm.find('.ormBrigdeFromKey'), arrPrototypeColumns);
+	}
+	
 	var aOrmController = new OrmsController("ormlistUl");
 });

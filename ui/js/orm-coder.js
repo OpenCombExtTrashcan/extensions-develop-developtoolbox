@@ -415,17 +415,41 @@ $( function () {
 	//原型保存按钮
 	$('#save').live('click', function() {
 		var aData = {};
-		aData['extend'] = $('#ormExtend').val();
+		aData['extension'] = $('#ormExtend').val();
 		aData['define'] = $('#ormDefine').val();
 		aData['table'] = $('#ormTable').val();
 		aData['title'] = $('#ormTitle').val();
+		//列
 		aData['primaryKeys'] = [];
 		$('.primaryKey:checked').each( function() {
 			aData['primaryKeys'].push($(this).val());
 		});
-		aData['usedKeys'] = [];
+		aData['colunms'] = [];
 		$('.usedColumn:checked').each( function() {
-			aData['usedKeys'].push($(this).val());
+			aData['colunms'].push($(this).val());
+		});
+		//orm关系
+		aData['asscociations'] = [];
+		$('#property .ormForm').each(function(key,ormForm){
+			ormForm = $(ormForm);
+			var aAsscociation = {};
+			aAsscociation['type'] = ormForm.find('.ormType').val();
+			aAsscociation['toPrototype'] = ormForm.find('.ormToPrototype').val();
+			aAsscociation['prop'] = ormForm.find('.ormToProp').val();
+			aAsscociation['bridgeTableName'] = null;
+			if(aAsscociation['type'] == "hasAndBelongsToMany"){
+				aAsscociation['bridgeTableName'] = ormForm.find('.ormBridgeTable').val();
+			}
+			aAsscociation['fromKeys'] = getValuesOfKeys(ormForm.find('.ormFromKey'));
+			aAsscociation['toKeys'] = getValuesOfKeys(ormForm.find('.ormToKey'));
+			aAsscociation['bridgeFromKeys'] = null;
+			aAsscociation['bridgeToKeys'] = null;
+			if(aAsscociation['type'] == "hasAndBelongsToMany"){
+				aAsscociation['bridgeFromKeys'] = getValuesOfKeys(ormForm.find('.ormBrigdeToKey'));
+				aAsscociation['bridgeToKeys'] = getValuesOfKeys(ormForm.find('.ormBrigdeFromKey'));
+			}
+			
+			aData['asscociations'].push(aAsscociation);
 		});
 		ajaxSave(aData);
 	});
@@ -436,8 +460,17 @@ $( function () {
 			url: url,
 			data: '&ajaxSaveData='+jQuery.toJSON(aData),
 			success: function(msg) {
+				$('#property').html(msg);
 			}
 		});
+	}
+	
+	function getValuesOfKeys(arrKeys){
+		var arrValues = [];
+		arrKeys.map(function(){
+			arrValues.push($(this).val());
+		});
+		return arrValues;
 	}
 	
 	//全选

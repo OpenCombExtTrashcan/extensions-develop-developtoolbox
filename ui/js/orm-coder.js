@@ -560,7 +560,7 @@ $( function () {
 			toKeySelect.append('<option value="'+arr[key]+'">'+arr[key]+'</option>');
 		}
 	}
-	
+	//如果更改了toprototype,那么重置所有对应字段
 	$('.ormToPrototype').live('change', onOrmToPrototypeChanged);
 	function onOrmToPrototypeChanged(event){
 		//如果是事件在调用函数,那么把事件的触发控件作为ormForm,如果不是就用传进来的
@@ -573,7 +573,7 @@ $( function () {
 		var arrPrototypeColumns = defineOrm[$('#ormExtend').val()][$(event['originalEvent']['target']).val()]['columns'];
 		rebuildToKeySelect( ormForm.find('.ormToKey'), arrPrototypeColumns);
 	}
-	
+	//如果更改了中间表,那么重置所有对应字段
 	$('.ormBridgeTable').live('change', onOrmBridgeTableChanged);
 	function onOrmBridgeTableChanged(event){
 		//如果是事件在调用函数,那么把事件的触发控件作为ormForm,如果不是就用传进来的
@@ -589,5 +589,35 @@ $( function () {
 		rebuildToKeySelect( ormForm.find('.ormBrigdeFromKey'), arrPrototypeColumns);
 	}
 	
+	$('.addOrmFromKey').live('click',addFromKey);
+	function addFromKey(event){
+		var thisForm = $(event['originalEvent']['target']).parents('.ormForm').first();
+		var newFromKey = thisForm.find('.ormFromKey').first().clone();
+		newFromKey.insertBefore(thisForm.find('.addOrmFromKey')).after($('<br/>'));
+		if(thisForm.find('.ormType').val() == 'hasAndBelongsToMany'){
+			//如果存在中间表(多对多)
+			var newFromKey = thisForm.find('.ormBrigdeToKey').first().clone();
+			newFromKey.appendTo(thisForm.find('.ormBridgeStart')).after($('<br/>'));
+		}else{
+			//没有中间表
+			var newFromKey = thisForm.find('.ormToKey').first().clone();
+			newFromKey.appendTo(thisForm.find('.ormTo')).after($('<br/>'));
+		}
+		return false;
+	}
+	
+	$('.addOrmBrigdeFromKey').live('click',addToKey);
+	function addToKey(event){
+		var thisForm = $(event['originalEvent']['target']).parents('.ormForm').first();
+		var newFromKey = thisForm.find('.ormBrigdeFromKey').first().clone();
+		newFromKey.insertBefore(thisForm.find('.addOrmBrigdeFromKey')).after($('<br/>'));
+		var newFromKey = thisForm.find('.ormToKey').first().clone();
+		newFromKey.appendTo(thisForm.find('.ormTo')).after($('<br/>'));
+		return false;
+	}
+	
+	
+	
+	//初始化左侧列表
 	var aOrmController = new OrmsController("ormlistUl");
 });

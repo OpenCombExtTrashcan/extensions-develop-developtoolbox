@@ -64,121 +64,19 @@ class ORMCoder extends Controller
 		$arrOrmType = Association::allAssociationTypes();
 		$this->viewForm->variables()->set('arrDefineOrmType',$arrOrmType);
 		$this->viewForm->variables()->set('sDefineOrmType',json_encode($arrOrmType));
-		
-//		//所有的扩展名
-//		$arrExtends = array_keys($arrOrm); 
-//		
-//		//整理请求参数
-//		$sDO =  $this->aParams->has('do') ? $this->aParams->get('do') : 'new';						//请求分类
-//		$sExtend = $this->aParams->has('ext') ? $this->aParams->get('ext') : $arrExtends[0] ;    //请求的扩展名,如果不存在就给与默认的扩展名
-//		$sOrmTitle = $this->aParams->has('title') ? $this->aParams->get('title') : "";  		//指定orm的名字
-//		
-//		$sTableName = $sOrmTitle != '' ? $arrOrm[$sExtend][$sOrmTitle]['table'] : $this->getFirstTable($arrTables , $sExtend);                           //指定orm所属table
-//		$arrAllColumns = $arrTables[$sExtend][$sTableName]['columns'] ;																	//指定orm所属table的所有列
-//		$arrUsedColumns =  $sOrmTitle != '' ? $arrOrm[$sExtend][$sOrmTitle]['columns'] : '';										//指定orm所属table的使用到的列
-//		$arrPrimaryKey = $sOrmTitle != '' ?  $arrOrm[$sExtend][$sOrmTitle]['primaryKeys'] : '';									//指定orm的所有主键
-//		$sDevicePrimaryKey = $arrTables[$sExtend][$sTableName]['primaryKey'];		
-//		
-//		/*
-//		 * prototype 表单
-//		 * */
-//		
-//		$aExtend = new Select('extend','所属扩展') ;
-//		foreach($arrExtends as $sExt){
-//			$aExtend->addOption($sExt, $sExt);
-//		}
-//		$this->viewForm->addWidget( $aExtend );
-//		$aExtend->setValue($sExtend);
-//
-//		
-//		$aOrmTable = new Select('table','表');
-//		foreach($arrTables[$sExtend] as $sTableName=>$aTable){
-//			$aOrmTable->addOption($aTable['title'], $sTableName);
-//		}
-//		$this->viewForm->addWidget( $aOrmTable );
-//		if($sOrmTitle != ''){
-//			$aOrmTable->setValue($sTableName);
-//		}
-//		
-//		
-//		$aOrmTitle = new Text('ormTitle','表别名','',Text::single);
-//		$this->viewForm->addWidget( $aOrmTitle )
-//				->addVerifier(Length::flyweight(array(2,30))) ;
-//		if($sOrmTitle != ''){
-//			$aOrmTitle->setValue($arrOrm[$sExtend][$sOrmTitle]['title']);
-//		}
-//				
-//		//主键,列
-//		$arrColumns = $this->getColumns($arrOrm,$arrAllColumns,$arrPrimaryKey,$arrUsedColumns );
-//		$this->viewForm->variables()->set('arrDefineColumns',$arrColumns);
-////			$this->viewForm->variables()->set('sDefineColumns',json_encode($arrColumns)) ;
-//		
-//		/*
-//		 * orm关系表单
-//		 * */
-//		
-//		//orm类型分类,用原生函数获取
-//		$arrOrmType = Association::allAssociationTypes();
-//		$aOrmType = new Select('ormType','orm关系');
-//		foreach($arrOrmType as $sOrmType){
-//			$aOrmType->addOption($sOrmType,$sOrmType);
-//		}
-//		$this->viewForm->addWidget( $aOrmType );
-//		
-//		$aOrmFromKey = new Select('ormFromKey','FromKey');
-//		$this->viewForm->addWidget( $aOrmFromKey );
-//		$aOrmBrigdeToKey = new Select('ormBrigdeToKey','BrigdeToKey');
-//		$this->viewForm->addWidget( $aOrmBrigdeToKey );
-//		$aOrmBrigdeFromKey = new Select('ormBrigdeFromKey','BrigdeFromKey');
-//		$this->viewForm->addWidget( $aOrmBrigdeFromKey );
-//		$aOrmToKey = new Select('ormToKey','ToKey');
-//		$this->viewForm->addWidget( $aOrmToKey );
-//		
-//		/*
-//		 * 数据还原
-//		 * */
-//		
-//		if($this->aParams->get('ormname')){
-//			$sExt = $this->aParams->get('ext');
-//			$sOrmname = $this->aParams->get('ormname');
-//		}
-		
-		
-		
-			//用户现在的行为
-//		$this->viewForm->variables()->set('whatyoudoing', ) ;
 	}
 
 	public function process()
 	{
+		
 		if($this->aParams->has('ajaxSaveData')){
-			var_dump($this->aParams->get('ajaxSaveData'));
-			exit();
+			$arrOrm = json_decode($this->aParams->get('ajaxSaveData'),true);
+			//得到数组字面量
+			$arrOrmString = var_export($arrOrm, true);
+			echo $arrOrmString;
+			
 		}
 	}
-	
-	//返回一个数组,数组中记录所给orm
-//	public function getColumns($arrOrm,$arrAllColumns,$arrPrimaryKey,$arrUsedColumns ){
-//		$arrColumns = array();
-//		foreach($arrAllColumns as $sColumn){
-//			$bIsPrimary = false;
-//			if($arrPrimaryKey != ''){
-//				$bIsPrimary = in_array($sColumn,$arrPrimaryKey);
-//			}
-//			$bIsUsedColumn = false;
-//			if($arrUsedColumns != ''){
-//				$bIsUsedColumn = in_array($sColumn,$arrUsedColumns);
-//			}
-//			$arrColumns[] = array($sColumn , $bIsPrimary , $bIsUsedColumn);
-//		}
-//		return $arrColumns;
-//	}
-//	
-//	//返回指定扩展下"第一个"table的全名
-//	public function getFirstTable($arrTables , $sExtend){
-//		$arrTablesTemp = array_keys($arrTables[$sExtend]) ;
-//		return array_shift($arrTablesTemp);
-//	}
 	
 	public function reflectionExtensionsOrmDefine()
 	{

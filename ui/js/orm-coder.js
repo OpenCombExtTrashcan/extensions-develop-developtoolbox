@@ -429,27 +429,28 @@ $( function () {
 			aData['colunms'].push($(this).val());
 		});
 		//orm关系
-		aData['asscociations'] = [];
 		$('#property .ormForm').each(function(key,ormForm){
 			ormForm = $(ormForm);
 			var aAsscociation = {};
-			aAsscociation['type'] = ormForm.find('.ormType').val();
-			aAsscociation['toPrototype'] = ormForm.find('.ormToPrototype').val();
+			var sOrmType = ormForm.find('.ormType').val();
+			aAsscociation['model'] = ormForm.find('.ormToPrototype').val();//toPrototype
 			aAsscociation['prop'] = ormForm.find('.ormToProp').val();
-			aAsscociation['bridgeTableName'] = null;
+			aAsscociation['bridge'] = null;//bridgeTableName
 			if(aAsscociation['type'] == "hasAndBelongsToMany"){
-				aAsscociation['bridgeTableName'] = ormForm.find('.ormBridgeTable').val();
+				aAsscociation['bridge'] = ormForm.find('.ormBridgeTable').val();//bridgeTableName
 			}
-			aAsscociation['fromKeys'] = getValuesOfKeys(ormForm.find('.ormFromKey'));
-			aAsscociation['toKeys'] = getValuesOfKeys(ormForm.find('.ormToKey'));
-			aAsscociation['bridgeFromKeys'] = null;
-			aAsscociation['bridgeToKeys'] = null;
+			aAsscociation['fromk'] = getValuesOfKeys(ormForm.find('.ormFromKey'));
+			aAsscociation['tok'] = getValuesOfKeys(ormForm.find('.ormToKey'));
+			aAsscociation['bfromk'] = null;
+			aAsscociation['btok'] = null;
 			if(aAsscociation['type'] == "hasAndBelongsToMany"){
-				aAsscociation['bridgeFromKeys'] = getValuesOfKeys(ormForm.find('.ormBrigdeToKey'));
-				aAsscociation['bridgeToKeys'] = getValuesOfKeys(ormForm.find('.ormBrigdeFromKey'));
+				aAsscociation['bfromk'] = getValuesOfKeys(ormForm.find('.ormBrigdeToKey'));
+				aAsscociation['btok'] = getValuesOfKeys(ormForm.find('.ormBrigdeFromKey'));
 			}
-			
-			aData['asscociations'].push(aAsscociation);
+			if(!$.isArray(aData[sOrmType])){
+				aData[sOrmType] = [];
+			}
+			aData[sOrmType].push(aAsscociation);
 		});
 		ajaxSave(aData);
 	});

@@ -1,3 +1,8 @@
+/**
+ *   BUG : This is a STUPID code . if you know kongyuan , remind him rebuild this code .
+ */
+
+
 $( function () {
 	//配置
 	var nUniqueId = 1 ; //唯一ID计数
@@ -396,13 +401,13 @@ $( function () {
 		
 		$(this).parents('.ormForm').replaceWith(newOrmForm);
 		newOrmForm.find('.ormType').val(newVal);
-		rebuildOrmType(newOrmForm);
+		rebuildOrmType(newOrmForm , true);
 		//TODO 申请恢复表单
 		
 	});
 	
 	//根据ormtype的值显示或者隐藏中间表
-	function rebuildOrmType(ormForm){
+	function rebuildOrmType(ormForm , bNewOrm){
 		if(ormForm.find('.ormType').val() == 'hasAndBelongsToMany'){
 			ormForm.find('.ormBridge').show(0);
 			ormForm.find('.ormBridgeTableDiv').show(0);
@@ -410,8 +415,42 @@ $( function () {
 			ormForm.find('.ormBridge').hide(0);
 			ormForm.find('.ormBridgeTableDiv').hide(0);
 		}
+		//如果是新建的orm,
+		if(bNewOrm == true){
+			rebuildOrmOptions(ormForm);
+		}
 	}
 		
+	function rebuildOrmOptions(newOrmMap){
+		var sExtend = $('#ormExtend').val();
+		var sTable = $('#ormTable').val();
+		var arrTables = defineDbTable[sExtend];
+		var arrTableNames = [];
+		$.each(arrTables,function(tableName,table){
+			arrTableNames.push(tableName);
+		});
+		rebuildBridgeTableSelect(newOrmMap,sExtend);
+		var sBridgeTableName = newOrmMap.find('.ormBridgeTable').val();
+		var arrBFormkeyColumns = getTableColumns(sExtend,sBridgeTableName);
+		var arrBTokeyColumns = getTableColumns(sExtend,sBridgeTableName);
+		//bFromkey
+		rebuildToKeySelect(newOrmMap.find('.ormBrigdeToKey') , arrBFormkeyColumns );
+		//bTokey
+		rebuildToKeySelect(newOrmMap.find('.ormBrigdeFromKey') , arrBTokeyColumns );
+		
+		//from
+		var arrFormkeyColumns = getTableColumns(sExtend,sTable);
+		rebuildFromKeySelect(newOrmMap.find('.ormFromKey') , arrFormkeyColumns );
+		//TO
+		// rebuildToPrototypeSelect(newOrmMap , defineOrm[sExtend]);
+			//如果是事件在调用函数,那么把事件的触发控件作为ormForm,如果不是就用传进来的
+		newOrmMap.find('.ormToKey').find('option').remove();
+		//TO原型
+		rebuildToPrototypeSelect(newOrmMap ,defineOrm[sExtend]);
+		var arrPrototypeColumns = defineOrm[sExtend][newOrmMap.find('.ormToPrototype').val()]['columns'];
+		rebuildToKeySelect( newOrmMap.find('.ormToKey'), arrPrototypeColumns);
+	}
+					
 	//原型保存按钮
 	$('#save').live('click', function() {
 		var aData = {};
@@ -551,11 +590,10 @@ $( function () {
 			//对象归位
 			newOrmMap.insertBefore($('.newOrmMap'));
 			// newOrmMap.find('.ormType').trigger('change');
-			rebuildOrmType(newOrmMap);
+			rebuildOrmType(newOrmMap,true);
 			//桥接表
-			rebuildBridgeTableSelect(newOrmMap,$('#ormExtend').val());
-			//TO原型
-			rebuildToPrototypeSelect(newOrmMap ,defineOrm[$('#ormExtend').val()]);
+			// rebuildBridgeTableSelect(newOrmMap,$('#ormExtend').val());
+			
 		}
 		return newOrmMap;
 	}
@@ -575,6 +613,7 @@ $( function () {
 	}
 	
 	function rebuildFromKeySelect(fromKeySelect , arr){
+		// fromKeySelect.find('option').remove();
 		for(var key in arr){
 			fromKeySelect.append('<option value="'+arr[key]+'">'+arr[key]+'</option>');
 		}

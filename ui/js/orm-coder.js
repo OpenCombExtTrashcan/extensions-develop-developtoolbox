@@ -44,6 +44,15 @@ $( function () {
 		return defineDbTable[extend][tableName]['columns'];
 	}
 
+	function getPrototypes(){
+		var arrOrms = [];
+		$.each(defineOrm,function(extend,prototype){
+			$.each(prototype,function(ormName ,orm){
+				arrOrms.push(extend+':'+ormName);
+			});
+		});
+		return arrOrms;
+	}
 	/**
 	 * ORM 工厂
 	 * */
@@ -454,14 +463,14 @@ $( function () {
 	//原型保存按钮
 	$('#save').live('click', function() {
 		var aData = {};
-		aData['extension'] = $('#ormExtend').val();
-		aData['define'] = $('#ormDefine').val();
+		var sExtension = $('#ormExtend').val();
+		var sToExtension = $('#ormDefine').val();
 		aData['table'] = $('#ormTable').val();
 		aData['title'] = $('#ormTitle').val();
 		//列
-		aData['primaryKeys'] = [];
+		aData['keys'] = [];  //primaryKeys
 		$('.primaryKey:checked').each( function() {
-			aData['primaryKeys'].push($(this).val());
+			aData['keys'].push($(this).val());  //primaryKeys
 		});
 		aData['colunms'] = [];
 		$('.usedColumn:checked').each( function() {
@@ -473,8 +482,8 @@ $( function () {
 			var aAsscociation = {};
 			var sOrmType = ormForm.find('.ormType').val();
 			aAsscociation['model'] = ormForm.find('.ormToPrototype').val();//toPrototype
-			aAsscociation['prop'] = ormForm.find('.ormToProp').val();
-			aAsscociation['bridge'] = null;//bridgeTableName
+			var sOrmProp = ormForm.find('.ormToProp').val();
+			aAsscociation['bridge'] = null;				//bridgeTableName
 			if(aAsscociation['type'] == "hasAndBelongsToMany"){
 				aAsscociation['bridge'] = ormForm.find('.ormBridgeTable').val();//bridgeTableName
 			}
@@ -486,19 +495,22 @@ $( function () {
 				aAsscociation['bfromk'] = getValuesOfKeys(ormForm.find('.ormBrigdeToKey'));
 				aAsscociation['btok'] = getValuesOfKeys(ormForm.find('.ormBrigdeFromKey'));
 			}
-			if(!$.isArray(aData[sOrmType])){
-				aData[sOrmType] = [];
+			if(!aData[sOrmType]){
+				aData[sOrmType] = {};
 			}
-			aData[sOrmType].push(aAsscociation);
+			if(!$.isArray(aData[sOrmType][sOrmProp])){
+				aData[sOrmType][sOrmProp] = [];
+			}
+			aData[sOrmType][sOrmProp] = aAsscociation;
 		});
-		ajaxSave(aData);
+		ajaxSave(sExtension,sToExtension,aData);
 	});
-	function ajaxSave(aData) {
+	function ajaxSave(sExtension,sToExtension,aData) {
 		var url = '?c=developtoolbox.coder.orm';
 		jQuery.ajax({
 			type: "POST",
 			url: url,
-			data: '&ajaxSaveData='+jQuery.toJSON(aData),
+			data: '&extension='+sExtension+'&toExtension='+sToExtension+'&ajaxSaveData='+jQuery.toJSON(aData),
 			success: function(msg) {
 				$('#property').html(msg);
 			}
@@ -570,19 +582,11 @@ $( function () {
 				newOrmMap.find('.ormBridgeTable').val(asscociation['bridgeTableName']);
 			}
 			//TO原型
-			rebuildToPrototypeSelect(newOrmMap ,defineOrm[theProperty.sExtend]);
-			newOrmMap.find('.ormToPrototype').val(asscociation['toPrototype'].split(':')[1]);
+			rebuildToPrototypeSelect(newOrmMap ,getPrototypes());
+			newOrmMap.find('.ormToPrototype').val(asscociation['toPrototype']);//.split(':')[1]);
 			//TO原型别名
 			newOrmMap.find('.ormToProp').val(asscociation['prop']);
 			//数据恢复
-// bridgeTableName
-// bridgeToKeys
-// fromKeys
-// prop
-// toKeys
-// toPrototype
-// type
-			// });
 		//新建表单
 		}else{
 			//获取模板
@@ -608,7 +612,7 @@ $( function () {
 	
 	function rebuildToPrototypeSelect(ormMap,arrOrms){
 		$.each(arrOrms,function(key,orm){
-			ormMap.find('.ormToPrototype').append('<option value="'+key+'">'+key+'</option>');
+			ormMap.find('.ormToPrototype').append('<option value="'+orm+'">'+orm+'</option>');
 		});
 	}
 	
@@ -688,8 +692,6 @@ $( function () {
 		newFromKey.appendTo(thisForm.find('.ormTo')).after($('<br/>'));
 		return false;
 	}
-	
-	
 	
 	//初始化左侧列表
 	var aOrmController = new OrmsController("ormlistUl");

@@ -455,8 +455,9 @@ $( function () {
 			//如果是事件在调用函数,那么把事件的触发控件作为ormForm,如果不是就用传进来的
 		newOrmMap.find('.ormToKey').find('option').remove();
 		//TO原型
-		rebuildToPrototypeSelect(newOrmMap ,defineOrm[sExtend]);
-		var arrPrototypeColumns = defineOrm[sExtend][newOrmMap.find('.ormToPrototype').val()]['columns'];
+		rebuildToPrototypeSelect(newOrmMap ,getPrototypes());
+		var sToPrototype = newOrmMap.find('.ormToPrototype').val();
+		var arrPrototypeColumns = defineOrm[sToPrototype.split(':')[0]][sToPrototype.split(':')[1]]['columns'];
 		rebuildToKeySelect( newOrmMap.find('.ormToKey'), arrPrototypeColumns);
 	}
 					
@@ -642,12 +643,14 @@ $( function () {
 	function onOrmToPrototypeChanged(event){
 		//如果是事件在调用函数,那么把事件的触发控件作为ormForm,如果不是就用传进来的
 		if(event['originalEvent']['type'] == 'change'){
-			ormForm = $(event['originalEvent']['target']).parents('.ormForm').first();
+			var ormForm = $(event['originalEvent']['target']).parents('.ormForm').first();
 		}
 		//清空所有option
 		ormForm.find('.ormToKey').find('option').remove();
 		//重新组织option
-		var arrPrototypeColumns = defineOrm[$('#ormExtend').val()][$(event['originalEvent']['target']).val()]['columns'];
+		var sToPrototype = $(event['originalEvent']['target']).val();
+		var arrPrototypeColumns = defineOrm[sToPrototype.split(':')[0]][sToPrototype.split(':')[1]]['columns'];
+//		var arrPrototypeColumns = defineOrm[$('#ormExtend').val()][$(event['originalEvent']['target']).val()]['columns'];
 		rebuildToKeySelect( ormForm.find('.ormToKey'), arrPrototypeColumns);
 	}
 	//如果更改了中间表,那么重置所有对应字段

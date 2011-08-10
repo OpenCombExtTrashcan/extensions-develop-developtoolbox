@@ -696,6 +696,25 @@ $( function () {
 		return false;
 	}
 	
+	$('.newOrm').live('click',newOrmBtn);
+	function newOrmBtn(){
+		var aLastUl = $('#ormlistUl').find('ul').last();
+		if(aLastUl.find('li').last().attr('id') != 'newOrm'){
+			var aNewLi = aLastUl.find('li').last().clone(true);
+			aNewLi.attr('id','newOrm');
+			aLastUl.append(aNewLi);
+		}else{
+			var aNewLi = aLastUl.find('li').last();
+		}
+		if(!aNewLi.hasClass('selected')){
+			aOrmController.setSelected(null,aNewLi);
+		}
+		aNewLi.hide(0);
+		$('#property').find('.newOrmMap').hide(0);
+		// $('#property').find('.prototypeForm').remove();
+		$('#property').find('.ormForm').remove();
+	}
+	
 	//初始化左侧列表
 	var aOrmController = new OrmsController("ormlistUl");
 });

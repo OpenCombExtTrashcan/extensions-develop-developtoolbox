@@ -513,7 +513,7 @@ $( function () {
 			url: url,
 			data: '&extension='+sExtension+'&toExtension='+sToExtension+'&ajaxSaveData='+jQuery.toJSON(aData),
 			success: function(msg) {
-				$('#property').html(msg);
+				$('#msg').html(msg);
 			}
 		});
 	}
@@ -710,7 +710,7 @@ $( function () {
 			aOrmController.setSelected(null,aNewLi);
 		}
 		aNewLi.hide(0);
-		$('#property').find('.newOrmMap').hide(0);
+		// $('#property').find('.newOrmMap').hide(0);
 		// $('#property').find('.prototypeForm').remove();
 		$('#property').find('.ormForm').remove();
 	}

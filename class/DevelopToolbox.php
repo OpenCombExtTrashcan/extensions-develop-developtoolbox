@@ -12,7 +12,5 @@ class DevelopToolbox extends Extension
 		$this->application()->accessRouter()->addController("oc\\ext\\developtoolbox\\MVCCoder",'coder.mvc') ;
 		$this->application()->accessRouter()->addController("oc\\ext\\developtoolbox\\ORMCoder",'coder.orm') ;
 	}
-	
 }
-
 ?>

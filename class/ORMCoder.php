@@ -1,5 +1,5 @@
 <?php
-namespace oc\ext\developtoolbox ;
+namespace oc\ext\developtoolbox;
 
 use oc\ext\Extension;
 
@@ -15,9 +15,9 @@ use oc\ext\developtoolbox\coder\AbstractCoder;
 use oc\ext\developtoolbox\coder\mvc\Controller as ControllerCoder;
 use jc\io\OutputStreamBuffer;
 use jc\mvc\model\db\orm\Association;
-use oc\mvc\controller\Controller ;
-use jc\mvc\view\DataExchanger ;
-use jc\message\Message ;
+use oc\mvc\controller\Controller;
+use jc\mvc\view\DataExchanger;
+use jc\message\Message;
 use jc\mvc\model\db\Model;
 use jc\verifier\Length;
 use jc\verifier\Same;
@@ -40,140 +40,135 @@ class ORMCoder extends Controller
 {
 	protected function init()
 	{
+		if ($this->aParams->has ( 'ajaxSaveData' ))
+		{
+			return;
+		}
 		//页面内容
-		$this->createView('Form','ORMCoder.template.html') ;
-
-		//数据
-		$this->viewForm->variables()->set('aPam',PrototypeAssociationMap::singleton()) ;
+		$this->createView ( 'Form', 'ORMCoder.template.html' );
 		
-		// 反射 orm 定义
-		$arrOrmDefines = $this->reflectionExtensionsOrmDefine() ;
-		$this->viewForm->variables()->set('sDefineOrmDefines',json_encode($arrOrmDefines)) ;
-		
-		// 反射 orm 配置
-		$arrOrm = $this->reflectionOrm( $aPam = PrototypeAssociationMap::singleton() ) ;
-		$this->viewForm->variables()->set('arrDefineOrm',$arrOrm) ;
-		$this->viewForm->variables()->set('sDefineOrm',json_encode($arrOrm)) ;
-		
-		// 反射 数据表
-		$arrTables = $this->reflectionDbTable() ;
-		$this->viewForm->variables()->set('arrDefineDbTable',$arrTables) ;
-		$this->viewForm->variables()->set('sDefineDbTable',json_encode($arrTables)) ;
-		
-		//反射
-		$arrOrmType = Association::allAssociationTypes();
-		$this->viewForm->variables()->set('arrDefineOrmType',$arrOrmType);
-		$this->viewForm->variables()->set('sDefineOrmType',json_encode($arrOrmType));
+		$this->sendOrmDataToView ();
 	}
-
+	
 	public function process()
 	{
-		
-		if($this->aParams->has('ajaxSaveData')){
-			$arrOrm = json_decode($this->aParams->get('ajaxSaveData'),true);
+		if ($this->aParams->has ( 'ajaxSaveData' ))
+		{
+			$arrOrm = json_decode ( $this->aParams->get ( 'ajaxSaveData' ), true );
 			//得到数组字面量
-			$arrOrmString = var_export($arrOrm, true);
-			echo $arrOrmString;
+			$arrOrmString = var_export ( $arrOrm, true );
 			
+			//保存到文件,如果成功就返回,如果失败,就把内容显示到页面.
+			if (false) //TODO 保存到文件
+			{ 
+
+			} else
+			{
+				$this->application()->response()->output('<div class="ormCode"><pre>' . $arrOrmString . '</pre></div>') ;
+			}
+		
 		}
+	}
+	
+	public function sendOrmDataToView()
+	{
+		//数据
+		$this->viewForm->variables ()->set ( 'aPam', PrototypeAssociationMap::singleton () );
+		
+		// 反射 orm 定义
+		$arrOrmDefines = $this->reflectionExtensionsOrmDefine ();
+		$this->viewForm->variables ()->set ( 'sDefineOrmDefines', json_encode ( $arrOrmDefines ) );
+		
+		// 反射 orm 配置
+		$arrOrm = $this->reflectionOrm ( $aPam = PrototypeAssociationMap::singleton () );
+		$this->viewForm->variables ()->set ( 'arrDefineOrm', $arrOrm );
+		$this->viewForm->variables ()->set ( 'sDefineOrm', json_encode ( $arrOrm ) );
+		
+		// 反射 数据表
+		$arrTables = $this->reflectionDbTable ();
+		$this->viewForm->variables ()->set ( 'arrDefineDbTable', $arrTables );
+		$this->viewForm->variables ()->set ( 'sDefineDbTable', json_encode ( $arrTables ) );
+		
+		//反射
+		$arrOrmType = Association::allAssociationTypes ();
+		$this->viewForm->variables ()->set ( 'arrDefineOrmType', $arrOrmType );
+		$this->viewForm->variables ()->set ( 'sDefineOrmType', json_encode ( $arrOrmType ) );
 	}
 	
 	public function reflectionExtensionsOrmDefine()
 	{
-		$arrOrmDefines = array() ;
-		$aPAMap = new _PAM() ;
+		$arrOrmDefines = array ();
+		$aPAMap = new _PAM ();
 		
-		foreach($this->application()->extensions()->iterator() as $aExtension)
+		foreach ( $this->application ()->extensions ()->iterator () as $aExtension )
 		{
-			if( method_exists($aExtension, 'defineOrm') )
+			if (method_exists ( $aExtension, 'defineOrm' ))
 			{
-				$aPAMap->clear() ;
-				$aExtension->defineOrm($aPAMap) ;
+				$aPAMap->clear ();
+				$aExtension->defineOrm ( $aPAMap );
 				
-				$arrOrmDefines[$aExtension->metainfo()->name()] = $this->reflectionOrm($aPAMap) ;
-			}
-			
+				$arrOrmDefines [$aExtension->metainfo ()->name ()] = $this->reflectionOrm ( $aPAMap );
+			} 
+
 			else
 			{
-				$arrOrmDefines[$aExtension->metainfo()->name()] = array() ;
+				$arrOrmDefines [$aExtension->metainfo ()->name ()] = array ();
 			}
 		}
 		
-		return $arrOrmDefines ;
+		return $arrOrmDefines;
 	}
-
+	
 	public function reflectionOrm(PrototypeAssociationMap $aPam)
 	{
-		$arrOrm = array() ;
+		$arrOrm = array ();
 		
-		foreach($aPam->modelNameIterator() as $sName)
+		foreach ( $aPam->modelNameIterator () as $sName )
 		{
-			$aPrototype = $aPam->modelPrototype($sName) ;
+			$aPrototype = $aPam->modelPrototype ( $sName );
 			
-			$arrAssoc = array() ;
-			foreach($aPrototype->associations() as $aAssoc)
+			$arrAssoc = array ();
+			foreach ( $aPrototype->associations () as $aAssoc )
 			{
-				$arrAssoc[] = array(
-					
-					'type' => $aAssoc->type() ,
-					'prop' => $aAssoc->modelProperty() ,
-					'fromKeys' => $aAssoc->fromKeys() ,
-					'toKeys' => $aAssoc->toKeys() ,
-					'bridgeFromKeys' => $aAssoc->bridgeFromKeys() ,
-					'bridgeToKeys' => $aAssoc->bridgeToKeys() ,
-					'bridgeTableName' => $aAssoc->bridgeTableName() ,
-					'toPrototype' => $aAssoc->toPrototype()->name() ,
-				) ;
+				$arrAssoc [] = array (
+
+				'type' => $aAssoc->type (), 'prop' => $aAssoc->modelProperty (), 'fromKeys' => $aAssoc->fromKeys (), 'toKeys' => $aAssoc->toKeys (), 'bridgeFromKeys' => $aAssoc->bridgeFromKeys (), 'bridgeToKeys' => $aAssoc->bridgeToKeys (), 'bridgeTableName' => $aAssoc->bridgeTableName (), 'toPrototype' => $aAssoc->toPrototype ()->name () );
 			}
 			
-			@list($sExtName,$sOrmName) = explode(':', $sName) ;
-
+			@list ( $sExtName, $sOrmName ) = explode ( ':', $sName );
 			
-			$arrOrm[$sExtName][$sOrmName] = array(
-					'name' => $aPrototype->name() ,
-					'extension' => $sExtName ,
-					'title' => $sOrmName ,
-					'table' => $aPrototype->tableName() ,
-					'devicePrimaryKey' => $aPrototype->devicePrimaryKey() ,
-					'primaryKeys' => $aPrototype->primaryKeys() ,
-					'columns' => $aPrototype->columns() ,
-					'asscociations' => $arrAssoc ,
-			) ;
+			$arrOrm [$sExtName] [$sOrmName] = array ('name' => $aPrototype->name (), 'extension' => $sExtName, 'title' => $sOrmName, 'table' => $aPrototype->tableName (), 'devicePrimaryKey' => $aPrototype->devicePrimaryKey (), 'primaryKeys' => $aPrototype->primaryKeys (), 'columns' => $aPrototype->columns (), 'asscociations' => $arrAssoc );
 		}
 		
-		return $arrOrm ;
+		return $arrOrm;
 	}
 	
 	public function reflectionDbTable()
 	{
-		$arrTables = array() ;
-		foreach($this->application()->extensions()->iterator() as $aExtension)
+		$arrTables = array ();
+		foreach ( $this->application ()->extensions ()->iterator () as $aExtension )
 		{
-			$arrTables[$aExtension->metainfo()->name()] = array() ;
+			$arrTables [$aExtension->metainfo ()->name ()] = array ();
 		}
 		
-		foreach(DB::singleton()->query("show tables ;") as $arrRowTable)
+		foreach ( DB::singleton ()->query ( "show tables ;" ) as $arrRowTable )
 		{
-			$sTable = array_shift($arrRowTable) ;
-			list($sExtensionName,$sTableName) = self::getExtensionFromTableName($sTable) ;
-			if( !$sExtensionName or !$sTableName )
+			$sTable = array_shift ( $arrRowTable );
+			list ( $sExtensionName, $sTableName ) = self::getExtensionFromTableName ( $sTable );
+			if (! $sExtensionName or ! $sTableName)
 			{
-				continue ;
+				continue;
 			}
 			
-			$arrTables[$sExtensionName][$sTable] = array(
-					'name' => $sTableName ,
-					'primaryKey' => null ,
-					'title' => $sTableName ,
-			) ;
+			$arrTables [$sExtensionName] [$sTable] = array ('name' => $sTableName, 'primaryKey' => null, 'title' => $sTableName );
 			
-			foreach(DB::singleton()->query("show columns from ".$sTable) as $arrClm)
+			foreach ( DB::singleton ()->query ( "show columns from " . $sTable ) as $arrClm )
 			{
-				$arrTables[$sExtensionName][$sTable]['columns'][] = $arrClm['Field'] ;
+				$arrTables [$sExtensionName] [$sTable] ['columns'] [] = $arrClm ['Field'];
 				
-				if($arrClm['Key']=='PRI')
+				if ($arrClm ['Key'] == 'PRI')
 				{
-					$arrTables[$sExtensionName][$sTable]['primaryKey'] = $arrClm['Field'] ;
+					$arrTables [$sExtensionName] [$sTable] ['primaryKey'] = $arrClm ['Field'];
 				}
 			}
 		}

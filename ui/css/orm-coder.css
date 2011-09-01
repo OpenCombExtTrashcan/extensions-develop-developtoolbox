@@ -120,6 +120,19 @@ h1 {
 	display:none;
 }
 
+/* 反馈区 */
+#msg{
+	clear:both;
+}
+
+.ormCode{
+	width:80%;
+	margin:0 auto;
+	font-size:16px;
+	font-weight:blod;
+	background:#99FF66 ;
+}
+
 /*模板*/
 
 #template{

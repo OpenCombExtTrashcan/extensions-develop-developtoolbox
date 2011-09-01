@@ -466,7 +466,8 @@ $( function () {
 		var aData = {};
 		var sExtension = $('#ormExtend').val();
 		var sToExtension = $('#ormDefine').val();
-		aData['table'] = $('#ormTable').val();
+		var sOrmTableValue = $('#ormTable').val();
+		aData['table'] = sOrmTableValue.substring(sOrmTableValue.indexOf('_')+1);
 		aData['title'] = $('#ormTitle').val();
 		//列
 		aData['keys'] = [];  //primaryKeys
@@ -483,26 +484,29 @@ $( function () {
 			var aAsscociation = {};
 			var sOrmType = ormForm.find('.ormType').val();
 			aAsscociation['model'] = ormForm.find('.ormToPrototype').val();//toPrototype
-			var sOrmProp = ormForm.find('.ormToProp').val();
-			aAsscociation['bridge'] = null;				//bridgeTableName
-			if(aAsscociation['type'] == "hasAndBelongsToMany"){
-				aAsscociation['bridge'] = ormForm.find('.ormBridgeTable').val();//bridgeTableName
+			aAsscociation['prop'] = ormForm.find('.ormToProp').val();   //prop
+//			aAsscociation['bridge'] = null;				//bridgeTableName
+			if(sOrmType == "hasAndBelongsToMany"){
+				var sBridgeTableValue = ormForm.find('.ormBridgeTable').val();
+//				aAsscociation['bridge'] = ormForm.find('.ormBridgeTable').val();//bridgeTableName
+				aAsscociation['bridge'] = sBridgeTableValue.substring(sBridgeTableValue.indexOf('_')+1)
 			}
 			aAsscociation['fromk'] = getValuesOfKeys(ormForm.find('.ormFromKey'));
 			aAsscociation['tok'] = getValuesOfKeys(ormForm.find('.ormToKey'));
-			aAsscociation['bfromk'] = null;
-			aAsscociation['btok'] = null;
-			if(aAsscociation['type'] == "hasAndBelongsToMany"){
+//			aAsscociation['bfromk'] = null;
+//			aAsscociation['btok'] = null;
+			if(sOrmType == "hasAndBelongsToMany"){
 				aAsscociation['bfromk'] = getValuesOfKeys(ormForm.find('.ormBrigdeToKey'));
 				aAsscociation['btok'] = getValuesOfKeys(ormForm.find('.ormBrigdeFromKey'));
 			}
 			if(!aData[sOrmType]){
-				aData[sOrmType] = {};
+				aData[sOrmType] = [];
 			}
-			if(!$.isArray(aData[sOrmType][sOrmProp])){
-				aData[sOrmType][sOrmProp] = [];
-			}
-			aData[sOrmType][sOrmProp] = aAsscociation;
+			aData[sOrmType].push(aAsscociation);
+//			if(!$.isArray(aData[sOrmType][sOrmProp])){
+//				aData[sOrmType][sOrmProp] = [];
+//			}
+//			aData[sOrmType][sOrmProp] = aAsscociation;
 		});
 		ajaxSave(sExtension,sToExtension,aData);
 	});
